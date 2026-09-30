@@ -1,0 +1,22 @@
+<!-- @dsCard group="Actions" height=250 subtitle="Primary, default, quiet, danger; 56px tall on the POS" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Button</title></head>
+<body>
+<div class="bp-canvas bp-stack">
+  <div class="bp-row">
+    <button class="bp-btn bp-btn--primary">Add to order</button>
+    <button class="bp-btn">Hold order</button>
+    <button class="bp-btn bp-btn--quiet">Cancel</button>
+    <button class="bp-btn bp-btn--danger"><i data-icon="trash"></i>Void sale</button>
+  </div>
+  <div class="bp-row">
+    <button class="bp-btn bp-btn--primary bp-btn--lg">Pay <span data-peso="37350"></span></button>
+    <button class="bp-btn bp-btn--primary is-loading" aria-busy="true"><i data-icon="refresh"></i>Saving sale</button>
+    <button class="bp-btn" disabled>Close register</button>
+    <button class="bp-btn bp-btn--sm">Edit product</button>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

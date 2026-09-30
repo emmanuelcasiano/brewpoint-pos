@@ -1,0 +1,460 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<title>BrewPoint Database Schema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+  :root {
+    --ground: #FAF6EF; --raised: #FFFCF8; --sunken: #F0E7DA; --border: #E2D5C2; --border-strong: #8A7560;
+    --ink: #2B1D14; --muted: #66513F; --accent: #8A5200; --accent-soft: #F7E4C0; --line: #B8A690;
+    --d-access: #3F6FC4; --d-sales: #B06A0E; --d-catalog: #A64D79; --d-inventory: #2F8A55; --d-purchasing: #0B6E75; --d-alerts: #B42318; --d-billing: #7A6450; --d-platform: #5B55A8;
+    --font-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+    --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #1A130F; --raised: #251B15; --sunken: #130D0A; --border: #3B2D24; --border-strong: #937F69;
+      --ink: #F6EDE1; --muted: #BCA891; --accent: #F0BE6E; --accent-soft: #3D2C18; --line: #6E5C4C;
+      --d-access: #6F95E0; --d-sales: #D99A45; --d-catalog: #D07AA4; --d-inventory: #4FB07A; --d-purchasing: #58C7C0; --d-alerts: #F28B82; --d-billing: #BCA891; --d-platform: #A39DE6;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #1A130F; --raised: #251B15; --sunken: #130D0A; --border: #3B2D24; --border-strong: #937F69;
+    --ink: #F6EDE1; --muted: #BCA891; --accent: #F0BE6E; --accent-soft: #3D2C18; --line: #6E5C4C;
+    --d-access: #6F95E0; --d-sales: #D99A45; --d-catalog: #D07AA4; --d-inventory: #4FB07A; --d-purchasing: #58C7C0; --d-alerts: #F28B82; --d-billing: #BCA891; --d-platform: #A39DE6;
+  }
+  body { background: var(--ground); color: var(--ink); font: 400 15px/1.5 var(--font-sans); }
+  .wrap { padding-inline: 24px; padding-block: 28px 48px; display: flex; flex-direction: column; gap: 20px; }
+  @media (max-width: 600px) { .wrap { padding-inline: 16px; } }
+  header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  h1 { margin: 0; font: 700 clamp(28px, 4vw, 40px)/1.1 var(--font-display); letter-spacing: -0.4px; text-wrap: balance; }
+  .lede { margin: 6px 0 0; max-width: 68ch; color: var(--muted); }
+  .stats { display: flex; gap: 20px; font-variant-numeric: tabular-nums; }
+  .stat b { display: block; font: 700 24px/1.1 var(--font-sans); }
+  .stat span { font-size: 13px; color: var(--muted); }
+
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .rules li { padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--raised); font-size: 14px; }
+  .rules b { display: block; font-weight: 600; margin-bottom: 2px; }
+  code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
+
+  .controls { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; background: var(--ground); border-bottom: 1px solid var(--border); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--raised); color: var(--ink); font: 600 13px/1 var(--font-sans); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+  .chip:focus-visible, .search input:focus-visible, .card__head:focus-visible, .toggle input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
+  .search { margin-left: auto; }
+  .search input { min-height: 36px; width: 220px; max-width: 60vw; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--raised); color: var(--ink); font: 400 14px/1 var(--font-sans); }
+  .toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+
+  .info { min-height: 48px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--raised); font-size: 14px; }
+  .info b { font-family: var(--font-mono); font-weight: 600; }
+  .info .rel { color: var(--muted); }
+  .info a { color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; font-family: var(--font-mono); }
+
+  .scroller { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--sunken); }
+  .canvas { position: relative; display: flex; align-items: flex-start; gap: 72px; padding: 24px; width: max-content; }
+  .canvas svg.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: visible; }
+  .col { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 18px; width: 290px; }
+  .domain { display: flex; align-items: center; gap: 8px; font: 600 12px/16px var(--font-sans); letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+  .domain + .card { margin-top: -8px; }
+
+  .card { border: 1px solid var(--border); border-radius: 12px; background: var(--raised); overflow: hidden; transition: opacity 120ms ease-out; }
+  .card__head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--c) 12%, var(--raised)); cursor: pointer; }
+  .card__name { font: 600 14px/20px var(--font-mono); }
+  .card__count { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .card__note { padding: 6px 12px; font-size: 12px; line-height: 16px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .cols { margin: 0; padding: 0; list-style: none; }
+  .cols li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 6px; padding: 3px 12px; font: 400 12.5px/18px var(--font-mono); }
+  .cols li + li { border-top: 1px dashed color-mix(in srgb, var(--border) 70%, transparent); }
+  .cols .key { font: 600 10px/18px var(--font-sans); color: var(--muted); }
+  .cols .key.pk { color: var(--accent); }
+  .cols .nm { overflow-wrap: anywhere; }
+  .cols .nm small { display: block; font-family: var(--font-sans); font-size: 11.5px; line-height: 15px; color: var(--muted); }
+  .cols .ty { color: var(--muted); text-align: right; white-space: nowrap; }
+  .cols .ty .q { color: var(--muted); opacity: 0.8; }
+  .cols .fk { color: var(--accent); }
+  .cols li.implicit { opacity: 0.6; }
+  .cols li.sync .nm { font-style: italic; }
+  .cols li.hit { background: var(--accent-soft); }
+
+  .canvas.focus .card { opacity: 0.25; }
+  .canvas.focus .card.on, .canvas.focus .card.near { opacity: 1; }
+  .card.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .card[hidden], .domain[hidden] { display: none; }
+
+  path.link { fill: none; stroke: var(--line); stroke-width: 1.25; opacity: 0.55; }
+  path.link.on { stroke: var(--accent); stroke-width: 2; opacity: 1; }
+  path.link.off { opacity: 0.06; }
+  circle.end { fill: var(--line); opacity: 0.55; }
+  circle.end.on { fill: var(--accent); opacity: 1; }
+  circle.end.off { opacity: 0.06; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .k { font: 600 10px/1 var(--font-sans); padding: 3px 5px; border: 1px solid var(--border-strong); border-radius: 4px; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>BrewPoint database schema</h1>
+      <p class="lede">Every table and column behind the POS, the shop back-office and the BrewPoint staff console, grouped by area. Click a table to trace what it points to and what points to it.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <ul class="rules">
+    <li><b>One database, many shops</b>Every business table carries <code>tenant_id</code> and every query filters on it. Those links are listed but not drawn.</li>
+    <li><b>IDs made on the device</b>Primary keys are UUIDs a register can create offline. Device-written rows also carry <code>device_id</code>, <code>client_created_at</code> and <code>synced_at</code>.</li>
+    <li><b>Money and stock as numbers</b>Money is integer centavos (<code>bigint</code>). Stock is in the item's base unit: ml, g or pc.</li>
+    <li><b>Stock is a ledger</b><code>stock_movements</code> records every change. <code>item_branch_settings.on_hand</code> is its cached total.</li>
+    <li><b>Staff are not shop users</b>Staff sign in as <code>platform_users</code>. They see inside a shop only through an approved <code>support_access_grants</code> row, and every action goes to <code>platform_audit_log</code>.</li>
+    <li><b>Billing is provider-neutral</b>Stripe now, PayMongo or Xendit later: <code>billing_customers</code>, <code>payment_methods</code> and <code>payment_events</code> name their provider. Prices are versions in <code>plan_prices</code>.</li>
+    <li><b>Nothing important is deleted</b>Sales are voided, orders cancelled, users deactivated, devices revoked. <code>audit_log</code> is append-only.</li>
+  </ul>
+
+  <div class="controls" role="toolbar" aria-label="Filter the diagram">
+    <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <label class="toggle"><input type="checkbox" id="showLinks" checked> Show all relations</label>
+    <label class="search"><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Find a table or column</span><input id="q" type="search" placeholder="Find a table or column"></label>
+  </div>
+
+  <div class="info" id="info" aria-live="polite"></div>
+
+  <div class="legend">
+    <span><span class="k">PK</span> primary key</span>
+    <span><span class="k">FK</span> foreign key, target shown after →</span>
+    <span><span class="mono">?</span> can be empty</span>
+    <span><span class="k">UQ</span> unique</span>
+    <span style="opacity:.7">faded rows: <code>tenant_id</code>, not drawn</span>
+    <span><i>italic</i>: sync fields from the device</span>
+  </div>
+
+  <div class="scroller"><div class="canvas" id="canvas"><svg class="links" id="links" aria-hidden="true"></svg></div></div>
+</div>
+
+<script>
+(function () {
+  var DOMAINS = {
+    access: { label: 'Shops, people and access', c: '--d-access' },
+    billing: { label: 'Billing', c: '--d-billing' },
+    sales: { label: 'Sales and cash', c: '--d-sales' },
+    catalog: { label: 'Menu', c: '--d-catalog' },
+    inventory: { label: 'Inventory', c: '--d-inventory' },
+    purchasing: { label: 'Purchasing', c: '--d-purchasing' },
+    alerts: { label: 'Alerts and audit', c: '--d-alerts' },
+    platform: { label: 'Staff console (platform)', c: '--d-platform' }
+  };
+  var COLUMNS = [['access'], ['sales'], ['catalog'], ['inventory'], ['purchasing'], ['alerts'], ['billing'], ['platform']];
+  var SYNC = ['device_id uuid fk:devices null sync', 'client_created_at timestamptz sync', 'synced_at timestamptz null sync'];
+
+  // Column grammar: "name type [pk] [uq] [null] [fk:table] [sync] | note"
+  var T = [
+    ['tenants', 'access', 'One coffee business (a customer of BrewPoint).', [
+      'id uuid pk', 'name text', 'tin text null | BIR tax ID', 'timezone text | default Asia/Manila', 'accent_hex text | shop accent, #RRGGBB', 'status text | trial, active, past_due, suspended, closed', 'signup_source text null | facebook_ad, referral', 'suspended_reason text null', 'closed_at timestamptz null', 'created_at timestamptz']],
+    ['branches', 'access', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'address text', 'is_active boolean', 'created_at timestamptz']],
+    ['users', 'access', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'email text uq', 'password_hash text null | back-office sign-in', 'pin_hash text null | POS PIN', 'status text | invited, active, deactivated', 'last_active_at timestamptz null', 'created_at timestamptz']],
+    ['roles', 'access', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'summary text', 'is_locked boolean | Owner']],
+    ['permissions', 'access', 'Global list, the same for every shop.', [
+      'code text pk | sale.void.approve', 'group_name text', 'label text']],
+    ['role_permissions', 'access', null, [
+      'role_id uuid pk fk:roles', 'permission_code text pk fk:permissions']],
+    ['user_assignments', 'access', 'A user’s role in a branch.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'user_id uuid fk:users', 'branch_id uuid null fk:branches | empty = all branches', 'role_id uuid fk:roles']],
+    ['devices', 'access', 'A paired register (T1, T2).', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'name text | T1', 'model text', 'app_version text', 'printer text null', 'license_expires_at timestamptz', 'last_sync_at timestamptz null', 'paired_at timestamptz', 'revoked_at timestamptz null', 'revoked_by uuid null fk:users', 'revoke_reason text null']],
+    ['pairing_codes', 'access', null, [
+      'code text pk | 6 digits', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'created_by uuid fk:users', 'expires_at timestamptz']],
+    ['plans', 'billing', null, [
+      'id uuid pk', 'name text', 'price_monthly bigint', 'price_yearly bigint', 'max_branches int', 'max_devices int', 'max_users int null', 'features jsonb']],
+    ['subscriptions', 'billing', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'plan_id uuid fk:plans', 'plan_price_id uuid fk:plan_prices | the price version this shop pays', 'status text | trial, active, past_due, suspended, cancelled', 'billing_cycle text | monthly, yearly', 'trial_ends_at timestamptz null', 'current_period_end timestamptz', 'grace_until timestamptz null | selling pauses after this', 'provider text | stripe, paymongo, xendit, manual', 'provider_subscription_id text null', 'cancel_at timestamptz null']],
+    ['invoices', 'billing', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'subscription_id uuid fk:subscriptions', 'number text uq | INV-2026-0931', 'period_start date', 'period_end date', 'subtotal bigint', 'vat_amount bigint | 12%', 'total bigint', 'status text | draft, open, paid, failed, void, credited', 'provider text | stripe, manual', 'provider_invoice_id text null', 'payment_link_url text null | GCash payment link', 'due_at timestamptz', 'issued_at timestamptz', 'paid_at timestamptz null', 'paid_manually_by uuid null fk:platform_users', 'pdf_url text']],
+    ['invoice_lines', 'billing', null, [
+      'id uuid pk', 'invoice_id uuid fk:invoices', 'description text | Growth plan, monthly', 'qty int', 'unit_amount bigint', 'amount bigint']],
+    ['plan_prices', 'billing', 'A new price is a new version; shops keep theirs.', [
+      'id uuid pk', 'plan_id uuid fk:plans', 'version int | 2', 'price_monthly bigint | includes 12% VAT', 'price_yearly bigint', 'valid_from date', 'valid_until date null', 'provider_price_id text null | Stripe price ID']],
+    ['billing_customers', 'billing', 'The shop as the payment provider knows it.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'provider text | stripe, paymongo, xendit', 'provider_customer_id text', 'email text', 'created_at timestamptz']],
+    ['payment_methods', 'billing', null, [
+      'id uuid pk', 'billing_customer_id uuid fk:billing_customers', 'type text | card, gcash_link, maya, bank_debit', 'brand text null | visa', 'last4 text null', 'expires text null | 12/28', 'provider_method_id text null', 'is_default boolean']],
+    ['payment_events', 'billing', 'Webhook inbox. Processed once per event.', [
+      'id uuid pk', 'provider text', 'provider_event_id text uq | idempotency key', 'type text | invoice.payment_failed', 'tenant_id uuid null fk:tenants', 'invoice_id uuid null fk:invoices', 'payload jsonb', 'received_at timestamptz', 'processed_at timestamptz null', 'error text null']],
+    ['credit_notes', 'billing', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'invoice_id uuid fk:invoices', 'number text uq', 'amount bigint', 'reason text | duplicate charge', 'issued_by uuid fk:platform_users', 'issued_at timestamptz']],
+
+    ['register_sessions', 'sales', 'One shift on one register.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'opened_by uuid fk:users', 'opened_at timestamptz', 'opening_float bigint', 'closed_by uuid null fk:users', 'closed_at timestamptz null', 'expected_cash bigint null', 'counted_cash bigint null', 'variance bigint null | counted - expected', 'note text null', 'approved_by uuid null fk:users', 'status text | open, closed, needs_review, approved'].concat(SYNC)],
+    ['cash_counts', 'sales', 'Bills and coins counted at close.', [
+      'id uuid pk', 'session_id uuid fk:register_sessions', 'denomination bigint | centavos, 100000 = ₱1,000', 'count int']],
+    ['cash_movements', 'sales', null, [
+      'id uuid pk', 'session_id uuid fk:register_sessions', 'direction text | in, out', 'amount bigint', 'reason text | milk delivery', 'user_id uuid fk:users', 'approved_by uuid null fk:users'].concat(SYNC)],
+    ['sales', 'sales', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'session_id uuid fk:register_sessions', 'receipt_no text uq | ACK-T1-000123', 'cashier_id uuid fk:users', 'status text | paid, voided, refunded, partly_refunded', 'subtotal bigint', 'discount_total bigint', 'vat_amount bigint', 'total bigint', 'voided_by uuid null fk:users', 'void_reason text null'].concat(SYNC)],
+    ['sale_lines', 'sales', null, [
+      'id uuid pk', 'sale_id uuid fk:sales', 'product_id uuid fk:products', 'name_snapshot text | name at time of sale', 'qty int', 'unit_price bigint', 'line_total bigint']],
+    ['sale_line_modifiers', 'sales', null, [
+      'id uuid pk', 'sale_line_id uuid fk:sale_lines', 'modifier_id uuid fk:modifiers', 'name_snapshot text', 'price_delta bigint']],
+    ['sale_discounts', 'sales', null, [
+      'id uuid pk', 'sale_id uuid fk:sales', 'type text | senior, pwd, promo, manual', 'percent numeric', 'amount bigint', 'id_number text null | senior or PWD ID', 'approved_by uuid null fk:users']],
+    ['payments', 'sales', null, [
+      'id uuid pk', 'sale_id uuid fk:sales', 'method text | cash, gcash, card, maya', 'amount bigint', 'tendered bigint null', 'change_given bigint null', 'reference text null | GCash or card ref']],
+    ['refunds', 'sales', null, [
+      'id uuid pk', 'sale_id uuid fk:sales', 'reason text', 'amount bigint', 'requested_by uuid fk:users', 'approved_by uuid null fk:users', 'created_at timestamptz']],
+    ['refund_lines', 'sales', null, [
+      'id uuid pk', 'refund_id uuid fk:refunds', 'sale_line_id uuid fk:sale_lines', 'qty int', 'amount bigint']],
+    ['discount_rules', 'sales', 'Settings, Taxes and discounts.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'type text | senior, pwd, promo, manual', 'percent numeric | 20 for senior and PWD', 'vat_exempt boolean', 'requires_id boolean', 'role_id uuid null fk:roles | limit applies to this role', 'max_percent numeric null | 10', 'max_amount bigint null | 10000 = \u20b1100']],
+    ['tenant_payment_methods', 'sales', 'Which payment types a shop accepts.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'method text | cash, gcash, card, maya', 'is_enabled boolean', 'requires_reference boolean', 'sort_order int']],
+
+    ['categories', 'catalog', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'sort_order int', 'expiry_warn_days int null | pastries 1']],
+    ['products', 'catalog', 'What the POS sells.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'category_id uuid fk:categories', 'name text', 'price bigint', 'is_visible_on_pos boolean', 'sort_order int', 'updated_by uuid fk:users', 'updated_at timestamptz']],
+    ['modifier_groups', 'catalog', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text | Milk', 'min_select int', 'max_select int']],
+    ['modifiers', 'catalog', null, [
+      'id uuid pk', 'group_id uuid fk:modifier_groups', 'name text | Oat milk', 'price_delta bigint', 'sort_order int']],
+    ['product_modifier_groups', 'catalog', null, [
+      'product_id uuid pk fk:products', 'modifier_group_id uuid pk fk:modifier_groups']],
+    ['recipe_lines', 'catalog', 'Connects the menu to stock.', [
+      'id uuid pk', 'product_id uuid fk:products', 'inventory_item_id uuid fk:inventory_items', 'qty_base numeric | 18 (g), 180 (ml)']],
+    ['modifier_recipe_lines', 'catalog', null, [
+      'id uuid pk', 'modifier_id uuid fk:modifiers', 'inventory_item_id uuid fk:inventory_items', 'qty_base_delta numeric | -180 fresh milk, +180 oat milk']],
+
+    ['inventory_items', 'inventory', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'kind text | ingredient, packaging, retail', 'base_unit text | ml, g, pc', 'pack_unit text | box', 'pack_size numeric | 1000', 'is_perishable boolean', 'default_shelf_days int null', 'barcode text null']],
+    ['item_branch_settings', 'inventory', 'One row per item per branch.', [
+      'item_id uuid pk fk:inventory_items', 'branch_id uuid pk fk:branches', 'on_hand numeric | cached sum of movements', 'reorder_point numeric null', 'order_up_to numeric null', 'avg_cost numeric | centavos per base unit', 'last_cost numeric', 'default_supplier_id uuid null fk:suppliers']],
+    ['batches', 'inventory', 'Stock with an expiry date.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'item_id uuid fk:inventory_items', 'batch_code text | B-0921', 'expiry_date date null', 'qty_received numeric', 'qty_remaining numeric', 'unit_cost numeric', 'receipt_line_id uuid null fk:goods_receipt_lines', 'received_at timestamptz']],
+    ['stock_movements', 'inventory', 'Every stock change, never edited.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'item_id uuid fk:inventory_items', 'batch_id uuid null fk:batches', 'qty_delta numeric | + in, - out', 'reason text | sale, receipt, adjustment, waste, count, refund, void', 'source_type text | sale_line, receipt_line, count_line', 'source_id uuid null', 'note text null | spilled', 'user_id uuid null fk:users', 'approved_by uuid null fk:users'].concat(SYNC)],
+    ['stock_counts', 'inventory', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'counted_by uuid fk:users', 'status text | in_progress, finished', 'started_at timestamptz', 'finished_at timestamptz null']],
+    ['stock_count_lines', 'inventory', null, [
+      'id uuid pk', 'count_id uuid fk:stock_counts', 'item_id uuid fk:inventory_items', 'expected_qty numeric', 'counted_qty numeric']],
+
+    ['suppliers', 'purchasing', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'contact_name text', 'phone text', 'email text | where orders are sent', 'order_days text[] | mon, wed, fri', 'lead_time_days int', 'min_order bigint', 'terms text | COD, 7 days', 'is_active boolean']],
+    ['supplier_items', 'purchasing', 'Who sells what, at what price.', [
+      'supplier_id uuid pk fk:suppliers', 'item_id uuid pk fk:inventory_items', 'supplier_sku text null', 'pack_unit text', 'pack_size numeric', 'last_cost bigint | per pack', 'last_cost_at timestamptz null', 'is_default boolean']],
+    ['purchase_orders', 'purchasing', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'supplier_id uuid fk:suppliers', 'number text uq | PO-0043', 'status text | draft, sent, partly_received, received, cancelled', 'expected_date date null', 'note text null', 'subtotal bigint', 'delivery_fee bigint', 'total bigint', 'created_by uuid fk:users', 'approved_by uuid null fk:users', 'sent_at timestamptz null', 'cancelled_at timestamptz null']],
+    ['purchase_order_lines', 'purchasing', null, [
+      'id uuid pk', 'po_id uuid fk:purchase_orders', 'item_id uuid fk:inventory_items', 'qty_ordered numeric | in packs', 'unit_cost bigint | per pack', 'qty_received numeric | cached']],
+    ['goods_receipts', 'purchasing', 'One delivery.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'supplier_id uuid fk:suppliers', 'po_id uuid null fk:purchase_orders | empty = walk-in delivery', 'dr_number text null | DR 11873', 'received_by uuid fk:users', 'closed_short boolean', 'total bigint', 'received_at timestamptz']],
+    ['goods_receipt_lines', 'purchasing', 'Each line creates one batch.', [
+      'id uuid pk', 'receipt_id uuid fk:goods_receipts', 'po_line_id uuid null fk:purchase_order_lines', 'item_id uuid fk:inventory_items', 'qty_received numeric | in packs', 'unit_cost bigint | per pack', 'batch_code text null', 'expiry_date date null']],
+
+    ['alerts', 'alerts', 'One open alert per item, branch and type.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'item_id uuid fk:inventory_items', 'batch_id uuid null fk:batches', 'type text | out_of_stock, expired, expiring, low', 'status text | open, snoozed, resolved', 'started_at timestamptz | when it happened on the device', 'synced_at timestamptz', 'snoozed_until timestamptz null', 'resolved_at timestamptz null', 'resolved_by_source text null | receipt, waste, adjustment, count', 'resolved_ref uuid null']],
+    ['alert_reads', 'alerts', 'Drives the unread count on the bell.', [
+      'alert_id uuid pk fk:alerts', 'user_id uuid pk fk:users', 'read_at timestamptz']],
+    ['notification_settings', 'alerts', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'event_type text | low, expired, cash_variance', 'channel text | in_app, push, email', 'enabled boolean', 'digest_time time | 07:00', 'quiet_start time null', 'quiet_end time null', 'recipients text | owner, owner_managers']],
+    ['notification_deliveries', 'alerts', null, [
+      'id uuid pk', 'alert_id uuid null fk:alerts', 'user_id uuid fk:users', 'channel text', 'status text | sent, failed', 'sent_at timestamptz']],
+    ['audit_log', 'alerts', 'Append-only record of who did what.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid null fk:branches', 'user_id uuid null fk:users | empty = System', 'action_code text | catalog.price.edit', 'sentence text', 'entity_type text', 'entity_id uuid', 'before jsonb null', 'after jsonb null', 'is_sensitive boolean', 'happened_at timestamptz'].concat(SYNC)],
+    ['platform_users', 'platform', 'BrewPoint staff. Separate from shop users.', [
+      'id uuid pk', 'name text', 'email text uq', 'password_hash text', 'totp_secret_enc text null | two-step sign-in', 'role_id uuid fk:platform_roles', 'status text | invited, active, deactivated', 'last_active_at timestamptz null', 'created_at timestamptz']],
+    ['platform_roles', 'platform', null, [
+      'id uuid pk', 'name text uq | Superadmin, Support, Billing, Engineer', 'summary text']],
+    ['platform_permissions', 'platform', null, [
+      'code text pk | tenant.suspend', 'label text']],
+    ['platform_role_permissions', 'platform', null, [
+      'role_id uuid pk fk:platform_roles', 'permission_code text pk fk:platform_permissions']],
+    ['support_access_grants', 'platform', 'Staff see inside a shop only with an approved grant.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'staff_id uuid fk:platform_users', 'ticket_id uuid null fk:support_tickets', 'reason text', 'scope text | read, read_settings, read_billing', 'duration_minutes int', 'status text | waiting, active, ended, declined, expired', 'approved_by uuid null fk:users | the shop owner', 'requested_at timestamptz', 'starts_at timestamptz null', 'ends_at timestamptz null', 'ended_by text null | owner, staff, timeout']],
+    ['platform_audit_log', 'platform', 'Every staff action. Append-only.', [
+      'id uuid pk', 'staff_id uuid null fk:platform_users | empty = system', 'target_tenant_id uuid null fk:tenants', 'grant_id uuid null fk:support_access_grants', 'action_code text | tenant.trial.extend', 'sentence text', 'entity_type text null', 'entity_id uuid null', 'before jsonb null', 'after jsonb null', 'reason text null', 'is_sensitive boolean', 'ip_address inet', 'happened_at timestamptz']],
+    ['tenant_events', 'platform', 'A shop\u2019s account history.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'type text | signed_up, trial_extended, plan_changed, suspended, reactivated, price_moved, closed', 'detail jsonb', 'reason text null', 'staff_id uuid null fk:platform_users', 'happened_at timestamptz']],
+    ['data_requests', 'platform', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'type text | export, delete', 'requested_by uuid fk:users', 'received_at timestamptz', 'due_at timestamptz', 'status text | received, verifying, exporting, ready, deleting, completed', 'identity_checked_by uuid null fk:platform_users', 'export_url text null', 'completed_by uuid null fk:platform_users', 'completed_at timestamptz null']],
+    ['feature_flags', 'platform', null, [
+      'key text pk | kitchen_display', 'description text', 'rollout text | off, chosen, plans, everyone', 'plan_ids uuid[] null', 'created_at timestamptz']],
+    ['tenant_feature_overrides', 'platform', 'A flag or a plan limit, per shop.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'flag_key text null fk:feature_flags', 'limit_name text null | devices, branches, users', 'value jsonb | true, 4', 'until date null', 'set_by uuid fk:platform_users', 'reason text']],
+    ['app_releases', 'platform', null, [
+      'version text pk | 2.4.1', 'released_at timestamptz', 'notes text', 'warn_from date null', 'min_required_from date null', 'released_by uuid fk:platform_users']],
+    ['device_error_reports', 'platform', null, [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'app_version text', 'error_code text', 'message text', 'context jsonb'].concat(SYNC)],
+    ['announcements', 'platform', null, [
+      'id uuid pk', 'title text', 'body text', 'audience text | all, plans, tenants', 'plan_ids uuid[] null', 'tenant_ids uuid[] null', 'show_banner boolean', 'send_email boolean', 'send_at timestamptz', 'ends_at timestamptz null', 'status text | draft, scheduled, sent', 'created_by uuid fk:platform_users']],
+    ['announcement_reads', 'platform', null, [
+      'announcement_id uuid pk fk:announcements', 'user_id uuid pk fk:users', 'dismissed_at timestamptz']],
+    ['support_tickets', 'platform', 'Optional: skip if you use an outside help desk.', [
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'number text uq | T-1043', 'subject text', 'requester_id uuid fk:users', 'assignee_id uuid null fk:platform_users', 'status text | waiting_on_us, waiting_on_shop, urgent, solved', 'device_id uuid null fk:devices', 'app_version text null', 'created_at timestamptz', 'solved_at timestamptz null']],
+    ['support_ticket_messages', 'platform', null, [
+      'id uuid pk', 'ticket_id uuid fk:support_tickets', 'author_user_id uuid null fk:users', 'author_staff_id uuid null fk:platform_users', 'body text', 'created_at timestamptz']]
+  ];
+
+  function parse(spec) {
+    var parts = spec.split(' | '), note = parts[1] || '';
+    var w = parts[0].split(/\s+/), c = { name: w[0], type: w[1], pk: false, uq: false, nul: false, fk: null, sync: false, note: note };
+    for (var i = 2; i < w.length; i++) {
+      if (w[i] === 'pk') c.pk = true; else if (w[i] === 'uq') c.uq = true; else if (w[i] === 'null') c.nul = true; else if (w[i] === 'sync') c.sync = true;
+      else if (w[i].indexOf('fk:') === 0) c.fk = w[i].slice(3);
+    }
+    return c;
+  }
+  var tables = T.map(function (t) { return { name: t[0], domain: t[1], note: t[2], cols: t[3].map(parse) }; });
+  var byName = {}; tables.forEach(function (t) { byName[t.name] = t; });
+
+  var links = [];
+  tables.forEach(function (t) { t.cols.forEach(function (c) { if (c.fk && byName[c.fk]) links.push({ from: t.name, col: c.name, to: c.fk, implicit: c.name === 'tenant_id' }); }); });
+
+  var colCount = tables.reduce(function (n, t) { return n + t.cols.length; }, 0);
+  document.getElementById('stats').innerHTML =
+    '<div class="stat"><b>' + tables.length + '</b><span>tables</span></div>' +
+    '<div class="stat"><b>' + colCount + '</b><span>columns</span></div>' +
+    '<div class="stat"><b>' + links.filter(function (l) { return !l.implicit; }).length + '</b><span>relations drawn</span></div>';
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); }
+
+  var canvas = document.getElementById('canvas'), svg = document.getElementById('links');
+  COLUMNS.forEach(function (doms) {
+    var col = document.createElement('div'); col.className = 'col';
+    doms.forEach(function (d) {
+      var h = document.createElement('div'); h.className = 'domain'; h.dataset.domain = d; h.style.setProperty('--c', 'var(' + DOMAINS[d].c + ')');
+      h.innerHTML = '<span class="dot"></span>' + DOMAINS[d].label; col.appendChild(h);
+      tables.filter(function (t) { return t.domain === d; }).forEach(function (t) {
+        var card = document.createElement('section'); card.className = 'card'; card.id = 't-' + t.name; card.dataset.domain = d; card.dataset.name = t.name;
+        card.style.setProperty('--c', 'var(' + DOMAINS[d].c + ')');
+        var rows = t.cols.map(function (c) {
+          var key = c.pk ? '<span class="key pk">PK</span>' : c.fk ? '<span class="key">FK</span>' : c.uq ? '<span class="key">UQ</span>' : '<span class="key"></span>';
+          var fk = c.fk ? ' <span class="fk">→ ' + esc(c.fk) + '</span>' : '';
+          return '<li data-col="' + esc(c.name) + '" class="' + (c.name === 'tenant_id' ? 'implicit ' : '') + (c.sync ? 'sync' : '') + '">' + key +
+            '<span class="nm">' + esc(c.name) + fk + (c.note ? '<small>' + esc(c.note) + '</small>' : '') + '</span>' +
+            '<span class="ty">' + esc(c.type) + (c.nul ? '<span class="q">?</span>' : '') + '</span></li>';
+        }).join('');
+        card.innerHTML = '<div class="card__head" tabindex="0" role="button" aria-pressed="false"><span class="dot"></span><span class="card__name">' + esc(t.name) + '</span><span class="card__count">' + t.cols.length + ' cols</span></div>' +
+          (t.note ? '<div class="card__note">' + esc(t.note) + '</div>' : '') + '<ul class="cols">' + rows + '</ul>';
+        col.appendChild(card);
+      });
+    });
+    canvas.appendChild(col);
+  });
+
+  var chips = document.getElementById('chips'), activeDomain = 'all';
+  function chipHtml(key, label, color) {
+    return '<button class="chip" data-d="' + key + '" aria-pressed="' + (key === activeDomain) + '">' + (color ? '<span class="dot" style="--c:var(' + color + ')"></span>' : '') + label + '</button>';
+  }
+  function drawChips() {
+    chips.innerHTML = chipHtml('all', 'All areas') + Object.keys(DOMAINS).map(function (d) { return chipHtml(d, DOMAINS[d].label, DOMAINS[d].c); }).join('');
+  }
+  drawChips();
+
+  var selected = null;
+  function rel(a, b) { return a.getBoundingClientRect ? a.getBoundingClientRect() : a; }
+
+  function draw() {
+    var base = canvas.getBoundingClientRect();
+    svg.setAttribute('width', canvas.scrollWidth); svg.setAttribute('height', canvas.scrollHeight);
+    var showAll = document.getElementById('showLinks').checked, out = [];
+    links.forEach(function (l, i) {
+      if (l.implicit) return;
+      var fromCard = document.getElementById('t-' + l.from), toCard = document.getElementById('t-' + l.to);
+      if (!fromCard || !toCard || fromCard.hidden || toCard.hidden) return;
+      var row = fromCard.querySelector('li[data-col="' + l.col + '"]');
+      var r = row.getBoundingClientRect(), tc = toCard.getBoundingClientRect(), th = toCard.querySelector('.card__head').getBoundingClientRect();
+      var fc = fromCard.getBoundingClientRect();
+      var y1 = r.top + r.height / 2 - base.top, y2 = th.top + th.height / 2 - base.top, x1, x2, d;
+      if (Math.abs(fc.left - tc.left) < 5) {
+        x1 = fc.right - base.left; x2 = tc.right - base.left;
+        var bulge = 22 + (i % 5) * 6;
+        d = 'M' + x1 + ',' + y1 + ' C' + (x1 + bulge) + ',' + y1 + ' ' + (x2 + bulge) + ',' + y2 + ' ' + x2 + ',' + y2;
+      } else {
+        var right = tc.left > fc.left;
+        x1 = (right ? fc.right : fc.left) - base.left; x2 = (right ? tc.left : tc.right) - base.left;
+        var dx = Math.max(40, Math.abs(x2 - x1) * 0.45) * (right ? 1 : -1);
+        d = 'M' + x1 + ',' + y1 + ' C' + (x1 + dx) + ',' + y1 + ' ' + (x2 - dx) + ',' + y2 + ' ' + x2 + ',' + y2;
+      }
+      var on = selected && (l.from === selected || l.to === selected);
+      var cls = on ? 'on' : (selected || !showAll ? 'off' : '');
+      if (!showAll && !on) return;
+      out.push('<path class="link ' + cls + '" d="' + d + '"/><circle class="end ' + cls + '" cx="' + x1 + '" cy="' + y1 + '" r="3"/>');
+    });
+    svg.innerHTML = out.join('');
+  }
+
+  function linkList(names) {
+    return names.length ? names.map(function (n) { return '<a data-go="' + n + '">' + n + '</a>'; }).join(', ') : '<span class="rel">none</span>';
+  }
+  function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+
+  function select(name) {
+    selected = name;
+    var info = document.getElementById('info');
+    document.querySelectorAll('.card').forEach(function (c) {
+      c.classList.remove('on', 'near'); c.querySelector('.card__head').setAttribute('aria-pressed', 'false');
+    });
+    if (!name) {
+      canvas.classList.remove('focus');
+      info.innerHTML = '<span class="rel">Click a table name to see its relations. Tables with a faded <b>tenant_id</b> row belong to one shop; the rest are platform-wide.</span>';
+      draw(); return;
+    }
+    var outs = uniq(links.filter(function (l) { return l.from === name && !l.implicit; }).map(function (l) { return l.to; }));
+    var ins = uniq(links.filter(function (l) { return l.to === name && !l.implicit; }).map(function (l) { return l.from; }));
+    var tenantRefs = name === 'tenants' ? links.filter(function (l) { return l.implicit; }).length : 0;
+    canvas.classList.add('focus');
+    var card = document.getElementById('t-' + name); card.classList.add('on'); card.querySelector('.card__head').setAttribute('aria-pressed', 'true');
+    outs.concat(ins).forEach(function (n) { var c = document.getElementById('t-' + n); if (c) c.classList.add('near'); });
+    info.innerHTML = '<b>' + name + '</b> <span class="rel">points to</span> ' + linkList(outs) + '. <span class="rel">Pointed to by</span> ' +
+      (tenantRefs ? '<span class="rel">every business table (' + tenantRefs + ') through tenant_id</span>' : linkList(ins)) + '.';
+    draw();
+  }
+
+  canvas.addEventListener('click', function (e) {
+    var h = e.target.closest('.card__head'); if (!h) return;
+    var n = h.parentNode.dataset.name; select(selected === n ? null : n);
+  });
+  canvas.addEventListener('keydown', function (e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card__head')) { e.preventDefault(); e.target.click(); }
+  });
+  document.getElementById('info').addEventListener('click', function (e) {
+    var a = e.target.closest('[data-go]'); if (!a) return;
+    var n = a.dataset.go, card = document.getElementById('t-' + n);
+    if (card.hidden) { activeDomain = 'all'; applyFilter(); }
+    select(n); card.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  });
+  chips.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-d]'); if (!b) return;
+    activeDomain = b.dataset.d; applyFilter();
+  });
+  function applyFilter() {
+    drawChips();
+    document.querySelectorAll('.card, .domain').forEach(function (el) { el.hidden = activeDomain !== 'all' && el.dataset.domain !== activeDomain; });
+    document.querySelectorAll('.col').forEach(function (c) { c.hidden = !c.querySelector('.card:not([hidden])'); c.style.display = c.hidden ? 'none' : ''; });
+    if (selected && document.getElementById('t-' + selected).hidden) select(null); else draw();
+  }
+  document.getElementById('showLinks').addEventListener('change', draw);
+  document.getElementById('q').addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase(), first = null;
+    document.querySelectorAll('.cols li').forEach(function (li) { li.classList.toggle('hit', !!q && li.dataset.col.indexOf(q) >= 0); });
+    document.querySelectorAll('.card').forEach(function (c) {
+      var m = !!q && (c.dataset.name.indexOf(q) >= 0 || c.querySelector('li.hit'));
+      if (m && !first && !c.hidden) first = c;
+    });
+    if (first) first.scrollIntoView({ block: 'nearest', inline: 'center' });
+  });
+
+  select(null);
+  window.addEventListener('resize', draw);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  setTimeout(draw, 300);
+})();
+</script>
+</body></html>

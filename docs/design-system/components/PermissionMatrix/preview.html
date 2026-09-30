@@ -1,0 +1,87 @@
+<!-- @dsCard group="Back-office" height=900 subtitle="Role editor: template roles, permissions grouped by feature area, locked Owner" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PermissionMatrix</title></head>
+<body>
+<div class="bp-canvas" style="max-width:760px">
+  <div class="bp-matrix">
+    <div class="bp-tabs" role="tablist" id="tabs"></div>
+    <div class="bp-row" style="justify-content:space-between">
+      <div>
+        <h2 class="bp-h-md" id="role-name">Cashier</h2>
+        <span class="bp-muted" id="role-count"></span>
+      </div>
+      <span class="bp-chip" id="lock-chip" hidden><i data-icon="lock" data-size="16"></i>Locked: always has every permission</span>
+    </div>
+    <div id="groups" class="bp-stack"></div>
+  </div>
+</div>
+<script>
+  var CATALOG = [
+    { g: 'Sales', open: true, items: [
+      ['sale.create', 'Ring up sales'], ['sale.discount.apply', 'Apply discounts within own limit'], ['sale.discount.approve', 'Approve larger discounts'],
+      ['sale.void.request', 'Request a void'], ['sale.void.approve', 'Approve voids'], ['sale.refund.request', 'Request a refund'],
+      ['sale.refund.approve', 'Approve refunds'], ['receipt.reprint', 'Reprint receipts'] ] },
+    { g: 'Register and cash', open: true, items: [
+      ['register.open', 'Open the register'], ['register.close', 'Close the register'], ['register.view_all', 'See every cashier’s register'],
+      ['register.variance.approve', 'Approve cash variance up to ₱500'], ['register.variance.approve_large', 'Approve cash variance over ₱500'],
+      ['cash.move', 'Cash in and cash out'], ['cash.move.approve', 'Approve cash movements'] ] },
+    { g: 'Catalog', items: [['catalog.view', 'View menu and prices'], ['catalog.manage', 'Edit menu, recipes and modifiers'], ['catalog.price.edit', 'Change prices']] },
+    { g: 'Inventory', items: [
+      ['inventory.view', 'View stock'], ['inventory.adjust', 'Adjust stock counts'], ['inventory.adjust.approve', 'Approve stock adjustments'],
+      ['inventory.waste', 'Record waste'], ['inventory.alerts.resolve', 'Resolve stock alerts'], ['inventory.costs.view', 'See ingredient costs'] ] },
+    { g: 'Purchasing', items: [
+      ['purchase.view', 'View purchase orders'], ['purchase.create', 'Create and send purchase orders'], ['purchase.approve', 'Approve orders over ₱10,000'],
+      ['inventory.receive', 'Receive deliveries'], ['supplier.manage', 'Add and edit suppliers'] ] },
+    { g: 'Reports and audit', items: [['report.sales.view', 'View sales reports'], ['report.inventory.view', 'View inventory reports'], ['report.margin.view', 'See profit margins'], ['audit.view', 'View the audit log']] },
+    { g: 'Users and access', items: [['user.view', 'View users'], ['user.manage', 'Create, invite and deactivate users'], ['role.manage', 'Edit roles and permissions'], ['pin.reset', 'Reset other people’s PINs']] },
+    { g: 'Devices, settings and billing', items: [['device.manage', 'Register and revoke devices'], ['settings.manage', 'Change shop settings'], ['billing.manage', 'Manage subscription and billing']] }
+  ];
+  var ALL = []; CATALOG.forEach(function (c) { c.items.forEach(function (i) { ALL.push(i[0]); }); });
+  var ROLES = {
+    'Owner': { locked: true, set: ALL },
+    'Manager': { set: ALL.filter(function (c) { return ['role.manage', 'billing.manage', 'user.manage'].indexOf(c) < 0; }) },
+    'Cashier': { set: ['sale.create','sale.discount.apply','sale.void.request','sale.refund.request','receipt.reprint','register.open','register.close','cash.move','catalog.view','inventory.view'] },
+    'Barista': { set: ['sale.create','catalog.view','inventory.view'] },
+    'Inventory Clerk': { set: ['catalog.view','inventory.view','inventory.receive','purchase.view','purchase.create','inventory.adjust','inventory.waste','inventory.alerts.resolve','report.inventory.view'] }
+  };
+  var current = 'Cashier';
+  var state = {}; Object.keys(ROLES).forEach(function (r) { state[r] = ROLES[r].set.slice(); });
+
+  function drawTabs() {
+    var el = document.getElementById('tabs');
+    el.innerHTML = Object.keys(ROLES).map(function (r) {
+      return '<button class="bp-tab" role="tab" aria-selected="' + (r === current) + '" data-role="' + r + '">' + (ROLES[r].locked ? BrewPoint.icon('lock', 16) : '') + r + '</button>';
+    }).join('') + '<button class="bp-tab" role="tab" aria-selected="false">' + BrewPoint.icon('plus', 16) + 'New role</button>';
+  }
+  function draw() {
+    var role = ROLES[current], set = state[current], locked = !!role.locked;
+    document.getElementById('role-name').textContent = current;
+    document.getElementById('role-count').textContent = set.length + ' of ' + ALL.length + ' permissions';
+    document.getElementById('lock-chip').hidden = !locked;
+    document.getElementById('groups').innerHTML = CATALOG.map(function (c) {
+      var on = c.items.filter(function (i) { return set.indexOf(i[0]) >= 0; }).length;
+      return '<details class="bp-group"' + (c.open ? ' open' : '') + '><summary class="bp-group__head" style="cursor:pointer;list-style:none"><span class="bp-eyebrow">' + c.g + '</span><span class="bp-muted">' + on + ' of ' + c.items.length + '</span></summary>' +
+        c.items.map(function (i) {
+          return '<label class="bp-perm' + (locked ? ' is-locked' : '') + '"><span class="bp-perm__text"><span class="bp-perm__name">' + i[1] + '</span><span class="bp-perm__code">' + i[0] + '</span></span>' +
+            '<input class="bp-check" type="checkbox" data-code="' + i[0] + '"' + (set.indexOf(i[0]) >= 0 ? ' checked' : '') + (locked ? ' disabled' : '') + '></label>';
+        }).join('') + '</details>';
+    }).join('');
+    BrewPoint.mount(document.getElementById('groups'));
+  }
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-role]'); if (!b) return;
+    current = b.getAttribute('data-role'); drawTabs(); BrewPoint.mount(); draw();
+  });
+  document.getElementById('groups').addEventListener('change', function (e) {
+    var code = e.target.getAttribute('data-code'); if (!code) return;
+    var open = Array.prototype.map.call(document.querySelectorAll('#groups details'), function (d) { return d.open; });
+    var set = state[current], idx = set.indexOf(code);
+    if (e.target.checked && idx < 0) set.push(code); else if (!e.target.checked && idx >= 0) set.splice(idx, 1);
+    CATALOG.forEach(function (c, n) { c.open = open[n]; });
+    draw();
+  });
+  drawTabs(); BrewPoint.mount(); draw();
+</script>
+</body>
+</html>

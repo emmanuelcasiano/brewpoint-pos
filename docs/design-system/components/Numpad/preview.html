@@ -1,0 +1,58 @@
+<!-- @dsCard group="Inputs" height=600 subtitle="PIN entry and cash tendered; 72px keys" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Numpad</title></head>
+<body>
+<div class="bp-canvas" style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+  <section class="bp-stack" style="width:320px" aria-label="PIN entry">
+    <h2 class="bp-h-sm">Enter your PIN</h2>
+    <div class="bp-pin" id="pin" role="img" aria-label="0 of 4 digits entered"></div>
+    <div class="bp-numpad" id="pad-pin"></div>
+  </section>
+  <section class="bp-stack" style="width:320px" aria-label="Cash tendered">
+    <h2 class="bp-h-sm">Cash tendered</h2>
+    <div class="bp-display"><span class="bp-display__label">Amount</span><span class="bp-display__value" id="cash">&#8369;400.00</span></div>
+    <div class="bp-quick">
+      <button class="bp-btn bp-btn--sm">Exact</button>
+      <button class="bp-btn bp-btn--sm">&#8369;500</button>
+      <button class="bp-btn bp-btn--sm">&#8369;1,000</button>
+    </div>
+    <div class="bp-numpad" id="pad-cash"></div>
+    <button class="bp-btn bp-btn--primary bp-btn--lg bp-btn--block">Confirm payment</button>
+  </section>
+</div>
+<script>
+  function pad(el, onKey) {
+    var keys = ['1','2','3','4','5','6','7','8','9','C','0','del'];
+    el.innerHTML = keys.map(function (k) {
+      if (k === 'C') return '<button class="bp-key bp-key--action" data-k="C">Clear</button>';
+      if (k === 'del') return '<button class="bp-key" data-k="del" aria-label="Delete">' + BrewPoint.icon('backspace', 26) + '</button>';
+      return '<button class="bp-key" data-k="' + k + '">' + k + '</button>';
+    }).join('');
+    el.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (b) onKey(b.getAttribute('data-k'));
+    });
+  }
+  var pin = '';
+  var dots = document.getElementById('pin');
+  function drawPin() {
+    var h = '';
+    for (var i = 0; i < 4; i++) h += '<span class="bp-pin__dot' + (i < pin.length ? ' is-filled' : '') + '"></span>';
+    dots.innerHTML = h;
+    dots.setAttribute('aria-label', pin.length + ' of 4 digits entered');
+  }
+  pad(document.getElementById('pad-pin'), function (k) {
+    if (k === 'C') pin = ''; else if (k === 'del') pin = pin.slice(0, -1); else if (pin.length < 4) pin += k;
+    drawPin();
+  });
+  pin = '27'; drawPin();
+  var cents = '40000';
+  var cash = document.getElementById('cash');
+  function drawCash() { cash.textContent = BrewPoint.formatPeso(Number(cents || '0')); }
+  pad(document.getElementById('pad-cash'), function (k) {
+    if (k === 'C') cents = ''; else if (k === 'del') cents = cents.slice(0, -1); else if (cents.length < 9) cents += k;
+    drawCash();
+  });
+</script>
+</body>
+</html>

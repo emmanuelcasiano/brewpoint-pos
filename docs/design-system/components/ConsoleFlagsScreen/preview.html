@@ -1,0 +1,51 @@
+<!-- @dsCard group="Staff console screens" height=800 width=1440 subtitle="Feature flags: rollout per feature (off, chosen shops, plans, everyone) and per-shop limit overrides" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleFlagsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="flags" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Feature flags</h1><div class="bp-pagehead__meta">5 flags. 2 limit overrides</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>New flag</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-split">
+        <div class="bp-stack" style="gap:16px">
+          <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Feature flags</caption><thead><tr><th scope="col">Feature</th><th scope="col">Who has it</th></tr></thead><tbody>
+<tr class="is-link"><td><span class="bp-strong">Purchase orders and receiving</span><span class="bp-table__sub bp-table__code">purchase_orders</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On for all</span></td></tr>
+<tr class="is-link"><td><span class="bp-strong">Batches and expiry tracking</span><span class="bp-table__sub bp-table__code">expiry_tracking</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On for all</span></td></tr>
+<tr class="is-link"><td><span class="bp-strong">Pay BrewPoint with Maya or bank auto-debit</span><span class="bp-table__sub bp-table__code">xendit_billing</span></td><td><span class="bp-chip bp-chip--info"><i data-icon="users" data-size="16"></i>3 shops</span></td></tr>
+<tr class="is-link is-selected"><td><span class="bp-strong">Kitchen display for baristas</span><span class="bp-table__sub bp-table__code">kitchen_display</span></td><td><span class="bp-chip bp-chip--info"><i data-icon="users" data-size="16"></i>Beta, 2 shops</span></td></tr>
+<tr class="is-link"><td><span class="bp-strong">Customer loyalty points</span><span class="bp-table__sub bp-table__code">loyalty_points</span></td><td><span class="bp-chip"><i data-icon="x" data-size="16"></i>Off</span></td></tr>
+</tbody></table></div>
+          <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Limit overrides</h3><span class="bp-card__meta">Exceptions to a plan's limits</span></div>
+            <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Limit overrides</caption><thead><tr><th scope="col">Shop</th><th scope="col">Limit</th><th scope="col">Plan says</th><th scope="col" class="num">Allowed</th><th scope="col">Until</th></tr></thead><tbody>
+<tr><td>Bean There Makati</td><td>Devices</td><td class="num">3</td><td class="num">4</td><td>Dec 31, 2026</td></tr><tr><td>Tambayan Coffee QC</td><td>Branches</td><td class="num">10</td><td class="num">12</td><td>No end date</td></tr></tbody></table></div>
+          </section>
+        </div>
+        <aside class="bp-drawer" aria-label="kitchen_display">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">Kitchen display for baristas</h3><span class="bp-table__code">kitchen_display</span></div><span class="bp-chip bp-chip--info"><i data-icon="users" data-size="16"></i>Beta</span></div>
+          <div class="bp-drawer__body">
+            <div class="bp-segmented" role="group" aria-label="Rollout"><button aria-pressed="false">Off</button><button aria-pressed="true">Chosen shops</button><button aria-pressed="false">Plans</button><button aria-pressed="false">Everyone</button></div>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Shops with it on</span>
+              <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Shops with flag</caption><thead><tr><th scope="col">Shop</th><th scope="col">Since</th></tr></thead><tbody>
+<tr><td>Tambayan Coffee QC</td><td>Sep 10</td></tr><tr><td>Bean There Makati</td><td>Sep 22</td></tr></tbody></table></div>
+              <label class="bp-search" style="max-width:none"><i data-icon="search"></i><input class="bp-input" placeholder="Add a shop" aria-label="Add a shop"></label></div>
+            <span class="bp-note">Devices pick up flag changes at their next sync.</span>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Cancel</button><button class="bp-btn bp-btn--sm bp-btn--primary">Save rollout</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!-- @dsCard group="POS" height=1080 subtitle="POS top bar in four sync states, and the back-office side navigation with Dashboard, Alerts and Reports" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Navigation</title></head>
+<body>
+<div class="bp-canvas bp-stack" style="gap:20px;max-width:900px">
+  <div class="bp-stack" style="gap:8px">
+    <span class="bp-eyebrow">POS top bar</span>
+    <header class="bp-topbar" style="border-radius:14px;border:1px solid var(--border)">
+      <div class="bp-topbar__shop"><h1 class="bp-topbar__name">Kape Davao</h1><span class="bp-topbar__meta">Main branch, device T1</span></div>
+      <span class="bp-chip"><i data-icon="check" data-size="16"></i>Register open</span>
+      <span class="bp-topbar__spacer"></span>
+      <button class="bp-chip bp-chip--action bp-chip--success"><i data-icon="check" data-size="18"></i>Synced</button>
+      <button class="bp-user"><i data-icon="user" data-size="18"></i>Ana, Cashier</button>
+    </header>
+    <header class="bp-topbar" style="border-radius:14px;border:1px solid var(--border)">
+      <div class="bp-topbar__shop"><h1 class="bp-topbar__name">Kape Davao</h1><span class="bp-topbar__meta">Main branch, device T1</span></div>
+      <span class="bp-chip"><i data-icon="check" data-size="16"></i>Register open</span>
+      <span class="bp-topbar__spacer"></span>
+      <button class="bp-chip bp-chip--action"><i data-icon="wifi-off" data-size="18"></i>Offline, 2 sales waiting</button>
+      <button class="bp-user"><i data-icon="user" data-size="18"></i>Ana, Cashier</button>
+    </header>
+    <header class="bp-topbar" style="border-radius:14px;border:1px solid var(--border)">
+      <div class="bp-topbar__shop"><h1 class="bp-topbar__name">Kape Davao</h1><span class="bp-topbar__meta">Main branch, device T1</span></div>
+      <span class="bp-chip bp-chip--warning"><i data-icon="clock" data-size="16"></i>License: 2 days offline left</span>
+      <span class="bp-topbar__spacer"></span>
+      <button class="bp-chip bp-chip--action bp-chip--info"><i data-icon="refresh" data-size="18" class="is-spin"></i>Syncing 3 sales</button>
+      <button class="bp-user"><i data-icon="user" data-size="18"></i>Ana, Cashier</button>
+    </header>
+    <header class="bp-topbar" style="border-radius:14px;border:1px solid var(--border)">
+      <div class="bp-topbar__shop"><h1 class="bp-topbar__name">Kape Davao</h1><span class="bp-topbar__meta">Main branch, device T1</span></div>
+      <span class="bp-chip"><i data-icon="lock" data-size="16"></i>Register closed</span>
+      <span class="bp-topbar__spacer"></span>
+      <button class="bp-chip bp-chip--action bp-chip--warning"><i data-icon="alert" data-size="18"></i>1 needs attention</button>
+      <button class="bp-user"><i data-icon="user" data-size="18"></i>Maria, Manager</button>
+    </header>
+  </div>
+  <div class="bp-stack" style="gap:8px">
+    <span class="bp-eyebrow">Back-office side navigation</span>
+    <nav data-sidenav="inventory" aria-label="Back-office"></nav>
+    <span class="bp-note">Filled by <code>BrewPoint.mount()</code> from <code>&lt;nav data-sidenav="inventory"&gt;</code>. Here Inventory is the current page.</span>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

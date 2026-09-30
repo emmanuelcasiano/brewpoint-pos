@@ -1,0 +1,37 @@
+<!-- @dsCard group="Dashboard" height=200 subtitle="KPI tiles: value, comparison in words, optional sparkline, loading state" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>StatTile</title></head>
+<body>
+<div class="bp-canvas">
+  <div class="bp-dash bp-dash--kpis">
+    <div class="bp-stat">
+      <span class="bp-stat__label">Net sales today</span>
+      <div class="bp-stat__row"><span class="bp-stat__value" data-peso="4294000"></span><span data-spark="3842,3615,4098,4521,5176,4833,4294"></span></div>
+      <span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 7.0% <span>vs last Monday</span></span>
+    </div>
+    <div class="bp-stat">
+      <span class="bp-stat__label">Orders</span>
+      <div class="bp-stat__row"><span class="bp-stat__value">312</span><span data-spark="288,270,301,322,361,340,312" data-color="chart-3"></span></div>
+      <span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 4.3% <span>vs last Monday</span></span>
+    </div>
+    <div class="bp-stat">
+      <span class="bp-stat__label">Average order</span>
+      <div class="bp-stat__row"><span class="bp-stat__value" data-peso="13763"></span></div>
+      <span class="bp-stat__delta"><i data-icon="arrow-up" data-size="16"></i>Up 2.6% <span>vs last Monday</span></span>
+    </div>
+    <div class="bp-stat">
+      <span class="bp-stat__label">Voids and refunds</span>
+      <div class="bp-stat__row"><span class="bp-stat__value" data-peso="86000"></span></div>
+      <span class="bp-stat__delta bp-stat__delta--bad"><i data-icon="arrow-up" data-size="16"></i>Up 2 voids <span>vs last Monday</span></span>
+    </div>
+    <div class="bp-stat is-loading" aria-busy="true">
+      <span class="bp-stat__label">Gross margin</span>
+      <div class="bp-stat__row"><span class="bp-stat__value">₱00,000.00</span></div>
+      <span class="bp-stat__delta">Loading comparison</span>
+    </div>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

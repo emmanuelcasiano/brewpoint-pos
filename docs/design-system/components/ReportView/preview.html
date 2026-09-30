@@ -1,0 +1,77 @@
+<!-- @dsCard group="Back-office screens" height=1260 width=1440 subtitle="Reports: report tabs, filter bar, totals, daily chart and a product table with a totals row and export" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ReportView</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+<div class="bp-app">
+  <nav data-sidenav="reports" aria-label="Back-office"></nav>
+  <main class="bp-app__main">
+  <header class="bp-pagehead">
+    <div><h1 class="bp-pagehead__title">Reports</h1><div class="bp-pagehead__meta">Sep 1 to Sep 27, 2026, all branches</div></div>
+    <span class="bp-pagehead__spacer"></span>
+    <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+    <button class="bp-btn bp-btn--sm"><i data-icon="printer"></i>Export PDF</button>
+    <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+  </header>
+  <div class="bp-tabs" role="tablist" aria-label="Report">
+    <button class="bp-tab" role="tab" aria-selected="false">Sales summary</button>
+    <button class="bp-tab" role="tab" aria-selected="true">By product</button>
+    <button class="bp-tab" role="tab" aria-selected="false">By hour</button>
+    <button class="bp-tab" role="tab" aria-selected="false">By payment method</button>
+    <button class="bp-tab" role="tab" aria-selected="false">By cashier</button>
+    <button class="bp-tab" role="tab" aria-selected="false">Discounts and voids</button>
+    <button class="bp-tab" role="tab" aria-selected="false">Inventory movement</button>
+    <button class="bp-tab" role="tab" aria-selected="false">Waste and expiry</button>
+  </div>
+  <div class="bp-filters">
+    <label class="bp-field"><span class="bp-field__label">Date range</span><select class="bp-input bp-select"><option>This month so far</option><option>Today</option><option>Last 7 days</option><option>Last month</option><option>Custom range</option></select></label>
+    <label class="bp-field"><span class="bp-field__label">Branch</span><select class="bp-input bp-select"><option>All branches</option><option>Main branch</option><option>SM Lanang kiosk</option></select></label>
+    <label class="bp-field"><span class="bp-field__label">Register</span><select class="bp-input bp-select"><option>All registers</option><option>T1</option><option>T2</option></select></label>
+  </div>
+  <div class="bp-banner" role="status">
+    <span class="bp-banner__icon"><i data-icon="info"></i></span>
+    <div class="bp-banner__body"><span class="bp-banner__title">2 sales from device T1 have not synced yet.</span> They are not included in these numbers.</div>
+  </div>
+  <div class="bp-dash bp-dash--kpis">
+    <div class="bp-stat"><span class="bp-stat__label">Gross sales</span><span class="bp-stat__value" data-peso="70438500"></span><span class="bp-stat__delta"><i data-icon="arrow-up" data-size="16"></i>Up 9.2% <span>vs Aug&nbsp;1–27</span></span></div>
+    <div class="bp-stat"><span class="bp-stat__label">Discounts</span><span class="bp-stat__value" data-peso="1455000"></span><span class="bp-stat__delta"><i data-icon="arrow-down" data-size="16"></i>Down 3.1% <span>vs Aug&nbsp;1–27</span></span></div>
+    <div class="bp-stat"><span class="bp-stat__label">Net sales</span><span class="bp-stat__value" data-peso="68983500"></span><span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 9.5% <span>vs Aug&nbsp;1–27</span></span></div>
+    <div class="bp-stat"><span class="bp-stat__label">Items sold</span><span class="bp-stat__value">4,903</span><span class="bp-stat__delta"><i data-icon="arrow-up" data-size="16"></i>Up 6.8% <span>vs Aug&nbsp;1–27</span></span></div>
+  </div>
+  <section class="bp-card">
+    <div class="bp-card__head"><h3 class="bp-card__title">Net sales by product</h3><span class="bp-card__meta">Sep 1 to Sep 27, all items</span></div>
+    <div id="byprod"></div>
+  </section>
+  <div class="bp-tablewrap">
+    <table class="bp-table">
+      <caption class="bp-sr">Sales by product, Sep 1 to Sep 27, 2026</caption>
+      <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty sold</th><th scope="col" class="num">Gross</th><th scope="col" class="num">Discounts</th><th scope="col" class="num">Net sales</th><th scope="col">Share of net</th></tr></thead>
+      <tbody id="rows"></tbody>
+      <tfoot><tr><td>Total</td><td class="num">4,903</td><td class="num" data-peso="70438500"></td><td class="num" data-peso="1455000"></td><td class="num" data-peso="68983500"></td><td>100%</td></tr></tfoot>
+    </table>
+  </div>
+  </main>
+</div>
+</div>
+<script>
+  var data = [
+    ['Iced Latte','Coffee',1284,18618000,421000,18197000],
+    ['Spanish Latte','Coffee',1020,16320000,348000,15972000],
+    ['Caramel Macchiato','Coffee',690,12075000,295000,11780000],
+    ['Americano','Coffee',842,10104000,162000,9942000],
+    ['Matcha Latte','Non-coffee',455,7507500,131000,7376500],
+    ['Butter Croissant','Pastry',612,5814000,98000,5716000]
+  ];
+  var net = 68983500, f = BrewPoint.formatPeso;
+  document.getElementById('rows').innerHTML = data.map(function (r) {
+    var pct = r[5] / net * 100;
+    return '<tr><td>' + r[0] + '<span class="bp-table__sub">' + r[1] + '</span></td><td class="num">' + r[2].toLocaleString('en-PH') + '</td><td class="num">' + f(r[3]) + '</td><td class="num">' + f(r[4]) + '</td><td class="num">' + f(r[5]) + '</td>' +
+      '<td><span class="bp-bar-inline" style="width:' + Math.round(pct * 3) + 'px"></span> ' + pct.toFixed(1) + '%</td></tr>';
+  }).join('');
+  BrewPoint.chart(document.getElementById('byprod'), { type: 'hbar', format: 'peso', title: 'Net sales by product', labelWidth: 160,
+    labels: data.map(function (r) { return r[0]; }), series: [{ name: 'Net sales', values: data.map(function (r) { return r[5]; }) }] });
+  BrewPoint.mount();
+</script>
+</body>
+</html>

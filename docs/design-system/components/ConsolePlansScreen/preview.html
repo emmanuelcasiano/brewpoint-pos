@@ -1,0 +1,39 @@
+<!-- @dsCard group="Staff console screens" height=900 width=1440 subtitle="Plans and prices: current plans with limits and features, versioned price history, and shops still on an old price" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsolePlansScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="plans" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Plans and prices</h1><div class="bp-pagehead__meta">3 plans. Yearly billing gives 2 months free</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>New plan</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-plans">
+        <article class="bp-plan"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Starter</h3><span class="bp-chip"><i data-icon="tag" data-size="16"></i>v1</span></div><div class="bp-plan__price"><span data-peso="69900"></span> <small>per month</small></div><span class="bp-note">Since Jan 5, 2026. 12 shops</span><ul><li><i data-icon="check" data-size="18"></i>1 branch, 1 device</li><li><i data-icon="check" data-size="18"></i>3 users</li><li><i data-icon="check" data-size="18"></i>Sales reports</li><li><i data-icon="check" data-size="18"></i>Works offline</li></ul><button class="bp-btn bp-btn--sm">Edit plan</button></article>
+        <article class="bp-plan"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Growth</h3><span class="bp-chip"><i data-icon="tag" data-size="16"></i>v2</span></div><div class="bp-plan__price"><span data-peso="149900"></span> <small>per month</small></div><span class="bp-note">Since Aug 1, 2026. 15 shops, 4 on v1</span><ul><li><i data-icon="check" data-size="18"></i>2 branches, 3 devices</li><li><i data-icon="check" data-size="18"></i>10 users</li><li><i data-icon="check" data-size="18"></i>Stock alerts and expiry tracking</li><li><i data-icon="check" data-size="18"></i>Purchase orders</li><li><i data-icon="check" data-size="18"></i>Every report, CSV and PDF export</li></ul><button class="bp-btn bp-btn--sm">Edit plan</button></article>
+        <article class="bp-plan"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Multi-branch</h3><span class="bp-chip"><i data-icon="tag" data-size="16"></i>v1</span></div><div class="bp-plan__price"><span data-peso="349900"></span> <small>per month</small></div><span class="bp-note">Since Mar 1, 2026. 4 shops</span><ul><li><i data-icon="check" data-size="18"></i>10 branches, 15 devices</li><li><i data-icon="check" data-size="18"></i>Unlimited users</li><li><i data-icon="check" data-size="18"></i>Audit log export</li><li><i data-icon="check" data-size="18"></i>Priority support</li></ul><button class="bp-btn bp-btn--sm">Edit plan</button></article>
+      </div>
+      <section class="bp-stack" style="gap:8px">
+        <div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Price history</h3><span class="bp-note">A new price becomes a new version. Shops keep their version until you move them.</span></div>
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Price history</caption><thead><tr><th scope="col">Plan</th><th scope="col">Version</th><th scope="col" class="num">Monthly price</th><th scope="col">From</th><th scope="col">Until</th><th scope="col">Shops on it</th></tr></thead><tbody>
+<tr><td class="bp-strong">Growth</td><td>v2</td><td class="num"><span data-peso="149900"></span></td><td class="bp-nowrap">Aug 1, 2026</td><td class="bp-nowrap">Now</td><td>11 shops</td></tr>
+<tr><td class="bp-strong">Growth</td><td>v1</td><td class="num"><span data-peso="129900"></span></td><td class="bp-nowrap">Jan 5, 2026</td><td class="bp-nowrap">Jul 31, 2026</td><td>4 shops, kept this price</td></tr>
+<tr><td class="bp-strong">Starter</td><td>v1</td><td class="num"><span data-peso="69900"></span></td><td class="bp-nowrap">Jan 5, 2026</td><td class="bp-nowrap">Now</td><td>12 shops</td></tr>
+<tr><td class="bp-strong">Multi-branch</td><td>v1</td><td class="num"><span data-peso="349900"></span></td><td class="bp-nowrap">Mar 1, 2026</td><td class="bp-nowrap">Now</td><td>4 shops</td></tr>
+</tbody></table></div>
+      </section>
+      <div class="bp-banner bp-banner--warning" role="status"><span class="bp-banner__icon"><i data-icon="alert"></i></span><div class="bp-banner__body"><span class="bp-banner__title">4 shops still pay Growth v1 (₱1,299.00).</span> Moving them to v2 sends a 30-day notice first.</div><button class="bp-btn bp-btn--sm">Plan the move</button></div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!-- @dsCard group="Back-office" height=420 subtitle="Inventory table: dual units, money columns right-aligned, status chips" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>DataTable</title></head>
+<body>
+<div class="bp-canvas">
+  <div class="bp-tablewrap">
+    <table class="bp-table">
+      <caption class="bp-sr">Inventory on hand</caption>
+      <thead>
+        <tr><th scope="col">Item</th><th scope="col" class="num">On hand</th><th scope="col" class="num">Avg cost</th><th scope="col" class="num">Stock value</th><th scope="col">Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fresh milk<span class="bp-table__sub">1 L box</span></td>
+          <td class="num">4.75 boxes<span class="bp-table__sub">4,750 ml</span></td>
+          <td class="num"><span data-peso="9"></span>/ml</td>
+          <td class="num"><span data-peso="42750"></span></td>
+          <td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>In stock</span></td>
+        </tr>
+        <tr>
+          <td>Espresso beans<span class="bp-table__sub">1 kg bag</span></td>
+          <td class="num">3.2 bags<span class="bp-table__sub">3,200 g</span></td>
+          <td class="num"><span data-peso="95"></span>/g</td>
+          <td class="num"><span data-peso="304000"></span></td>
+          <td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>In stock</span></td>
+        </tr>
+        <tr class="is-selected">
+          <td>Oat milk<span class="bp-table__sub">1 L box</span></td>
+          <td class="num">0.5 box<span class="bp-table__sub">500 ml</span></td>
+          <td class="num"><span data-peso="18"></span>/ml</td>
+          <td class="num"><span data-peso="9000"></span></td>
+          <td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Low</span></td>
+        </tr>
+        <tr>
+          <td>Butter Croissant<span class="bp-table__sub">piece</span></td>
+          <td class="num">3 pcs</td>
+          <td class="num"><span data-peso="4200"></span>/pc</td>
+          <td class="num"><span data-peso="12600"></span></td>
+          <td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Low</span></td>
+        </tr>
+        <tr>
+          <td>Bottled Water<span class="bp-table__sub">piece</span></td>
+          <td class="num">0 pcs</td>
+          <td class="num"><span data-peso="1500"></span>/pc</td>
+          <td class="num"><span data-peso="0"></span></td>
+          <td><span class="bp-chip bp-chip--danger"><i data-icon="x" data-size="16"></i>Out of stock</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

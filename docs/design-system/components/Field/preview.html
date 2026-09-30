@@ -1,0 +1,41 @@
+<!-- @dsCard group="Inputs" height=430 subtitle="Text, money, select, checkbox, with help and error text" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Field</title></head>
+<body>
+<div class="bp-canvas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:760px">
+  <div class="bp-stack">
+    <div class="bp-field">
+      <label class="bp-field__label" for="f-name">Product name</label>
+      <input class="bp-input" id="f-name" value="Iced Latte">
+      <span class="bp-field__help">Shown on the tile and the receipt.</span>
+    </div>
+    <div class="bp-field bp-field--error">
+      <label class="bp-field__label" for="f-email">Email</label>
+      <input class="bp-input" id="f-email" value="ana@kape" aria-invalid="true" aria-describedby="f-email-err">
+      <span class="bp-field__error" id="f-email-err"><i data-icon="alert" data-size="16"></i>Enter an email like name@shop.com</span>
+    </div>
+    <label style="display:flex;align-items:center;gap:12px;min-height:44px">
+      <input class="bp-check" type="checkbox" checked>
+      <span>Skip expired containers when deducting stock</span>
+    </label>
+  </div>
+  <div class="bp-stack">
+    <div class="bp-field">
+      <label class="bp-field__label" for="f-cash">Cash tendered</label>
+      <div class="bp-money"><span class="bp-money__prefix" aria-hidden="true">&#8369;</span><input class="bp-input" id="f-cash" inputmode="decimal" value="400.00"></div>
+    </div>
+    <div class="bp-field">
+      <label class="bp-field__label" for="f-reason">Reason for waste</label>
+      <select class="bp-input bp-select" id="f-reason"><option>Spilled</option><option>Expired</option><option>Staff meal</option></select>
+    </div>
+    <div class="bp-field">
+      <label class="bp-field__label" for="f-lock">Device code</label>
+      <input class="bp-input" id="f-lock" value="T1" disabled>
+      <span class="bp-field__help">Set when the device was registered.</span>
+    </div>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

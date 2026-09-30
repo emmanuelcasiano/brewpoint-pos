@@ -1,0 +1,29 @@
+<!-- @dsCard group="Feedback" height=420 subtitle="Offline, license, trial and payment banners with one clear action" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Banner</title></head>
+<body>
+<div class="bp-canvas bp-stack" style="max-width:760px">
+  <div class="bp-banner bp-banner--offline" role="status">
+    <span class="bp-banner__icon"><i data-icon="wifi-off"></i></span>
+    <div class="bp-banner__body"><span class="bp-banner__title">You are offline.</span> Sales are saved on this device and will sync when you reconnect.</div>
+  </div>
+  <div class="bp-banner bp-banner--warning" role="status">
+    <span class="bp-banner__icon"><i data-icon="clock"></i></span>
+    <div class="bp-banner__body"><span class="bp-banner__title">Offline license ends in 2 days.</span> Connect to the internet to renew it.</div>
+    <button class="bp-btn bp-btn--sm">Sync now</button>
+  </div>
+  <div class="bp-banner" role="status">
+    <span class="bp-banner__icon"><i data-icon="info"></i></span>
+    <div class="bp-banner__body"><span class="bp-banner__title">Your trial ends in 9 days.</span> Add a plan to keep selling after Oct 6.</div>
+    <button class="bp-btn bp-btn--sm">Choose plan</button>
+  </div>
+  <div class="bp-banner bp-banner--danger" role="alert">
+    <span class="bp-banner__icon"><i data-icon="lock"></i></span>
+    <div class="bp-banner__body"><span class="bp-banner__title">Selling is paused.</span> This device could not verify your subscription. Connect to the internet to continue.</div>
+    <button class="bp-btn bp-btn--sm">Try again</button>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

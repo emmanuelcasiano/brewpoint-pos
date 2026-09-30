@@ -1,0 +1,57 @@
+<!-- @dsCard group="Back-office screens" height=1060 width=1440 subtitle="Owner dashboard: KPIs, sales by hour, last 7 days, top products, stock alerts and payment mix" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Dashboard</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="dashboard" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Good afternoon, Maria</h1><div class="bp-pagehead__meta">Monday, Sep 28, 2026. Updated 3:05 PM</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <select class="bp-input bp-select" style="width:auto;min-height:44px" aria-label="Branch"><option>Main branch</option><option>All branches</option></select>
+        <div class="bp-segmented" role="group" aria-label="Period"><button aria-pressed="true">Today</button><button aria-pressed="false">7 days</button><button aria-pressed="false">30 days</button><button aria-pressed="false"><i data-icon="calendar" data-size="16"></i> Custom</button></div>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Net sales today</span><div class="bp-stat__row"><span class="bp-stat__value" data-peso="4294000"></span><span data-spark="3842,3615,4098,4521,5176,4833,4294"></span></div><span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 7.0% <span>vs last Monday</span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Orders</span><div class="bp-stat__row"><span class="bp-stat__value">312</span></div><span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 4.3% <span>vs last Monday</span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Average order</span><div class="bp-stat__row"><span class="bp-stat__value" data-peso="13763"></span></div><span class="bp-stat__delta"><i data-icon="arrow-up" data-size="16"></i>Up 2.6% <span>vs last Monday</span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Voids and refunds</span><div class="bp-stat__row"><span class="bp-stat__value" data-peso="86000"></span></div><span class="bp-stat__delta bp-stat__delta--bad"><i data-icon="arrow-up" data-size="16"></i>Up 2 voids <span>vs last Monday</span></span></div>
+      </div>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Sales by hour</h3><span class="bp-card__meta">Today, 7 AM to 7 PM</span></div><div id="hourly"></div></section>
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Last 7 days</h3><span class="bp-card__meta">Net sales against the week before</span></div><div id="week"></div></section>
+      </div>
+      <div class="bp-dash bp-dash--3">
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Top products</h3><span class="bp-card__meta">Sold today</span></div><div id="top"></div></section>
+        <section class="bp-card" style="padding:0;gap:0;overflow:hidden">
+          <div class="bp-card__head" style="padding:16px 16px 8px"><h3 class="bp-card__title">Stock alerts</h3><span class="bp-chip bp-chip--danger"><i data-icon="alert" data-size="16"></i>2 urgent</span></div>
+          <div class="bp-alert bp-alert--danger"><span class="bp-alert__icon"><i data-icon="x"></i></span><div class="bp-alert__title">Bottled Water is out of stock</div><div class="bp-alert__body">0 pcs. Hidden from the POS.</div></div>
+          <div class="bp-alert bp-alert--danger"><span class="bp-alert__icon"><i data-icon="calendar-x"></i></span><div class="bp-alert__title">Fresh milk batch B-0921 expired</div><div class="bp-alert__body">2 boxes (2,000 ml), expired Sep 27.</div></div>
+          <div class="bp-alert bp-alert--warning"><span class="bp-alert__icon"><i data-icon="clock"></i></span><div class="bp-alert__title">Whipped cream expires Sep 30</div><div class="bp-alert__body">1 can (500 g) in batch B-0915.</div></div>
+          <div class="bp-alert bp-alert--warning"><span class="bp-alert__icon"><i data-icon="alert"></i></span><div class="bp-alert__title">Oat milk is low</div><div class="bp-alert__body">0.5 box (500 ml). Reorder point 2 boxes.</div></div>
+          <div class="bp-card__foot" style="padding:8px 12px;border-top:1px solid var(--border)"><button class="bp-btn bp-btn--quiet bp-btn--sm">See all 5 alerts<i data-icon="chevron-right" data-size="18"></i></button></div>
+        </section>
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Payment mix</h3><span class="bp-card__meta">Today</span></div><div id="pay"></div></section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+  BrewPoint.mount();
+  BrewPoint.chart(document.getElementById('hourly'), { type: 'bar', title: 'Sales by hour', format: 'peso', height: 240,
+    labels: ['7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM'],
+    series: [{ name: 'Net sales', values: [185000,420000,512000,368000,290000,455000,398000,310000,426000,380000,265000,190000,95000] }] });
+  BrewPoint.chart(document.getElementById('week'), { type: 'line', title: 'Last 7 days', format: 'peso', height: 212,
+    labels: ['Tue 22','Wed 23','Thu 24','Fri 25','Sat 26','Sun 27','Mon 28'],
+    series: [{ name: 'This week', values: [3842000,3615000,4098000,4521000,5176000,4833000,4294000] },
+             { name: 'Week before', compare: true, values: [3590000,3702000,3911000,4130000,4788000,4605000,4012000] }] });
+  BrewPoint.chart(document.getElementById('top'), { type: 'hbar', format: 'count', labelWidth: 150,
+    labels: ['Iced Latte','Spanish Latte','Americano','Caramel Macchiato','Butter Croissant'], series: [{ name: 'Sold', values: [64,51,38,33,27] }] });
+  BrewPoint.chart(document.getElementById('pay'), { type: 'hbar', format: 'peso', labelWidth: 70,
+    labels: ['Cash','GCash','Card','Maya'], series: [{ name: 'Collected', values: [1846000,1503000,687000,258000] }] });
+</script>
+</body>
+</html>

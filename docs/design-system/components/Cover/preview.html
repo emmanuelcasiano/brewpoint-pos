@@ -1,0 +1,40 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Cover</title></head>
+<body style="margin:0">
+<div style="width:960px;height:288px;background:var(--surface)">
+<!--
+blocks: accent 168x168 and 80x80; ink 80x80, 168x80 and 80x168; success 168x80; border-strong 80x80 and 168x80. Unit 80 with space-2 (8) gaps, every corner radius-lg (14).
+arrangement: a 5-column tile grid right of x=496, merged two-wide and two-tall like product tiles, with the name bottom-left on the ground.
+pattern: geometric modular tiles cut by radius tokens (the POS product grid) plus three quantity-badge discs (pills at half the short side); chosen because the product tile and its qty badge are what a cashier touches all day.
+steps and radii: 80 tile, 8 gap (space-2), 16 outer margin (space-4), radius-lg 14 for tiles, disc diameter 28 = qty badge height, radius-pill.
+-->
+<svg width="960" height="288" viewBox="0 0 960 288" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BrewPoint">
+  <style>
+    .t { rx: var(--radius-lg); ry: var(--radius-lg); }
+    .accent { fill: var(--accent); }
+    .ink { fill: var(--ink); }
+    .taupe { fill: var(--border-strong); }
+    .teal { fill: var(--success); }
+    .disc { rx: 14px; ry: 14px; }
+    .name { font-family: var(--font-display); font-weight: 700; font-size: 80px; letter-spacing: -1px; fill: var(--ink); }
+    .tag { font-family: var(--font-sans); font-weight: 400; font-size: 14px; fill: var(--ink-muted); }
+  </style>
+  <rect class="t accent" x="496" y="16" width="168" height="168"/>
+  <rect class="t ink" x="672" y="16" width="80" height="80"/>
+  <rect class="t teal" x="760" y="16" width="168" height="80"/>
+  <rect class="t taupe" x="672" y="104" width="80" height="80"/>
+  <rect class="t accent" x="760" y="104" width="80" height="80"/>
+  <rect class="t ink" x="848" y="104" width="80" height="168"/>
+  <rect class="t ink" x="496" y="192" width="168" height="80"/>
+  <rect class="t taupe" x="672" y="192" width="168" height="80"/>
+  <rect class="disc ink" x="622" y="28" width="28" height="28"/>
+  <rect class="disc accent" x="622" y="204" width="28" height="28"/>
+  <rect class="disc ink" x="886" y="28" width="28" height="28"/>
+  <text class="name" x="32" y="196">BrewPoint</text>
+  <text class="tag" x="34" y="228">Offline-first point of sale for coffee shops.</text>
+</svg>
+</div>
+</body>
+</html>

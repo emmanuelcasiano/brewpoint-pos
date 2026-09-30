@@ -1,0 +1,47 @@
+<!-- @dsCard group="Staff console screens" height=1040 width=1440 subtitle="Staff console overview: revenue, paying shops, trials and past due, revenue trend, plan mix, items needing attention, recent staff activity" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleOverviewScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="overview" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Overview</h1><div class="bp-pagehead__meta">BrewPoint staff console. Monday, Sep 28, 2026</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Monthly recurring revenue</span><span class="bp-stat__value"><span data-peso="4486900"></span></span><span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-up" data-size="16"></i>Up 6.9% <span>vs August</span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Paying shops</span><span class="bp-stat__value">31</span><span class="bp-stat__note">12 Starter, 15 Growth, 4 Multi-branch</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">On trial</span><span class="bp-stat__value">8</span><span class="bp-stat__note">3 end this week</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Past due or suspended</span><span class="bp-stat__value">3</span><span class="bp-stat__delta bp-stat__delta--bad">2 past due, 1 suspended</span></div>
+      </div>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Monthly recurring revenue</h3><span class="bp-card__meta">Apr to Sep 2026</span></div><div id="mrr"></div></section>
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Paying shops by plan</h3><span class="bp-card__meta">Today</span></div><div id="plans"></div>
+          <dl class="bp-kv"><dt>Trial to paid, last 90 days</dt><dd>62%</dd><dt>Shops that left in September</dt><dd>1</dd></dl></section>
+      </div>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-card" style="padding:0;gap:0;overflow:hidden"><div class="bp-card__head" style="padding:16px 16px 8px"><h3 class="bp-card__title">Needs attention</h3><span class="bp-card__meta">4 items</span></div><div class="bp-alert bp-alert--warning"><span class="bp-alert__icon"><i data-icon="alert"></i></span><div class="bp-alert__title">Kapihan sa Iloilo payment failed twice<span class="bp-alert__time">2h</span></div><div class="bp-alert__body">Card declined Sep 26 and Sep 27. Grace period ends Oct 3.</div><div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Open shop</button></div></div><div class="bp-alert bp-alert--warning"><span class="bp-alert__icon"><i data-icon="tablet"></i></span><div class="bp-alert__title">3 devices on app 2.3.x<span class="bp-alert__time">Today</span></div><div class="bp-alert__body">Below the minimum 2.4.0 from Oct 15. 2 shops affected.</div><div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">See devices</button></div></div><div class="bp-alert bp-alert--danger"><span class="bp-alert__icon"><i data-icon="download"></i></span><div class="bp-alert__title">Data deletion request due in 5 days<span class="bp-alert__time">Sep 18</span></div><div class="bp-alert__body">Sip &amp; Co. Baguio asked to delete their data on Sep 18.</div><div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Open request</button></div></div><div class="bp-alert bp-alert--info"><span class="bp-alert__icon"><i data-icon="key"></i></span><div class="bp-alert__title">Support access waiting for owner approval<span class="bp-alert__time">35m</span></div><div class="bp-alert__body">Joy asked to view Brew Bros Cebu for ticket T-1043.</div><div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">View request</button></div></div></section>
+        <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Recent staff activity</h3><span class="bp-card__meta">Today</span></div>
+          <dl class="bp-kv" style="grid-template-columns:auto 1fr">
+            <dt>3:10 PM</dt><dd style="text-align:left;font-weight:400">Mark extended Morning Ritual BGC's trial by 7 days</dd>
+            <dt>2:45 PM</dt><dd style="text-align:left;font-weight:400">Joy requested support access to Brew Bros Cebu</dd>
+            <dt>11:30 AM</dt><dd style="text-align:left;font-weight:400">Aira released app 2.4.1 to all shops</dd>
+            <dt>9:05 AM</dt><dd style="text-align:left;font-weight:400">Emmanuel sent the October maintenance announcement</dd>
+          </dl>
+          <button class="bp-btn bp-btn--sm bp-btn--quiet">Open staff audit log</button></section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+  BrewPoint.chart(document.getElementById('mrr'), { type: 'line', format: 'peso', height: 220, labels: ['Apr','May','Jun','Jul','Aug','Sep'], series: [{ name: 'MRR', values: [2812000,3145000,3489000,3822000,4196000,4486900] }] });
+  BrewPoint.chart(document.getElementById('plans'), { type: 'hbar', format: 'count', labelWidth: 110, labels: ['Growth','Starter','Multi-branch'], series: [{ name: 'Shops', values: [15,12,4] }] });
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!-- @dsCard group="Staff console screens" height=1000 width=1440 subtitle="Shop detail: account, subscription with price version and provider, usage against plan, devices, staff actions and lifecycle history" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleShopDetailScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="shops" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Kape Davao</h1><div class="bp-pagehead__meta">Growth trial. Main branch, 2 devices, 6 users</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--quiet">Back to shops</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-tabs" role="tablist" aria-label="Shop sections" style="align-self:flex-start">
+        <button class="bp-tab" role="tab" aria-selected="true">Overview</button><button class="bp-tab" role="tab" aria-selected="false">Billing</button><button class="bp-tab" role="tab" aria-selected="false">Devices</button><button class="bp-tab" role="tab" aria-selected="false">Users</button><button class="bp-tab" role="tab" aria-selected="false">Features</button><button class="bp-tab" role="tab" aria-selected="false">Activity</button>
+      </div>
+      <div class="bp-split">
+        <div class="bp-stack" style="gap:16px">
+          <div class="bp-dash bp-dash--2">
+            <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Account</h3><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Trial</span></div>
+              <dl class="bp-kv"><dt>Owner</dt><dd>Carlo Reyes</dd><dt>Email</dt><dd>carlo@kapedavao.ph</dd><dt>Phone</dt><dd>0917 555 0188</dd><dt>TIN</dt><dd>123-456-789-000</dd><dt>Signed up</dt><dd>Sep 23, 2026, from Facebook ad</dd><dt>Tenant ID</dt><dd class="bp-table__code">8f3c…a21e</dd></dl></section>
+            <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Subscription</h3><span class="bp-card__meta">Growth, monthly</span></div>
+              <dl class="bp-kv"><dt>Trial ends</dt><dd>Oct 7, 2026</dd><dt>Price after trial</dt><dd><span data-peso="149900"></span> per month</dd><dt>Price version</dt><dd>Growth v2, from Aug 1</dd><dt>Billing provider</dt><dd>Stripe</dd><dt>Payment method</dt><dd>None yet</dd></dl></section>
+          </div>
+          <section class="bp-card"><div class="bp-card__head"><h3 class="bp-card__title">Usage against plan</h3></div>
+            <div class="bp-dash bp-dash--2">
+              <div class="bp-meter"><div class="bp-meter__head"><span>Devices</span><b>2 of 3</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:67%"></div></div></div>
+              <div class="bp-meter"><div class="bp-meter__head"><span>Branches</span><b>1 of 2</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:50%"></div></div></div>
+              <div class="bp-meter"><div class="bp-meter__head"><span>Users</span><b>6 of 10</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:60%"></div></div></div>
+              <div class="bp-meter"><div class="bp-meter__head"><span>Sales synced, last 7 days</span><b>2,118</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:100%"></div></div></div>
+            </div></section>
+          <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Devices</caption><thead><tr><th scope="col">Device</th><th scope="col">App version</th><th scope="col">Last sync</th><th scope="col">Offline license</th></tr></thead><tbody>
+<tr><td>T1, iPad 10th gen</td><td>2.4.1</td><td>3:05 PM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>7 days</span></td></tr><tr><td>T2, iPad 9th gen</td><td>2.4.0</td><td>2:33 PM</td><td><span class="bp-chip bp-chip--warning"><i data-icon="clock" data-size="16"></i>5 days</span></td></tr></tbody></table></div>
+        </div>
+        <div class="bp-stack" style="gap:16px">
+          <section class="bp-card"><h3 class="bp-card__title">Actions</h3>
+            <div class="bp-stack" style="gap:8px"><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="key" data-size="18"></i>Request support access</button><button class="bp-btn bp-btn--sm"><i data-icon="calendar" data-size="18"></i>Extend trial</button><button class="bp-btn bp-btn--sm"><i data-icon="tag" data-size="18"></i>Change plan</button><button class="bp-btn bp-btn--sm"><i data-icon="filter" data-size="18"></i>Override a feature or limit</button><button class="bp-btn bp-btn--sm bp-btn--danger"><i data-icon="lock" data-size="18"></i>Suspend shop</button></div>
+            <span class="bp-note">Every action asks for a reason and is written to the staff audit log. Suspending pauses selling on every device at its next sync.</span></section>
+          <section class="bp-card"><h3 class="bp-card__title">History</h3>
+            <ol class="bp-timeline">
+              <li class="is-done"><span><b>Signed up</b> Sep 23, Growth trial, 14 days</span></li>
+              <li class="is-done"><span><b>Paired T1</b> Sep 23 and <b>T2</b> Sep 24</span></li>
+              <li class="is-done"><span><b>First sale synced</b> Sep 24, 7:02 AM</span></li>
+              <li class="is-now"><span><b>Trial ends</b> Oct 7. Reminder emails sent Sep 30 and Oct 5</span></li>
+            </ol></section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

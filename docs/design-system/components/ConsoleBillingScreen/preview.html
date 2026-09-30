@@ -1,0 +1,62 @@
+<!-- @dsCard group="Staff console screens" height=900 width=1440 subtitle="Billing: collected, waiting and failed amounts, invoices across shops with provider and status, and an invoice drawer with payment events" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleBillingScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="billing" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Billing</h1><div class="bp-pagehead__meta">September 2026, all shops</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Collected in September</span><span class="bp-stat__value"><span data-peso="4187000"></span></span><span class="bp-stat__note">29 invoices paid</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Waiting for payment</span><span class="bp-stat__value"><span data-peso="219800"></span></span><span class="bp-stat__note">1 payment link, 1 failed card</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Failed this month</span><span class="bp-stat__value">2</span><span class="bp-stat__delta bp-stat__delta--bad">Both Kapihan sa Iloilo</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Billing provider</span><span class="bp-stat__value">Stripe</span><span class="bp-stat__note">Test mode off. GCash by payment link</span></div>
+      </div>
+      <div class="bp-toolbar">
+        <div class="bp-tabs" role="tablist" aria-label="Billing view"><button class="bp-tab" role="tab" aria-selected="true">Invoices</button><button class="bp-tab" role="tab" aria-selected="false">Payment events</button><button class="bp-tab" role="tab" aria-selected="false">Credit notes</button></div>
+        <span class="bp-toolbar__spacer"></span>
+        <select class="bp-input bp-select" aria-label="Status"><option>All statuses</option><option>Failed</option><option>Waiting</option><option>Paid</option></select>
+      </div>
+      <div class="bp-split bp-split--wide">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Invoices</caption><thead><tr><th scope="col">Invoice</th><th scope="col">Shop and period</th><th scope="col" class="num">Amount</th><th scope="col">Paid with</th><th scope="col">Status</th></tr></thead><tbody>
+<tr class="is-link is-selected"><td class="bp-table__code bp-nowrap">INV-2026-0931</td><td>Kapihan sa Iloilo<span class="bp-table__sub">Growth, Sep 2026</span></td><td class="num"><span data-peso="149900"></span></td><td>Stripe card</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Failed, retry Sep 30</span></td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">INV-2026-0930</td><td>Brew Bros Cebu<span class="bp-table__sub">Starter, Oct 2026</span></td><td class="num"><span data-peso="69900"></span></td><td>GCash payment link</td><td><span class="bp-chip bp-chip--info"><i data-icon="mail" data-size="16"></i>Link sent</span></td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">INV-2026-0929</td><td>Tambayan Coffee QC<span class="bp-table__sub">Multi-branch, Oct 2026</span></td><td class="num"><span data-peso="349900"></span></td><td>Stripe card</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">INV-2026-0928</td><td>Bean There Makati<span class="bp-table__sub">Growth, Oct 2026</span></td><td class="num"><span data-peso="149900"></span></td><td>Stripe card</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">INV-2026-0927</td><td>Kapihan sa Iloilo<span class="bp-table__sub">Credit note, duplicate charge</span></td><td class="num"><span data-peso="-149900"></span></td><td>Stripe card</td><td><span class="bp-chip"><i data-icon="refresh" data-size="16"></i>Credited</span></td></tr>
+</tbody></table></div>
+        <aside class="bp-drawer" aria-label="INV-2026-0931">
+          <div class="bp-drawer__head"><div><span class="bp-table__code">INV-2026-0931</span><h3 class="bp-card__title">Kapihan sa Iloilo</h3><span class="bp-note">Growth, Sep 1 to 30, 2026</span></div><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Failed</span></div>
+          <div class="bp-drawer__body">
+            <div class="bp-stack" style="gap:8px">
+              <div class="bp-sumrow"><span>Growth plan, monthly</span><span><span data-peso="133839"></span></span></div>
+              <div class="bp-sumrow bp-muted"><span>VAT 12%</span><span><span data-peso="16061"></span></span></div>
+              <div class="bp-sumrow" style="font-weight:700;border-top:1px solid var(--border);padding-top:8px"><span>Total</span><span><span data-peso="149900"></span></span></div>
+            </div>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Payment events from Stripe</span>
+              <ol class="bp-timeline">
+                <li class="is-done"><span><b>invoice.created</b> Sep 1, 12:00 AM</span></li>
+                <li class="is-done"><span><b>payment_failed</b> Sep 26: card declined, insufficient funds</span></li>
+                <li class="is-done"><span><b>payment_failed</b> Sep 27: card declined. Owner emailed</span></li>
+                <li class="is-now"><span><b>Next retry</b> Sep 30. Grace period ends Oct 3, then selling pauses</span></li>
+              </ol></div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm"><i data-icon="mail" data-size="18"></i>Send GCash payment link</button><button class="bp-btn bp-btn--sm">Mark paid manually</button><button class="bp-btn bp-btn--sm bp-btn--quiet">Issue credit note</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

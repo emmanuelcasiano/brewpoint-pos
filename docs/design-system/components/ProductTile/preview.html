@@ -1,0 +1,44 @@
+<!-- @dsCard group="POS" height=430 subtitle="Category rail and product grid: selected, low stock, out of stock" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ProductTile</title></head>
+<body>
+<div class="bp-canvas" style="display:flex;gap:16px;align-items:flex-start;max-width:760px">
+  <nav class="bp-rail" aria-label="Categories">
+    <button class="bp-rail__item" aria-current="true">Coffee</button>
+    <button class="bp-rail__item">Non-coffee</button>
+    <button class="bp-rail__item">Pastries</button>
+    <button class="bp-rail__item">Drinks</button>
+    <button class="bp-rail__item">Extras</button>
+  </nav>
+  <div class="bp-grid" style="padding-top:8px">
+    <button class="bp-tile is-selected">
+      <span class="bp-tile__qty">2</span>
+      <span class="bp-tile__name">Iced Latte</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="14500"></span></span>
+    </button>
+    <button class="bp-tile">
+      <span class="bp-tile__name">Hot Americano</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="11000"></span></span>
+    </button>
+    <button class="bp-tile">
+      <span class="bp-tile__name">Spanish Latte, large</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="16500"></span></span>
+    </button>
+    <button class="bp-tile">
+      <span class="bp-tile__name">Butter Croissant</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="9500"></span><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>3 left</span></span>
+    </button>
+    <button class="bp-tile is-out" aria-disabled="true">
+      <span class="bp-tile__name">Bottled Water</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="3500"></span><span class="bp-chip bp-chip--danger"><i data-icon="x" data-size="16"></i>Out</span></span>
+    </button>
+    <button class="bp-tile">
+      <span class="bp-tile__name">Cake Deposit</span>
+      <span class="bp-tile__foot"><span class="bp-tile__price" data-peso="20000"></span></span>
+    </button>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

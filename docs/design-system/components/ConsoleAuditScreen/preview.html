@@ -1,0 +1,39 @@
+<!-- @dsCard group="Staff console screens" height=700 width=1440 subtitle="Staff audit log: every staff action as a sentence with its code, sensitive flags and pages viewed inside shops" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleAuditScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="audit" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Staff audit log</h1><div class="bp-pagehead__meta">Every action by BrewPoint staff. Newest first</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-toolbar">
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search shop, staff or action" aria-label="Search the staff audit log"></label>
+        <select class="bp-input bp-select" aria-label="Date"><option>Today</option><option>Last 7 days</option></select>
+        <select class="bp-input bp-select" aria-label="Staff"><option>All staff</option></select>
+        <button class="bp-chip bp-chip--action" aria-pressed="false"><i data-icon="eye" data-size="16"></i>Inside a shop only</button>
+      </div>
+      <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Staff audit log</caption><thead><tr><th scope="col">Time</th><th scope="col">Staff</th><th scope="col">What happened</th><th scope="col">Flag</th></tr></thead><tbody>
+<tr><td class="bp-nowrap bp-num">3:10 PM</td><td>Mark Villanueva</td><td>Extended Morning Ritual BGC’s trial by 7 days. Reason: setup delayed by internet install<span class="bp-table__sub bp-table__code">tenant.trial.extend</span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+<tr><td class="bp-nowrap bp-num">2:45 PM</td><td>Joy Ramirez</td><td>Requested read-only support access to Brew Bros Cebu for 1 hour. Ticket T-1043<span class="bp-table__sub bp-table__code">support.access.request</span></td><td></td></tr>
+<tr><td class="bp-nowrap bp-num">1:50 PM</td><td>Joy Ramirez</td><td>Viewed Tambayan Coffee QC: Inventory, Stock counts (support access)<span class="bp-table__sub bp-table__code">support.access.view</span></td><td><span class="bp-chip bp-chip--info"><i data-icon="eye" data-size="16"></i>In a shop</span></td></tr>
+<tr><td class="bp-nowrap bp-num">11:30 AM</td><td>Aira Santos</td><td>Released app 2.4.1 to all shops<span class="bp-table__sub bp-table__code">release.publish</span></td><td></td></tr>
+<tr><td class="bp-nowrap bp-num">10:15 AM</td><td>Mark Villanueva</td><td>Issued credit note INV-2026-0927 for ₱1,499.00 to Kapihan sa Iloilo. Reason: duplicate charge<span class="bp-table__sub bp-table__code">billing.credit.issue</span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+<tr><td class="bp-nowrap bp-num">9:05 AM</td><td>Emmanuel Casiano</td><td>Sent announcement “October maintenance window” to all shops<span class="bp-table__sub bp-table__code">announcement.send</span></td><td></td></tr>
+</tbody></table></div>
+      <div class="bp-pager"><span>Showing 6 of 41 entries today. Entries cannot be edited or deleted.</span><div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm" disabled>Newer</button><button class="bp-btn bp-btn--sm">Older</button></div></div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!-- @dsCard group="Back-office screens" height=860 width=1440 subtitle="Expiry tracking: batches sorted by expiry date with days-left chips, waste actions, and waste this month" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ExpiryScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="expiry" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Expiry tracking</h1><div class="bp-pagehead__meta">Main branch. Batches soonest first; sales use the oldest batch first</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm">Record waste</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Expired, still on hand</span><span class="bp-stat__value">1 batch</span><span class="bp-stat__delta bp-stat__delta--bad">Fresh milk, 2,000 ml</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Expiring in 3 days</span><span class="bp-stat__value">2 batches</span><span class="bp-stat__note">Croissant, whipped cream</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Waste this month</span><span class="bp-stat__value" data-peso="148000"></span><span class="bp-stat__delta bp-stat__delta--good"><i data-icon="arrow-down" data-size="16"></i>Down 22% <span>vs August</span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Batches tracked</span><span class="bp-stat__value">31</span><span class="bp-stat__note">Oldest used first</span></div>
+      </div>
+      <div class="bp-toolbar">
+        <div class="bp-segmented" role="group" aria-label="Expires within"><button aria-pressed="false">Expired</button><button aria-pressed="false">3 days</button><button aria-pressed="true">30 days</button><button aria-pressed="false">All batches</button></div>
+        <span class="bp-toolbar__spacer"></span>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search item or batch" aria-label="Search batches"></label>
+      </div>
+      <div class="bp-split">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Batches by expiry date</caption>
+            <thead><tr><th scope="col">Item and batch</th><th scope="col">Expires</th><th scope="col" class="num">Left</th><th scope="col">Status</th><th scope="col"><span class="bp-sr">Action</span></th></tr></thead>
+            <tbody>
+            <tr><td>Fresh milk<span class="bp-table__sub bp-table__code">B-0921</span></td><td class="bp-strong bp-nowrap">Sep 27</td><td class="num">2 boxes<span class="bp-table__sub">2,000 ml</span></td><td><span class="bp-chip bp-chip--danger"><i data-icon="calendar-x" data-size="16"></i>Expired</span></td><td class="bp-table__actions"><button class="bp-btn bp-btn--sm">Record as waste</button></td></tr>
+            <tr><td>Butter Croissant<span class="bp-table__sub bp-table__code">B-0928P</span></td><td class="bp-strong bp-nowrap">Sep 29</td><td class="num">3 pcs</td><td><span class="bp-chip bp-chip--warning"><i data-icon="clock" data-size="16"></i>Expires tomorrow</span></td><td class="bp-table__actions"><button class="bp-btn bp-btn--sm bp-btn--quiet">Mark down</button></td></tr>
+            <tr><td>Whipped cream<span class="bp-table__sub bp-table__code">B-0915</span></td><td class="bp-strong bp-nowrap">Sep 30</td><td class="num">1 can<span class="bp-table__sub">500 g</span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="clock" data-size="16"></i>Expires in 2 days</span></td><td class="bp-table__actions"><button class="bp-btn bp-btn--sm bp-btn--quiet">View</button></td></tr>
+            <tr><td>Fresh milk<span class="bp-table__sub bp-table__code">B-0925</span></td><td class="bp-strong bp-nowrap">Oct 2</td><td class="num">2.75 boxes<span class="bp-table__sub">2,750 ml</span></td><td><span class="bp-chip"><i data-icon="clock" data-size="16"></i>In 4 days</span></td><td class="bp-table__actions"></td></tr>
+            <tr><td>Espresso beans<span class="bp-table__sub bp-table__code">B-0901</span></td><td class="bp-strong bp-nowrap">Dec 15</td><td class="num">3.2 bags<span class="bp-table__sub">3,200 g</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Good</span></td><td class="bp-table__actions"></td></tr>
+            <tr><td>Matcha powder<span class="bp-table__sub bp-table__code">B-0819</span></td><td class="bp-strong bp-nowrap">Jan 20, 2027</td><td class="num">1.6 pouches<span class="bp-table__sub">800 g</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Good</span></td><td class="bp-table__actions"></td></tr>
+            <tr><td>Oat milk<span class="bp-table__sub bp-table__code">B-0910</span></td><td class="bp-strong bp-nowrap">Mar 10, 2027</td><td class="num">0.5 box<span class="bp-table__sub">500 ml</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Good</span></td><td class="bp-table__actions"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <section class="bp-card">
+          <div class="bp-card__head"><h3 class="bp-card__title">Waste this month</h3><span class="bp-card__meta">Sep 1 to 28, at cost</span></div>
+          <div id="waste"></div>
+          <span class="bp-note">Waste comes from expired batches and items recorded as spoiled or spilled. It lowers stock and appears in the Waste and expiry report.</span>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+  BrewPoint.chart(document.getElementById('waste'), { type: 'hbar', format: 'peso', labelWidth: 130,
+    labels: ['Fresh milk','Butter Croissant','Whipped cream','Other'], series: [{ name: 'Wasted', values: [54000,42000,31000,21000] }] });
+  BrewPoint.mount();
+</script>
+</body>
+</html>

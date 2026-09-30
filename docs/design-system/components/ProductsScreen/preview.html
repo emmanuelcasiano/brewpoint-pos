@@ -1,0 +1,70 @@
+<!-- @dsCard group="Back-office screens" height=1000 width=1440 subtitle="Products: category tabs, price, recipe cost and margin, POS visibility switch, and an editor with modifiers and recipe" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ProductsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="products" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Products</h1><div class="bp-pagehead__meta">24 products in 4 categories. Changes reach every register at the next sync</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Import CSV</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>Add product</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-toolbar">
+        <div class="bp-tabs" role="tablist" aria-label="Category">
+          <button class="bp-tab" role="tab" aria-selected="true">All <span class="bp-chip__count">24</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Coffee <span class="bp-chip__count">12</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Non-coffee <span class="bp-chip__count">5</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Pastry <span class="bp-chip__count">5</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Bottled <span class="bp-chip__count">2</span></button>
+        </div>
+        <span class="bp-toolbar__spacer"></span>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search products" aria-label="Search products"></label>
+      </div>
+      <div class="bp-split bp-split--wide">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Products</caption>
+            <thead><tr><th scope="col">Product</th><th scope="col" class="num">Price</th><th scope="col" class="num">Recipe cost</th><th scope="col" class="num">Margin</th><th scope="col">On POS</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+            <tr class="is-link is-selected"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Iced Latte</span></div></td><td class="num"><span data-peso="14500"></span></td><td class="num"><span data-peso="4100"></span></td><td class="num">71.7%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Iced Latte on the POS" checked></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Available</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Spanish Latte</span></div></td><td class="num"><span data-peso="16000"></span></td><td class="num"><span data-peso="4680"></span></td><td class="num">70.8%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Spanish Latte on the POS" checked></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Available</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Caramel Macchiato</span></div></td><td class="num"><span data-peso="17500"></span></td><td class="num"><span data-peso="5230"></span></td><td class="num">70.1%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Caramel Macchiato on the POS" checked></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Available</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Americano</span></div></td><td class="num"><span data-peso="12000"></span></td><td class="num"><span data-peso="2460"></span></td><td class="num">79.5%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Americano on the POS" checked></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Available</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Matcha Latte</span></div></td><td class="num"><span data-peso="16500"></span></td><td class="num"><span data-peso="5840"></span></td><td class="num">64.6%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Matcha Latte on the POS" checked></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Available</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Butter Croissant</span></div></td><td class="num"><span data-peso="9500"></span></td><td class="num"><span data-peso="4200"></span></td><td class="num">55.8%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Butter Croissant on the POS" checked></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Low, 3 left</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Bottled Water</span></div></td><td class="num"><span data-peso="4000"></span></td><td class="num"><span data-peso="1500"></span></td><td class="num">62.5%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Bottled Water on the POS" checked></td><td><span class="bp-chip bp-chip--danger"><i data-icon="x" data-size="16"></i>Out of stock</span></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-thumb"><i data-icon="tag"></i></span><span class="bp-strong">Pumpkin Spice Latte</span></div></td><td class="num"><span data-peso="18500"></span></td><td class="num"><span data-peso="6100"></span></td><td class="num">67.0%</td><td><input class="bp-switch" type="checkbox" aria-label="Show Pumpkin Spice Latte on the POS"></td><td><span class="bp-chip"><i data-icon="lock" data-size="16"></i>Hidden</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="bp-drawer" aria-label="Edit Iced Latte">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">Iced Latte</h3><span class="bp-note">Coffee. Last changed by Carlo Reyes, today 11:20 AM</span></div><button class="bp-iconbtn" aria-label="Close"><i data-icon="x"></i></button></div>
+          <div class="bp-drawer__body">
+            <div class="bp-formgrid">
+              <label class="bp-field"><span class="bp-field__label">Name</span><input class="bp-input" value="Iced Latte"></label>
+              <label class="bp-field"><span class="bp-field__label">Category</span><select class="bp-input bp-select"><option>Coffee</option><option>Non-coffee</option></select></label>
+            </div>
+            <div class="bp-field"><label class="bp-field__label" for="price">Price</label><div class="bp-money"><span class="bp-money__prefix">₱</span><input class="bp-input" id="price" value="145.00" inputmode="decimal"></div></div>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Modifiers</span><div class="bp-row" style="gap:8px"><span class="bp-chip"><i data-icon="plus" data-size="16"></i>Oat milk +₱30.00</span><span class="bp-chip"><i data-icon="plus" data-size="16"></i>Extra shot +₱35.00</span><span class="bp-chip"><i data-icon="minus" data-size="16"></i>Less ice</span><button class="bp-btn bp-btn--quiet bp-btn--sm"><i data-icon="plus" data-size="18"></i>Add</button></div></div>
+            <div class="bp-stack" style="gap:8px">
+              <span class="bp-field__label">Recipe, per cup</span>
+              <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Recipe</caption><thead><tr><th scope="col">Ingredient</th><th scope="col" class="num">Uses</th><th scope="col" class="num">Cost</th></tr></thead><tbody><tr><td>Espresso beans</td><td class="num">18 g</td><td class="num"><span data-peso="1710"></span></td></tr><tr><td>Fresh milk</td><td class="num">180 ml</td><td class="num"><span data-peso="1620"></span></td></tr><tr><td>Simple syrup</td><td class="num">15 ml</td><td class="num"><span data-peso="120"></span></td></tr><tr><td>Cup and lid, 16 oz</td><td class="num">1 pc</td><td class="num"><span data-peso="650"></span></td></tr></tbody><tfoot><tr><td>Cost per cup</td><td></td><td class="num"><span data-peso="4100"></span></td></tr></tfoot></table></div>
+              <span class="bp-note">Margin 71.7%. Each sale takes these amounts out of Inventory.</span>
+            </div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Cancel</button><button class="bp-btn bp-btn--sm bp-btn--primary">Save changes</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

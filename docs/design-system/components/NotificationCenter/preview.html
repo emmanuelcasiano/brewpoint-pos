@@ -1,0 +1,77 @@
+<!-- @dsCard group="Feedback" height=820 subtitle="Bell with unread count, the alert panel grouped by severity, and a live toast" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>NotificationCenter</title></head>
+<body>
+<div class="bp-canvas bp-stack" style="gap:16px;max-width:880px">
+  <div class="bp-row" style="justify-content:flex-end;gap:12px">
+    <span class="bp-muted" style="font-size:14px">Closed</span>
+    <button class="bp-bell" aria-label="Alerts, 5 unread" aria-expanded="false"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+    <span class="bp-muted" style="font-size:14px;margin-left:24px">Open</span>
+    <button class="bp-bell" aria-label="Alerts, 5 unread" aria-expanded="true"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+  </div>
+  <div class="bp-row" style="align-items:flex-start;gap:24px">
+    <section class="bp-panel" aria-label="Alerts">
+      <div class="bp-panel__head"><h3 class="bp-card__title">Alerts</h3><button class="bp-btn bp-btn--quiet bp-btn--sm">Settings</button></div>
+      <div class="bp-panel__body">
+        <div class="bp-panel__section">Out of stock</div>
+        <div class="bp-alert bp-alert--danger is-unread">
+          <span class="bp-alert__icon"><i data-icon="x"></i></span>
+          <div class="bp-alert__title">Bottled Water is out of stock<span class="bp-alert__time">10:42 AM</span></div>
+          <div class="bp-alert__body">0 pcs at Main branch. It is hidden from the POS until you receive stock.</div>
+          <div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Create purchase order</button><button class="bp-btn bp-btn--quiet bp-btn--sm">Snooze 1 day</button></div>
+        </div>
+        <div class="bp-panel__section">Expired</div>
+        <div class="bp-alert bp-alert--danger is-unread">
+          <span class="bp-alert__icon"><i data-icon="calendar-x"></i></span>
+          <div class="bp-alert__title">Fresh milk batch B-0921 expired<span class="bp-alert__time">Sep 27</span></div>
+          <div class="bp-alert__body">2 boxes (2,000 ml) at Main branch expired on Sep 27, 2026. Remove it from the shelf.</div>
+          <div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Record as waste</button></div>
+        </div>
+        <div class="bp-panel__section">Expiring soon</div>
+        <div class="bp-alert bp-alert--warning is-unread">
+          <span class="bp-alert__icon"><i data-icon="clock"></i></span>
+          <div class="bp-alert__title">Whipped cream expires in 2 days<span class="bp-alert__time">8:00 AM</span></div>
+          <div class="bp-alert__body">1 can (500 g) in batch B-0915 expires Sep 30. Use it first.</div>
+          <div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">View batch</button><button class="bp-btn bp-btn--quiet bp-btn--sm">Snooze 1 day</button></div>
+        </div>
+        <div class="bp-panel__section">Low stock</div>
+        <div class="bp-alert bp-alert--warning is-unread">
+          <span class="bp-alert__icon"><i data-icon="alert"></i></span>
+          <div class="bp-alert__title">Oat milk is low<span class="bp-alert__time">9:15 AM</span></div>
+          <div class="bp-alert__body">0.5 box (500 ml) left at Main branch. Reorder point is 2 boxes.</div>
+          <div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Create purchase order</button><button class="bp-btn bp-btn--quiet bp-btn--sm">Snooze 1 day</button></div>
+        </div>
+        <div class="bp-alert bp-alert--warning is-unread">
+          <span class="bp-alert__icon"><i data-icon="alert"></i></span>
+          <div class="bp-alert__title">Butter Croissant is low<span class="bp-alert__time">Yesterday</span></div>
+          <div class="bp-alert__body">3 pcs left at Main branch. Reorder point is 12 pcs.</div>
+          <div class="bp-alert__actions"><button class="bp-btn bp-btn--sm">Adjust stock</button><button class="bp-btn bp-btn--quiet bp-btn--sm">Snooze 1 day</button></div>
+        </div>
+      </div>
+      <div class="bp-panel__foot"><button class="bp-btn bp-btn--quiet bp-btn--sm">Mark all as read</button><button class="bp-btn bp-btn--sm">See all alerts</button></div>
+    </section>
+    <div class="bp-stack" style="flex:1;min-width:280px;gap:12px">
+      <span class="bp-eyebrow">Toast, when an alert starts</span>
+      <div class="bp-toast" role="status">
+        <i data-icon="alert"></i>
+        <div class="bp-toast__body"><b>Oat milk is low.</b> 500 ml left at Main branch.</div>
+        <button class="bp-btn">View</button>
+      </div>
+      <div class="bp-toast" role="status">
+        <i data-icon="x"></i>
+        <div class="bp-toast__body"><b>Bottled Water is out of stock.</b> Hidden from the POS.</div>
+        <button class="bp-btn">Reorder</button>
+      </div>
+      <span class="bp-eyebrow" style="margin-top:12px">Empty panel</span>
+      <div class="bp-card" style="align-items:center;text-align:center;padding:32px 16px">
+        <span style="color:var(--success)"><i data-icon="check" data-size="26"></i></span>
+        <strong>No stock alerts</strong>
+        <span class="bp-muted" style="font-size:14px">Every item is above its reorder point and nothing expires this week.</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>BrewPoint.mount();</script>
+</body>
+</html>

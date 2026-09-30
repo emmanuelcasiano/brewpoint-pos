@@ -1,0 +1,49 @@
+<!-- @dsCard group="Back-office screens" height=860 width=1440 subtitle="Audit log: who did what, when and where, with permission codes, filters and a sensitive-only view" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>AuditLogScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="audit" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Audit log</h1><div class="bp-pagehead__meta">Today, all branches. Newest first</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-toolbar">
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search receipt, item or person" aria-label="Search the audit log"></label>
+        <select class="bp-input bp-select" aria-label="Date"><option>Today</option><option>Last 7 days</option><option>This month</option><option>Custom range</option></select>
+        <select class="bp-input bp-select" aria-label="Person"><option>Everyone</option><option>Carlo Reyes</option><option>Maria Santos</option><option>Ana Cruz</option></select>
+        <select class="bp-input bp-select" aria-label="Area"><option>All areas</option><option>Sales</option><option>Register and cash</option><option>Catalog</option><option>Inventory</option><option>Users and access</option><option>Devices and settings</option></select>
+        <button class="bp-chip bp-chip--action" aria-pressed="false"><i data-icon="alert" data-size="16"></i>Sensitive only</button>
+      </div>
+      <div class="bp-tablewrap">
+        <table class="bp-table bp-table--compact">
+          <caption class="bp-sr">Audit log, today</caption>
+          <thead><tr><th scope="col">Time</th><th scope="col">Who</th><th scope="col">What happened</th><th scope="col">Where</th><th scope="col"><span class="bp-sr">Flag</span></th></tr></thead>
+          <tbody>
+            <tr><td class="bp-num bp-nowrap">3:05 PM</td><td>Ana Cruz</td><td>Completed sale ACK-T1-000123, <span data-peso="37350"></span><span class="bp-table__sub bp-table__code">sale.create</span></td><td>T1</td><td></td></tr>
+            <tr><td class="bp-num bp-nowrap">2:52 PM</td><td>Maria Santos</td><td>Approved a refund of <span data-peso="30500"></span> on ACK-T1-000122. Reason: wrong size<span class="bp-table__sub bp-table__code">sale.refund.approve</span></td><td>T1</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+            <tr><td class="bp-num bp-nowrap">2:41 PM</td><td>Maria Santos</td><td>Approved void of ACK-T1-000121, <span data-peso="54000"></span>. Reason: wrong order<span class="bp-table__sub bp-table__code">sale.void.approve</span></td><td>T1</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+            <tr><td class="bp-num bp-nowrap">11:20 AM</td><td>Carlo Reyes</td><td>Changed the price of Iced Latte from <span data-peso="14000"></span> to <span data-peso="14500"></span><span class="bp-table__sub bp-table__code">catalog.price.edit</span></td><td>Back-office</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+            <tr><td class="bp-num bp-nowrap">11:05 AM</td><td>System</td><td>Bottled Water went out of stock at 10:42 AM (synced from T2)<span class="bp-table__sub bp-table__code">inventory.alert.open</span></td><td>Server</td><td></td></tr>
+            <tr><td class="bp-num bp-nowrap">9:15 AM</td><td>Maria Santos</td><td>Adjusted Oat milk by −0.5 box (500 ml). Reason: spilled<span class="bp-table__sub bp-table__code">inventory.adjust</span></td><td>Back-office</td><td></td></tr>
+            <tr><td class="bp-num bp-nowrap">8:00 AM</td><td>Carlo Reyes</td><td>Invited Paolo Garcia as Inventory Clerk<span class="bp-table__sub bp-table__code">user.invite</span></td><td>Back-office</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Sensitive</span></td></tr>
+            <tr><td class="bp-num bp-nowrap">7:10 AM</td><td>Jun Dela Cruz</td><td>Opened register T2 with a <span data-peso="200000"></span> float<span class="bp-table__sub bp-table__code">register.open</span></td><td>T2</td><td></td></tr>
+            <tr><td class="bp-num bp-nowrap">7:02 AM</td><td>Ana Cruz</td><td>Opened register T1 with a <span data-peso="200000"></span> float<span class="bp-table__sub bp-table__code">register.open</span></td><td>T1</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bp-pager"><span>Showing 9 of 348 entries today. Entries cannot be edited or deleted.</span><div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm" disabled>Newer</button><button class="bp-btn bp-btn--sm">Older</button></div></div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

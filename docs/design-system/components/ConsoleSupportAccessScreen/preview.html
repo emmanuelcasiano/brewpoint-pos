@@ -1,0 +1,44 @@
+<!-- @dsCard group="Staff console screens" height=760 width=1440 subtitle="Support access: staff requests to view a shop with reason, scope and duration, owner approval, and the bar the shop sees" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleSupportAccessScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="support" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Support access</h1><div class="bp-pagehead__meta">Grants to view a shop, approved by its owner</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-banner" role="status"><span class="bp-banner__icon"><i data-icon="shield"></i></span><div class="bp-banner__body"><span class="bp-banner__title">Staff cannot see inside a shop without a grant.</span> The owner approves each request, sees who is viewing, and can end it at any time. Every page viewed is logged.</div></div>
+      <div class="bp-split">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Support access grants</caption><thead><tr><th scope="col">Staff</th><th scope="col">Shop</th><th scope="col">Reason</th><th scope="col">Access</th><th scope="col">Owner</th><th scope="col">Status</th></tr></thead><tbody>
+<tr class="is-link is-selected"><td>Joy Ramirez</td><td class="bp-strong">Brew Bros Cebu</td><td>Ticket T-1043: receipt printer prints blank</td><td>Read only<span class="bp-table__sub">1 hour</span></td><td>Waiting for owner</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Waiting</span></td></tr>
+<tr class="is-link"><td>Joy Ramirez</td><td class="bp-strong">Tambayan Coffee QC</td><td>Ticket T-1039: stock count mismatch</td><td>Read only<span class="bp-table__sub">2 hours</span></td><td>Approved by Nina Lopez</td><td><span class="bp-chip bp-chip--success"><i data-icon="eye" data-size="16"></i>Active until 4:30 PM</span></td></tr>
+<tr class="is-link"><td>Aira Santos</td><td class="bp-strong">Kape Davao</td><td>Sync error on T2 after update</td><td>Read only<span class="bp-table__sub">30 min</span></td><td>Approved by Carlo Reyes</td><td><span class="bp-chip"><i data-icon="check" data-size="16"></i>Ended 11:40 AM</span></td></tr>
+<tr class="is-link"><td>Mark Villanueva</td><td class="bp-strong">Kapihan sa Iloilo</td><td>Billing: duplicate invoice</td><td>Read and change billing<span class="bp-table__sub">1 hour</span></td><td>Approved by Rhea Dizon</td><td><span class="bp-chip"><i data-icon="check" data-size="16"></i>Ended yesterday</span></td></tr>
+</tbody></table></div>
+        <aside class="bp-drawer" aria-label="Request support access">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">Request support access</h3><span class="bp-note">Brew Bros Cebu</span></div></div>
+          <div class="bp-drawer__body">
+            <label class="bp-field"><span class="bp-field__label">Reason</span><input class="bp-input" value="Ticket T-1043: receipt printer prints blank"><span class="bp-field__help">The owner sees this sentence.</span></label>
+            <label class="bp-field"><span class="bp-field__label">Access</span><select class="bp-input bp-select"><option>Read only</option><option>Read and change settings</option><option>Read and change billing</option></select></label>
+            <label class="bp-field"><span class="bp-field__label">For how long</span><select class="bp-input bp-select"><option>1 hour</option><option>30 minutes</option><option>2 hours</option></select></label>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">What the owner sees while you are in</span>
+              <div class="bp-support-bar"><i data-icon="eye" data-size="18"></i><span style="flex:1">Joy from BrewPoint support is viewing your account until 4:30 PM.</span><button class="bp-btn">End now</button></div></div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Cancel</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="mail" data-size="18"></i>Send to owner</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

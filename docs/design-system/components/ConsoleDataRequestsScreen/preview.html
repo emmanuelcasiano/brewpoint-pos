@@ -1,0 +1,45 @@
+<!-- @dsCard group="Staff console screens" height=700 width=1440 subtitle="Data requests: export and deletion requests with deadlines, and a deletion drawer with steps, what is kept and a typed confirmation" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleDataRequestsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="datarequests" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Data requests</h1><div class="bp-pagehead__meta">Export and deletion requests from shop owners</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-split">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Data requests</caption><thead><tr><th scope="col">Request</th><th scope="col">Shop</th><th scope="col">Asked for</th><th scope="col">Received</th><th scope="col">Due</th><th scope="col">Status</th></tr></thead><tbody>
+<tr class="is-link is-selected"><td class="bp-table__code">DR-017</td><td class="bp-strong">Sip &amp; Co. Baguio</td><td>Delete all data</td><td class="bp-nowrap">Sep 18</td><td class="bp-nowrap">Oct 3</td><td><span class="bp-chip bp-chip--danger"><i data-icon="clock" data-size="16"></i>Due in 5 days</span></td></tr>
+<tr class="is-link"><td class="bp-table__code">DR-016</td><td class="bp-strong">Bean There Makati</td><td>Export all data</td><td class="bp-nowrap">Sep 25</td><td class="bp-nowrap">Oct 10</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Ready to download</span></td></tr>
+<tr class="is-link"><td class="bp-table__code">DR-014</td><td class="bp-strong">Kape Luna Davao</td><td>Delete all data</td><td class="bp-nowrap">Aug 30</td><td class="bp-nowrap">Sep 29</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Completed Sep 20</span></td></tr>
+</tbody></table></div>
+        <aside class="bp-drawer" aria-label="DR-017">
+          <div class="bp-drawer__head"><div><span class="bp-table__code">DR-017</span><h3 class="bp-card__title">Delete Sip &amp; Co. Baguio</h3><span class="bp-note">Asked by Ana Bautista, Owner, Sep 18</span></div><span class="bp-chip bp-chip--danger"><i data-icon="clock" data-size="16"></i>Due Oct 3</span></div>
+          <div class="bp-drawer__body">
+            <ol class="bp-timeline">
+              <li class="is-done"><span><b>Identity checked</b> by Joy, Sep 19</span></li>
+              <li class="is-done"><span><b>Export sent to owner</b> Sep 19, before deletion</span></li>
+              <li class="is-now"><span><b>Delete shop data</b> sales, stock, users and devices</span></li>
+              <li><span><b>Keep</b> invoices for 10 years for tax, with personal details removed</span></li>
+            </ol>
+            <span class="bp-note">Deletion cannot be undone. Type the shop name to confirm.</span>
+            <label class="bp-field"><span class="bp-field__label">Shop name</span><input class="bp-input" placeholder="Sip &amp; Co. Baguio"></label>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Cancel</button><button class="bp-btn bp-btn--sm bp-btn--danger"><i data-icon="trash" data-size="18"></i>Delete shop data</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

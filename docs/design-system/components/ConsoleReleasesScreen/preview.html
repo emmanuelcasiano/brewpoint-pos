@@ -1,0 +1,43 @@
+<!-- @dsCard group="Staff console screens" height=760 width=1440 subtitle="App releases: device counts per version, minimum supported version with a warning date, and grouped device errors" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleReleasesScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="releases" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">App releases</h1><div class="bp-pagehead__meta">POS app versions, minimum version and device errors</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>New release</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Devices online today</span><span class="bp-stat__value">87</span><span class="bp-stat__note">Of 96 paired devices</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">On the current version</span><span class="bp-stat__value">62%</span><span class="bp-stat__note">2.4.1, released today</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Below minimum after Oct 15</span><span class="bp-stat__value">3 devices</span><span class="bp-stat__delta bp-stat__delta--bad">On 2.3.8, 2 shops</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Errors reported, 7 days</span><span class="bp-stat__value">14</span><span class="bp-stat__note">Down from 23</span></div>
+      </div>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-stack" style="gap:8px"><h3 class="bp-card__title">Releases</h3><div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Releases</caption><thead><tr><th scope="col">Version</th><th scope="col">Released</th><th scope="col">What changed</th><th scope="col" class="num">Devices</th><th scope="col">Status</th></tr></thead><tbody>
+<tr><td class="bp-strong">2.4.1</td><td class="bp-nowrap">Sep 28, 2026</td><td>Receipt printing fix, faster sync</td><td class="num">62%</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Current</span></td></tr>
+<tr><td class="bp-strong">2.4.0</td><td class="bp-nowrap">Sep 14, 2026</td><td>Purchase orders, receiving</td><td class="num">31%</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Supported</span></td></tr>
+<tr><td class="bp-strong">2.3.8</td><td class="bp-nowrap">Aug 20, 2026</td><td>Stock alerts</td><td class="num">7%</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Ends Oct 15</span></td></tr>
+</tbody></table></div>
+          <div class="bp-formgrid" style="margin-top:8px"><label class="bp-field"><span class="bp-field__label">Minimum version</span><select class="bp-input bp-select"><option>2.4.0 from Oct 15, 2026</option></select><span class="bp-field__help">Older devices must update before they can sell.</span></label><label class="bp-field"><span class="bp-field__label">Warn from</span><select class="bp-input bp-select"><option>Oct 1, 2026</option></select><span class="bp-field__help">Shows an update banner on the POS.</span></label></div></section>
+        <section class="bp-stack" style="gap:8px"><h3 class="bp-card__title">Device errors</h3><div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Device errors</caption><thead><tr><th scope="col">Error</th><th scope="col">Version</th><th scope="col">Seen on</th><th scope="col">Last seen</th></tr></thead><tbody>
+<tr><td>Printer not found (Bluetooth)</td><td>2.3.8</td><td>3 devices, 2 shops</td><td class="bp-nowrap">Today</td></tr>
+<tr><td>Sync timeout over 60 s</td><td>2.4.0</td><td>5 devices, 4 shops</td><td class="bp-nowrap">Sep 27</td></tr>
+<tr><td>Camera permission denied (barcode)</td><td>2.4.1</td><td>1 device</td><td class="bp-nowrap">Sep 28</td></tr>
+</tbody></table></div></section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

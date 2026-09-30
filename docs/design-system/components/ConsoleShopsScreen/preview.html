@@ -1,0 +1,44 @@
+<!-- @dsCard group="Staff console screens" height=760 width=1440 subtitle="Shops: every tenant with owner, plan, status, branches and devices, how they pay, MRR and activity" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleShopsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="shops" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Shops</h1><div class="bp-pagehead__meta">42 shops on BrewPoint</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-toolbar">
+        <button class="bp-chip bp-chip--action" aria-pressed="true">All <span class="bp-chip__count">42</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Active <span class="bp-chip__count">31</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Trial <span class="bp-chip__count">8</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Past due <span class="bp-chip__count">2</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Suspended <span class="bp-chip__count">1</span></button>
+        <span class="bp-toolbar__spacer"></span>
+        <select class="bp-input bp-select" aria-label="Plan"><option>All plans</option><option>Starter</option><option>Growth</option><option>Multi-branch</option></select>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search shop, owner or email" aria-label="Search shops"></label>
+      </div>
+      <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Shops</caption><thead><tr><th scope="col">Shop and owner</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col" class="num">Branches / devices</th><th scope="col">Pays with</th><th scope="col" class="num">MRR</th><th scope="col">Signed up</th><th scope="col">Last active</th></tr></thead><tbody>
+<tr class="is-link is-selected"><td class="bp-strong">Kape Davao<span class="bp-table__sub">Carlo Reyes</span></td><td>Growth</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Trial</span></td><td class="num">1 / 2</td><td>Trial ends Oct 7</td><td class="num"><span class="bp-muted">None</span></td><td class="bp-nowrap">Sep 23</td><td class="bp-nowrap">Now</td></tr>
+<tr class="is-link"><td class="bp-strong">Tambayan Coffee QC<span class="bp-table__sub">Nina Lopez</span></td><td>Multi-branch</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="num">4 / 9</td><td>Stripe card</td><td class="num"><span data-peso="349900"></span></td><td class="bp-nowrap">Mar 2</td><td class="bp-nowrap">5 min ago</td></tr>
+<tr class="is-link"><td class="bp-strong">Bean There Makati<span class="bp-table__sub">Paolo Reyes</span></td><td>Growth</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="num">1 / 3</td><td>Stripe card</td><td class="num"><span data-peso="149900"></span></td><td class="bp-nowrap">Apr 18</td><td class="bp-nowrap">Today</td></tr>
+<tr class="is-link"><td class="bp-strong">Brew Bros Cebu<span class="bp-table__sub">Jake Tan</span></td><td>Starter</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="num">1 / 1</td><td>GCash payment link</td><td class="num"><span data-peso="69900"></span></td><td class="bp-nowrap">May 9</td><td class="bp-nowrap">Today</td></tr>
+<tr class="is-link"><td class="bp-strong">Kapihan sa Iloilo<span class="bp-table__sub">Rhea Dizon</span></td><td>Growth</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Past due</span></td><td class="num">2 / 3</td><td>Stripe card, failed</td><td class="num"><span data-peso="149900"></span></td><td class="bp-nowrap">Jun 1</td><td class="bp-nowrap">Yesterday</td></tr>
+<tr class="is-link"><td class="bp-strong">Morning Ritual BGC<span class="bp-table__sub">Leo Cruz</span></td><td>Growth</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Trial</span></td><td class="num">1 / 2</td><td>Trial ends Oct 12</td><td class="num"><span class="bp-muted">None</span></td><td class="bp-nowrap">Sep 21</td><td class="bp-nowrap">Today</td></tr>
+<tr class="is-link"><td class="bp-strong">Sip &amp; Co. Baguio<span class="bp-table__sub">Ana Bautista</span></td><td>Starter</td><td><span class="bp-chip bp-chip--danger"><i data-icon="lock" data-size="16"></i>Suspended</span></td><td class="num">1 / 1</td><td>Suspended Sep 12</td><td class="num"><span class="bp-muted">None</span></td><td class="bp-nowrap">Feb 14</td><td class="bp-nowrap">Sep 11</td></tr>
+</tbody></table></div>
+      <div class="bp-pager"><span>Showing 7 of 42 shops</span><div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm" disabled>Previous</button><button class="bp-btn bp-btn--sm">Next</button></div></div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

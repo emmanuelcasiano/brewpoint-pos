@@ -1,0 +1,52 @@
+<!-- @dsCard group="Back-office screens" height=860 width=1440 subtitle="Devices: register cards with sync, license and printer state, a pairing code for a new device, and revoked devices" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>DevicesScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="devices" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Devices</h1><div class="bp-pagehead__meta">Main branch. 1 online, 1 offline</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-devices">
+        <article class="bp-device">
+          <div class="bp-device__name"><i data-icon="tablet"></i>T1 <span class="bp-note" style="font-family:var(--font-sans)">iPad 10th gen</span></div>
+          <span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Online, synced 3:05 PM</span>
+          <dl class="bp-kv"><dt>Branch</dt><dd>Main branch</dd><dt>Signed in</dt><dd>Ana Cruz, Cashier</dd><dt>Sales waiting to sync</dt><dd>0</dd><dt>Offline license</dt><dd>Renewed today, 7 days</dd><dt>App version</dt><dd>2.4.1</dd><dt>Printer</dt><dd>58 mm, Bluetooth</dd></dl>
+          <div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm"><i data-icon="edit" data-size="18"></i>Rename</button><button class="bp-btn bp-btn--sm bp-btn--quiet">Revoke</button></div>
+        </article>
+        <article class="bp-device">
+          <div class="bp-device__name"><i data-icon="tablet"></i>T2 <span class="bp-note" style="font-family:var(--font-sans)">iPad 9th gen</span></div>
+          <span class="bp-chip"><i data-icon="wifi-off" data-size="16"></i>Offline since 2:33 PM</span>
+          <dl class="bp-kv"><dt>Branch</dt><dd>Main branch</dd><dt>Signed in</dt><dd>Jun Dela Cruz, Cashier</dd><dt>Sales waiting to sync</dt><dd>1</dd><dt>Offline license</dt><dd style="color:var(--warning)">5 days left</dd><dt>App version</dt><dd>2.4.0, update ready</dd><dt>Printer</dt><dd>80 mm, USB</dd></dl>
+          <div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm"><i data-icon="edit" data-size="18"></i>Rename</button><button class="bp-btn bp-btn--sm bp-btn--quiet">Revoke</button></div>
+        </article>
+        <article class="bp-device bp-device--empty">
+          <span class="bp-eyebrow">Add a device</span>
+          <p class="bp-note" style="margin:0">On the new iPad, open BrewPoint and enter this code.</p>
+          <div class="bp-code" aria-label="Pairing code 4 8 2 9 1 5">482 915</div>
+          <span class="bp-note">Expires in 9:42. 2 of 3 devices on your plan.</span>
+          <button class="bp-btn bp-btn--sm"><i data-icon="refresh" data-size="18"></i>New code</button>
+        </article>
+      </div>
+      <div class="bp-banner" role="status"><span class="bp-banner__icon"><i data-icon="info"></i></span><div class="bp-banner__body"><span class="bp-banner__title">An offline device keeps selling.</span> Its sales sync when it reconnects. It must come online at least once every 7 days to renew its license.</div></div>
+      <section class="bp-stack" style="gap:8px">
+        <h3 class="bp-card__title">Revoked devices</h3>
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Revoked devices</caption><thead><tr><th scope="col">Device</th><th scope="col">Revoked</th><th scope="col">By</th><th scope="col">Reason</th></tr></thead><tbody>
+          <tr><td>T0, iPad mini</td><td>Aug 30, 2026</td><td>Carlo Reyes</td><td>Screen broke, replaced by T2</td></tr>
+        </tbody></table></div>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

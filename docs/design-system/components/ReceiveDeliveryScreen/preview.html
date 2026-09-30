@@ -1,0 +1,60 @@
+<!-- @dsCard group="Back-office screens" height=1000 width=1440 subtitle="Receive delivery: every line of an order with received quantity, cost, batch and expiry, short and price-change checks, and a summary" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ReceiveDeliveryScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="purchases" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Receive delivery</h1><div class="bp-pagehead__meta">PO-0043 from Mindanao Bakehouse. Expected today, 2 to 4 PM</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--quiet">Cancel</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-banner" role="status"><span class="bp-banner__icon"><i data-icon="truck"></i></span><div class="bp-banner__body"><span class="bp-banner__title">Count what arrived, not what was ordered.</span> Quantities start at the ordered amount; change any line that differs. Batch codes are filled in for you; replace them with the supplier's if printed.</div></div>
+      <section class="bp-card">
+        <div class="bp-card__head"><h3 class="bp-card__title">Items in this delivery</h3><span class="bp-card__meta">3 items ordered</span></div>
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Delivery lines</caption>
+            <thead><tr><th scope="col">Item</th><th scope="col" class="num">Ordered</th><th scope="col" class="num">Received</th><th scope="col" class="num">Cost per unit, ₱</th><th scope="col">Batch code</th><th scope="col">Expiry date</th><th scope="col" class="num">Line total</th><th scope="col">Check</th></tr></thead>
+            <tbody>
+                <tr class="is-short"><td>Butter Croissant<span class="bp-table__sub">piece</span></td><td class="num">36</td><td class="num"><input class="bp-cellinput" value="30" aria-label="Butter Croissant received"></td><td class="num"><input class="bp-cellinput" value="42.00" aria-label="Butter Croissant cost per unit"></td><td><input class="bp-cellinput bp-cellinput--wide" value="B-0928P1" aria-label="Butter Croissant batch code"></td><td><input class="bp-cellinput bp-cellinput--wide" value="Sep 30, 2026" aria-label="Butter Croissant expiry date"></td><td class="num bp-strong"><span data-peso="126000"></span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>6 short</span></td></tr>
+                <tr><td>Pain au chocolat<span class="bp-table__sub">piece</span></td><td class="num">24</td><td class="num"><input class="bp-cellinput" value="24" aria-label="Pain au chocolat received"></td><td class="num"><input class="bp-cellinput" value="48.00" aria-label="Pain au chocolat cost per unit"></td><td><input class="bp-cellinput bp-cellinput--wide" value="B-0928P2" aria-label="Pain au chocolat batch code"></td><td><input class="bp-cellinput bp-cellinput--wide" value="Sep 30, 2026" aria-label="Pain au chocolat expiry date"></td><td class="num bp-strong"><span data-peso="115200"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Complete</span></td></tr>
+                <tr><td>Ensaymada<span class="bp-table__sub">piece</span></td><td class="num">12</td><td class="num"><input class="bp-cellinput" value="12" aria-label="Ensaymada received"></td><td class="num"><input class="bp-cellinput is-changed" value="38.00" aria-label="Ensaymada cost per unit"><span class="bp-table__sub">Ordered at ₱35.00</span></td><td><input class="bp-cellinput bp-cellinput--wide" value="B-0928P3" aria-label="Ensaymada batch code"></td><td><input class="bp-cellinput bp-cellinput--wide" value="Sep 30, 2026" aria-label="Ensaymada expiry date"></td><td class="num bp-strong"><span data-peso="45600"></span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Price changed</span></td></tr>
+              <tr class="bp-addrow"><td colspan="8"><button class="bp-btn bp-btn--quiet bp-btn--sm"><i data-icon="plus" data-size="18"></i>Add an item that was not ordered</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-card">
+          <h3 class="bp-card__title">6 Butter Croissant were not delivered</h3>
+          <fieldset class="bp-stack" style="border:0;margin:0;padding:0;gap:8px">
+            <legend class="bp-sr">What to do with the missing items</legend>
+            <label class="bp-perm" style="border:1px solid var(--accent-strong);border-radius:var(--radius-md);background:var(--accent-soft)"><input type="radio" name="rest" checked style="width:20px;height:20px;accent-color:var(--accent-strong)"><span class="bp-perm__text"><span class="bp-perm__name">Keep them on order</span><span class="bp-note">PO-0043 stays Partly received until they arrive</span></span></label>
+            <label class="bp-perm" style="border:1px solid var(--border-strong);border-radius:var(--radius-md)"><input type="radio" name="rest" style="width:20px;height:20px;accent-color:var(--accent-strong)"><span class="bp-perm__text"><span class="bp-perm__name">Close the order</span><span class="bp-note">The supplier will not send them. PO-0043 becomes Received</span></span></label>
+          </fieldset>
+          <div class="bp-formgrid">
+            <label class="bp-field"><span class="bp-field__label">Delivery receipt number</span><input class="bp-input" value="DR 11873"></label>
+            <label class="bp-field"><span class="bp-field__label">Received by</span><input class="bp-input" value="Maria Santos" readonly></label>
+          </div>
+        </section>
+        <section class="bp-card">
+          <h3 class="bp-card__title">Summary</h3>
+          <dl class="bp-kv"><dt>Ordered</dt><dd><span data-peso="308400"></span></dd><dt>Received value</dt><dd><span data-peso="286800"></span></dd><dt>Short</dt><dd>6 Butter Croissant, <span data-peso="25200"></span></dd><dt>Price changes</dt><dd>Ensaymada +₱3.00 each</dd><dt>Pay on delivery</dt><dd><span data-peso="286800"></span></dd></dl>
+          <span class="bp-note">Receiving adds 3 batches to Inventory, updates average costs, and resolves the Butter Croissant low stock alert.</span>
+          <button class="bp-btn bp-btn--primary bp-btn--block"><i data-icon="check"></i>Receive 66 items</button>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

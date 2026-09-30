@@ -1,0 +1,40 @@
+<!-- @dsCard group="Dashboard" height=860 subtitle="Sales by hour (bar), last 7 days against the week before (line), top products (ranked bars); hover for values" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Chart</title></head>
+<body>
+<div class="bp-canvas bp-stack" style="gap:16px;max-width:880px">
+  <section class="bp-card">
+    <div class="bp-card__head"><h3 class="bp-card__title">Sales by hour</h3><span class="bp-card__meta">Today, 7 AM to 7 PM</span></div>
+    <div id="hourly"></div>
+    <details class="bp-tableview"><summary>Show as table</summary>
+      <div class="bp-tablewrap"><table class="bp-table" id="hourly-table"><caption class="bp-sr">Sales by hour today</caption><thead><tr><th scope="col">Hour</th><th scope="col" class="num">Net sales</th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </section>
+  <section class="bp-card">
+    <div class="bp-card__head"><h3 class="bp-card__title">Net sales, last 7 days</h3><span class="bp-card__meta">Sep 22 to Sep 28, against the 7 days before</span></div>
+    <div id="week"></div>
+  </section>
+  <section class="bp-card">
+    <div class="bp-card__head"><h3 class="bp-card__title">Top products</h3><span class="bp-card__meta">Today, cups and pieces sold</span></div>
+    <div id="top"></div>
+  </section>
+</div>
+<script>
+  var hours = ['7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM'];
+  var hourly = [185000,420000,512000,368000,290000,455000,398000,310000,426000,380000,265000,190000,95000];
+  BrewPoint.chart(document.getElementById('hourly'), { type: 'bar', title: 'Sales by hour', labels: hours, format: 'peso', series: [{ name: 'Net sales', values: hourly }] });
+  var tb = document.querySelector('#hourly-table tbody');
+  tb.innerHTML = hours.map(function (h, i) { return '<tr><td>' + h + '</td><td class="num">' + BrewPoint.formatPeso(hourly[i]) + '</td></tr>'; }).join('');
+  BrewPoint.chart(document.getElementById('week'), { type: 'line', title: 'Net sales, last 7 days', format: 'peso',
+    labels: ['Tue 22','Wed 23','Thu 24','Fri 25','Sat 26','Sun 27','Mon 28'],
+    series: [
+      { name: 'This week', values: [3842000,3615000,4098000,4521000,5176000,4833000,4294000] },
+      { name: 'Week before', compare: true, values: [3590000,3702000,3911000,4130000,4788000,4605000,4012000] }
+    ] });
+  BrewPoint.chart(document.getElementById('top'), { type: 'hbar', title: 'Top products today', format: 'count',
+    labels: ['Iced Latte','Spanish Latte','Americano','Caramel Macchiato','Butter Croissant'],
+    series: [{ name: 'Sold', values: [64,51,38,33,27] }] });
+</script>
+</body>
+</html>

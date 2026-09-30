@@ -1,0 +1,48 @@
+<!-- @dsCard group="Feedback" height=760 subtitle="Manager approval over the POS: reason, approver, PIN, actions" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PinPrompt</title></head>
+<body>
+<div class="bp-canvas" style="padding:0">
+  <div class="bp-stage" style="min-height:740px">
+    <div class="bp-canvas" style="min-height:740px">
+      <div class="bp-grid" style="opacity:1">
+        <button class="bp-tile"><span class="bp-tile__name">Iced Latte</span><span class="bp-tile__foot"><span class="bp-tile__price" data-peso="14500"></span></span></button>
+        <button class="bp-tile"><span class="bp-tile__name">Hot Americano</span><span class="bp-tile__foot"><span class="bp-tile__price" data-peso="11000"></span></span></button>
+        <button class="bp-tile"><span class="bp-tile__name">Butter Croissant</span><span class="bp-tile__foot"><span class="bp-tile__price" data-peso="9500"></span></span></button>
+      </div>
+    </div>
+    <div class="bp-scrim">
+      <div class="bp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-title">
+        <div>
+          <h2 class="bp-modal__title" id="pp-title">Manager approval needed</h2>
+          <p class="bp-modal__body">A 30% discount is over your limit (10%, up to <span data-peso="10000"></span>). Ask a manager to enter their PIN.</p>
+        </div>
+        <div class="bp-field">
+          <label class="bp-field__label" for="pp-who">Approver</label>
+          <select class="bp-input bp-select" id="pp-who"><option>Maria Santos, Manager</option><option>Emmanuel, Owner</option></select>
+        </div>
+        <div class="bp-pin bp-pin--error" role="img" aria-label="0 of 4 digits entered">
+          <span class="bp-pin__dot"></span><span class="bp-pin__dot"></span><span class="bp-pin__dot"></span><span class="bp-pin__dot"></span>
+        </div>
+        <div class="bp-field__error" style="justify-content:center"><i data-icon="alert" data-size="16"></i>Wrong PIN. 3 tries left on this device.</div>
+        <div class="bp-numpad" id="pp-pad" style="align-self:center"></div>
+        <div class="bp-modal__actions">
+          <button class="bp-btn">Cancel</button>
+          <button class="bp-btn bp-btn--primary" disabled>Approve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var keys = ['1','2','3','4','5','6','7','8','9','C','0','del'];
+  document.getElementById('pp-pad').innerHTML = keys.map(function (k) {
+    if (k === 'C') return '<button class="bp-key bp-key--action">Clear</button>';
+    if (k === 'del') return '<button class="bp-key" aria-label="Delete">' + BrewPoint.icon('backspace', 26) + '</button>';
+    return '<button class="bp-key">' + k + '</button>';
+  }).join('');
+  BrewPoint.mount();
+</script>
+</body>
+</html>

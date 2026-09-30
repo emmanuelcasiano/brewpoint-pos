@@ -1,0 +1,48 @@
+<!-- @dsCard group="Back-office screens" height=1060 width=1440 subtitle="Subscription: trial banner, current plan, usage meters against limits, plan comparison, and billing history" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>SubscriptionScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="subscription" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Subscription</h1><div class="bp-pagehead__meta">Kape Davao. Managed by Carlo Reyes, Owner</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-banner" role="status"><span class="bp-banner__icon"><i data-icon="info"></i></span><div class="bp-banner__body"><span class="bp-banner__title">Your trial ends Oct 7, 2026.</span> Add a payment method to keep selling. Nothing is charged until then.</div><button class="bp-btn bp-btn--sm">Add payment method</button></div>
+      <div class="bp-dash bp-dash--2">
+        <section class="bp-card">
+          <div class="bp-card__head"><h3 class="bp-card__title">Growth plan, trial</h3><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>9 days left</span></div>
+          <dl class="bp-kv"><dt>After the trial</dt><dd><span data-peso="149900"></span> per month</dd><dt>First charge</dt><dd>Oct 7, 2026</dd><dt>Payment method</dt><dd>None yet</dd></dl>
+        </section>
+        <section class="bp-card">
+          <div class="bp-card__head"><h3 class="bp-card__title">Usage</h3><span class="bp-card__meta">Growth plan limits</span></div>
+          <div class="bp-meter"><div class="bp-meter__head"><span>Devices</span><b>2 of 3</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:67%"></div></div></div>
+          <div class="bp-meter"><div class="bp-meter__head"><span>Branches</span><b>1 of 2</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:50%"></div></div></div>
+          <div class="bp-meter"><div class="bp-meter__head"><span>Users</span><b>6 of 10</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:60%"></div></div></div>
+          <div class="bp-meter"><div class="bp-meter__head"><span>Products</span><b>24 of unlimited</b></div><div class="bp-meter__track"><div class="bp-meter__fill" style="width:8%"></div></div></div>
+        </section>
+      </div>
+      <div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Plans</h3><div class="bp-segmented" role="group" aria-label="Billing"><button aria-pressed="true">Monthly</button><button aria-pressed="false">Yearly, 2 months free</button></div></div>
+      <div class="bp-plans">
+        <article class="bp-plan"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Starter</h3></div><div class="bp-plan__price"><span data-peso="69900"></span> <small>per month</small></div><ul><li><i data-icon="check" data-size="18"></i>1 branch, 1 device</li><li><i data-icon="check" data-size="18"></i>3 users</li><li><i data-icon="check" data-size="18"></i>Sales reports</li><li><i data-icon="check" data-size="18"></i>Works offline</li></ul><button class="bp-btn bp-btn--sm">Choose plan</button></article>
+        <article class="bp-plan is-current"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Growth</h3><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Your trial</span></div><div class="bp-plan__price"><span data-peso="149900"></span> <small>per month</small></div><ul><li><i data-icon="check" data-size="18"></i>2 branches, 3 devices</li><li><i data-icon="check" data-size="18"></i>10 users</li><li><i data-icon="check" data-size="18"></i>Stock alerts and expiry tracking</li><li><i data-icon="check" data-size="18"></i>Every report, CSV and PDF export</li></ul><button class="bp-btn bp-btn--sm bp-btn--primary">Keep Growth</button></article>
+        <article class="bp-plan"><div class="bp-row" style="justify-content:space-between"><h3 class="bp-card__title">Multi-branch</h3></div><div class="bp-plan__price"><span data-peso="349900"></span> <small>per month</small></div><ul><li><i data-icon="check" data-size="18"></i>10 branches, 15 devices</li><li><i data-icon="check" data-size="18"></i>Unlimited users</li><li><i data-icon="check" data-size="18"></i>Audit log export</li><li><i data-icon="check" data-size="18"></i>Priority support</li></ul><button class="bp-btn bp-btn--sm">Choose plan</button></article>
+      </div>
+      <section class="bp-stack" style="gap:8px">
+        <h3 class="bp-card__title">Billing history</h3>
+        <div class="bp-card" style="align-items:center;text-align:center;padding:24px"><span class="bp-note">No invoices yet. Your first invoice will be dated Oct 7, 2026.</span></div>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

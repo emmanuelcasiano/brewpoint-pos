@@ -1,0 +1,52 @@
+<!-- @dsCard group="Back-office screens" height=760 width=1440 subtitle="Suppliers: contact, what they supply, lead time and order days, open orders and spend, with a price-list drawer" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>SuppliersScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="suppliers" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Suppliers</h1><div class="bp-pagehead__meta">5 suppliers for Main branch</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>Add supplier</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-toolbar">
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search suppliers or items" aria-label="Search suppliers"></label>
+      </div>
+      <div class="bp-split">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Suppliers</caption>
+            <thead><tr><th scope="col">Supplier</th><th scope="col">Supplies</th><th scope="col">Lead time</th><th scope="col">Takes orders</th><th scope="col" class="num">Open orders</th><th scope="col" class="num">This month</th></tr></thead>
+            <tbody>
+            <tr class="is-link is-selected"><td class="bp-strong">Dairy Fresh Davao<span class="bp-table__sub">Liza Uy, 0917 555 0110</span></td><td>Fresh milk, whipped cream</td><td class="bp-nowrap">1 day</td><td>Daily</td><td class="num">1</td><td class="num"><span data-peso="1210000"></span></td></tr>
+            <tr class="is-link"><td class="bp-strong">GreenLeaf Distributors<span class="bp-table__sub">Rico Tan, 0917 555 0142</span></td><td>Oat milk, almond milk, water</td><td class="bp-nowrap">2 days</td><td>Mon, Wed, Fri</td><td class="num">1</td><td class="num"><span data-peso="462000"></span></td></tr>
+            <tr class="is-link"><td class="bp-strong">Mindanao Bakehouse<span class="bp-table__sub">Joy Lim, 0918 555 0177</span></td><td>Croissants, pastries</td><td class="bp-nowrap">1 day</td><td>Daily</td><td class="num">1</td><td class="num"><span data-peso="640000"></span></td></tr>
+            <tr class="is-link"><td class="bp-strong">Bean Origin Coffee<span class="bp-table__sub">Nonoy Bautista, 0920 555 0103</span></td><td>Espresso beans, matcha</td><td class="bp-nowrap">3 days</td><td>Tue, Thu</td><td class="num">0</td><td class="num"><span data-peso="980000"></span></td></tr>
+            <tr class="is-link"><td class="bp-strong">PackRight Supplies<span class="bp-table__sub">Grace Ong, 0917 555 0165</span></td><td>Cups, lids, straws</td><td class="bp-nowrap">5 days</td><td>Mon</td><td class="num">1</td><td class="num"><span data-peso="559000"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="bp-drawer" aria-label="Dairy Fresh Davao">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">Dairy Fresh Davao</h3><span class="bp-note">Supplier since Mar 2026</span></div><button class="bp-iconbtn" aria-label="Edit supplier"><i data-icon="edit"></i></button></div>
+          <div class="bp-drawer__body">
+            <dl class="bp-kv"><dt>Contact</dt><dd>Liza Uy</dd><dt>Phone</dt><dd>0917 555 0110</dd><dt>Orders go to</dt><dd>orders@dairyfresh.ph</dd><dt>Minimum order</dt><dd><span data-peso="100000"></span></dd><dt>Terms</dt><dd>7 days after delivery</dd></dl>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Items and last price</span>
+              <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Price list</caption><thead><tr><th scope="col">Item</th><th scope="col" class="num">Last price</th><th scope="col">Paid</th></tr></thead><tbody><tr><td>Fresh milk<span class="bp-table__sub">1 L box</span></td><td class="num"><span data-peso="9200"></span></td><td class="bp-nowrap">Sep 26</td></tr><tr><td>Whipped cream<span class="bp-table__sub">500 g can</span></td><td class="num"><span data-peso="31000"></span></td><td class="bp-nowrap">Sep 20</td></tr><tr><td>Heavy cream<span class="bp-table__sub">1 L box</span></td><td class="num"><span data-peso="21500"></span></td><td class="bp-nowrap">Aug 30</td></tr></tbody></table></div>
+            </div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">See orders</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus" data-size="18"></i>New order</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!-- @dsCard group="Back-office screens" height=960 width=1440 subtitle="Register sessions: open and closed shifts, expected against counted cash, and a close-out drawer with the cash count" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>RegisterSessionsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="sessions" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Register sessions</h1><div class="bp-pagehead__meta">Main branch. A variance under ₱500 can be approved by a manager</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <select class="bp-input bp-select" style="width:auto;min-height:44px" aria-label="Period"><option>Last 7 days</option><option>This month</option></select>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Open registers</span><span class="bp-stat__value">2 of 2</span><span class="bp-stat__note">T1 and T2, Main branch</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Cash in drawers now</span><span class="bp-stat__value" data-peso="2031000"></span><span class="bp-stat__note">Expected, from synced sales</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Needs review</span><span class="bp-stat__value">1</span><span class="bp-stat__delta bp-stat__delta--bad">T1 on Sep 27 is short <span data-peso="10000"></span></span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Variance this month</span><span class="bp-stat__value" data-peso="-18500"></span><span class="bp-stat__note">Across 54 sessions</span></div>
+      </div>
+      <div class="bp-split">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Register sessions</caption>
+            <thead><tr><th scope="col">Register</th><th scope="col">Session</th><th scope="col" class="num">Expected cash</th><th scope="col" class="num">Counted</th><th scope="col" class="num">Variance</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+            <tr class="is-link"><td class="bp-strong">T1</td><td>Today<span class="bp-table__sub">Ana Cruz, 7:02 AM to now</span></td><td class="num"><span data-peso="1186000"></span></td><td class="num">—</td><td class="num"></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Open</span></td></tr>
+            <tr class="is-link"><td class="bp-strong">T2</td><td>Today<span class="bp-table__sub">Jun Dela Cruz, 7:10 AM to now</span></td><td class="num"><span data-peso="845000"></span></td><td class="num">—</td><td class="num"></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Open</span></td></tr>
+            <tr class="is-link is-selected"><td class="bp-strong">T1</td><td>Sep 27<span class="bp-table__sub">Ana Cruz, 7:00 AM to 8:05 PM</span></td><td class="num"><span data-peso="1742000"></span></td><td class="num"><span data-peso="1732000"></span></td><td class="num"><span class="bp-nowrap" style="color:var(--warning);font-weight:600">Short <span data-peso="10000"></span></span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Needs review</span></td></tr>
+            <tr class="is-link"><td class="bp-strong">T2</td><td>Sep 27<span class="bp-table__sub">Jun Dela Cruz, 7:05 AM to 8:00 PM</span></td><td class="num"><span data-peso="1215000"></span></td><td class="num"><span data-peso="1215000"></span></td><td class="num">Balanced</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Closed</span></td></tr>
+            <tr class="is-link"><td class="bp-strong">T1</td><td>Sep 26<span class="bp-table__sub">Liza Ramos, 7:01 AM to 8:10 PM</span></td><td class="num"><span data-peso="1890500"></span></td><td class="num"><span data-peso="1895500"></span></td><td class="num bp-nowrap">Over <span data-peso="5000"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Approved</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="bp-drawer" aria-label="Close-out T1, Sep 27">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">T1 close-out, Sep 27</h3><span class="bp-note">Ana Cruz, 7:00 AM to 8:05 PM</span></div><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Needs review</span></div>
+          <div class="bp-drawer__body">
+            <dl class="bp-kv"><dt>Opening float</dt><dd><span data-peso="200000"></span></dd><dt>Cash sales</dt><dd><span data-peso="1592000"></span></dd><dt>Cash out: milk delivery</dt><dd><span data-peso="-50000"></span></dd><dt>Expected in drawer</dt><dd><span data-peso="1742000"></span></dd><dt>Counted</dt><dd><span data-peso="1732000"></span></dd><dt style="color:var(--warning);font-weight:600">Short</dt><dd style="color:var(--warning)"><span data-peso="10000"></span></dd></dl>
+            <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Cash count</caption><thead><tr><th scope="col">Bill or coin</th><th scope="col" class="num">Count</th><th scope="col" class="num">Amount</th></tr></thead><tbody><tr><td>₱1,000</td><td class="num">9</td><td class="num"><span data-peso="900000"></span></td></tr><tr><td>₱500</td><td class="num">8</td><td class="num"><span data-peso="400000"></span></td></tr><tr><td>₱200</td><td class="num">10</td><td class="num"><span data-peso="200000"></span></td></tr><tr><td>₱100</td><td class="num">15</td><td class="num"><span data-peso="150000"></span></td></tr><tr><td>₱50</td><td class="num">10</td><td class="num"><span data-peso="50000"></span></td></tr><tr><td>₱20</td><td class="num">10</td><td class="num"><span data-peso="20000"></span></td></tr><tr><td>Coins</td><td class="num"></td><td class="num"><span data-peso="12000"></span></td></tr></tbody><tfoot><tr><td>Counted</td><td></td><td class="num"><span data-peso="1732000"></span></td></tr></tfoot></table></div>
+            <label class="bp-field"><span class="bp-field__label">Note from the cashier</span><textarea class="bp-input" rows="2" readonly style="padding:12px 16px;resize:none">Gave wrong change on a ₱500 bill, I think.</textarea></label>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Add note</button><button class="bp-btn bp-btn--sm bp-btn--primary">Approve variance</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

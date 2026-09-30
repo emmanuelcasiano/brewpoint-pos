@@ -1,0 +1,46 @@
+<!-- @dsCard group="POS" height=640 subtitle="Acknowledgment receipt at 58mm (32 columns) and 80mm (48 columns), shown at 1.5x" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Receipt</title></head>
+<body>
+<div class="bp-canvas" style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+  <div class="bp-stack" style="gap:8px">
+    <span class="bp-eyebrow">58 mm, 32 columns</span>
+    <div class="bp-receipt bp-receipt--58" style="--rs:1.5" id="r58"></div>
+  </div>
+  <div class="bp-stack" style="gap:8px">
+    <span class="bp-eyebrow">80 mm, 48 columns</span>
+    <div class="bp-receipt bp-receipt--80" style="--rs:1.5" id="r80"></div>
+  </div>
+</div>
+<script>
+  function row(a, b, cls) { return '<div class="bp-receipt__row' + (cls ? ' ' + cls : '') + '"><span>' + a + '</span><span>' + b + '</span></div>'; }
+  var html =
+    '<div class="bp-receipt__c bp-receipt__b">Kape Davao</div>' +
+    '<div class="bp-receipt__c">Sample St., Sample City</div>' +
+    '<div class="bp-receipt__c">Amounts in PHP</div>' +
+    '<hr class="bp-receipt__rule">' +
+    row('ACK-T1-000123', '') +
+    row('2026-09-27', '3:05 PM') +
+    row('Cashier: Ana', 'Register T1') +
+    '<hr class="bp-receipt__rule">' +
+    row('2 Iced Latte', '290.00') +
+    row('<span class="bp-receipt__mod">+ Oat milk</span>', '30.00') +
+    row('1 Butter Croissant', '95.00') +
+    '<hr class="bp-receipt__rule">' +
+    row('Subtotal', '415.00') +
+    row('Discount 10%', '-41.50') +
+    row('TOTAL', '373.50', 'bp-receipt__b') +
+    '<hr class="bp-receipt__rule">' +
+    row('Cash', '400.00') +
+    row('Change', '26.50') +
+    '<hr class="bp-receipt__rule">' +
+    '<div class="bp-receipt__c bp-receipt__b">THIS IS NOT AN OFFICIAL RECEIPT.</div>' +
+    '<div class="bp-receipt__c">For BIR Official Receipt, please request at counter.</div>' +
+    '<div class="bp-receipt__gap"></div>' +
+    '<div class="bp-receipt__c">Thank you!</div>';
+  document.getElementById('r58').innerHTML = html;
+  document.getElementById('r80').innerHTML = html;
+</script>
+</body>
+</html>

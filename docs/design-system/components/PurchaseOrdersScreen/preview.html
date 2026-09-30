@@ -1,0 +1,89 @@
+<!-- @dsCard group="Back-office screens" height=1180 width=1440 subtitle="Purchase orders: open, draft and received orders with status, reorder suggestions, and an order drawer with its timeline" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PurchaseOrdersScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="purchases" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Purchase orders</h1><div class="bp-pagehead__meta">Main branch. Orders to suppliers, from draft to received</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm">Receive without an order</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>New purchase order</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Arriving today</span><span class="bp-stat__value">1 order</span><span class="bp-stat__note">PO-0043, Mindanao Bakehouse</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Open orders</span><span class="bp-stat__value" data-peso="1284800"></span><span class="bp-stat__note">4 orders not fully received</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Low items not on order</span><span class="bp-stat__value">0</span><span class="bp-stat__note">Every low item is on an open order</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Spent this month</span><span class="bp-stat__value" data-peso="2863000"></span><span class="bp-stat__note">Received orders, Sep 1 to 28</span></div>
+      </div>
+      <div class="bp-toolbar">
+        <div class="bp-tabs" role="tablist" aria-label="Order status">
+          <button class="bp-tab" role="tab" aria-selected="true">Open <span class="bp-chip__count">4</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Drafts <span class="bp-chip__count">1</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">Received <span class="bp-chip__count">9</span></button>
+          <button class="bp-tab" role="tab" aria-selected="false">All</button>
+        </div>
+        <span class="bp-toolbar__spacer"></span>
+        <select class="bp-input bp-select" aria-label="Supplier"><option>All suppliers</option><option>Dairy Fresh Davao</option></select>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search PO number or item" aria-label="Search purchase orders"></label>
+      </div>
+      <div class="bp-split">
+        <div class="bp-stack" style="gap:16px">
+          <div class="bp-tablewrap">
+            <table class="bp-table bp-table--compact">
+              <caption class="bp-sr">Purchase orders</caption>
+              <thead><tr><th scope="col">Order</th><th scope="col">Supplier</th><th scope="col">Created</th><th scope="col">Expected</th><th scope="col" class="num">Items</th><th scope="col" class="num">Total</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+            <tr class="is-link"><td class="bp-nowrap"><span class="bp-strong">PO-0045</span></td><td>GreenLeaf Distributors</td><td class="bp-nowrap">Today</td><td class="bp-nowrap">Not sent</td><td class="num">2</td><td class="num"><span data-peso="183000"></span></td><td><span class="bp-chip"><i data-icon="edit" data-size="16"></i>Draft</span></td></tr>
+            <tr class="is-link"><td class="bp-nowrap"><span class="bp-strong">PO-0044</span></td><td>Dairy Fresh Davao</td><td class="bp-nowrap">Sep 27</td><td class="bp-nowrap">Sep 29</td><td class="num">2</td><td class="num"><span data-peso="234400"></span></td><td><span class="bp-chip bp-chip--info"><i data-icon="mail" data-size="16"></i>Sent</span></td></tr>
+            <tr class="is-link is-selected"><td class="bp-nowrap"><span class="bp-strong">PO-0043</span></td><td>Mindanao Bakehouse</td><td class="bp-nowrap">Sep 27</td><td class="bp-nowrap">Today</td><td class="num">3</td><td class="num"><span data-peso="308400"></span></td><td><span class="bp-chip bp-chip--info"><i data-icon="truck" data-size="16"></i>Arriving today</span></td></tr>
+            <tr class="is-link"><td class="bp-nowrap"><span class="bp-strong">PO-0042</span></td><td>PackRight Supplies</td><td class="bp-nowrap">Sep 22</td><td class="bp-nowrap">Sep 25</td><td class="num">3</td><td class="num"><span data-peso="559000"></span></td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Partly received</span></td></tr>
+            <tr class="is-link"><td class="bp-nowrap"><span class="bp-strong">PO-0041</span></td><td>Bean Origin Coffee</td><td class="bp-nowrap">Sep 18</td><td class="bp-nowrap">Sep 20</td><td class="num">3</td><td class="num"><span data-peso="980000"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Received</span></td></tr>
+            <tr class="is-link"><td class="bp-nowrap"><span class="bp-strong">PO-0040</span></td><td>Dairy Fresh Davao</td><td class="bp-nowrap">Sep 15</td><td class="bp-nowrap">Sep 17</td><td class="num">1</td><td class="num"><span data-peso="55200"></span></td><td><span class="bp-chip"><i data-icon="x" data-size="16"></i>Cancelled</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <section class="bp-card">
+            <div class="bp-card__head"><h3 class="bp-card__title">Reorder suggestions</h3><span class="bp-card__meta">Items at or below their reorder point</span></div>
+            <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Reorder suggestions</caption>
+              <thead><tr><th scope="col">Item</th><th scope="col" class="num">On hand</th><th scope="col" class="num">Suggested</th><th scope="col">Supplier</th><th scope="col">Covered by</th></tr></thead>
+              <tbody>
+                <tr><td>Oat milk</td><td class="num">0.5 box</td><td class="num">6 boxes</td><td>GreenLeaf Distributors</td><td>PO-0045, draft</td></tr>
+                <tr><td>Bottled Water</td><td class="num">0 pcs</td><td class="num">48 pcs</td><td>GreenLeaf Distributors</td><td>PO-0045, draft</td></tr>
+                <tr><td>Butter Croissant</td><td class="num">3 pcs</td><td class="num">36 pcs</td><td>Mindanao Bakehouse</td><td>PO-0043, arriving today</td></tr>
+                <tr><td>Whipped cream</td><td class="num">1 can</td><td class="num">4 cans</td><td>Dairy Fresh Davao</td><td>PO-0044, sent</td></tr>
+              </tbody></table></div>
+            <span class="bp-note">Suggested = order up to level minus on hand, rounded up to whole packs. Items not on any order get a "Create draft orders" button, one draft per supplier.</span>
+          </section>
+        </div>
+        <aside class="bp-drawer" aria-label="PO-0043">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">PO-0043</h3><span class="bp-note">Mindanao Bakehouse. Expected today</span></div><span class="bp-chip bp-chip--info"><i data-icon="truck" data-size="16"></i>Arriving today</span></div>
+          <div class="bp-drawer__body">
+            <div class="bp-stack" style="gap:8px">
+              <div class="bp-sumrow"><span>36 Butter Croissant<span class="bp-table__sub"><span data-peso="4200"></span> each</span></span><span><span data-peso="151200"></span></span></div>
+              <div class="bp-sumrow"><span>24 Pain au chocolat<span class="bp-table__sub"><span data-peso="4800"></span> each</span></span><span><span data-peso="115200"></span></span></div>
+              <div class="bp-sumrow"><span>12 Ensaymada<span class="bp-table__sub"><span data-peso="3500"></span> each</span></span><span><span data-peso="42000"></span></span></div>
+              <div class="bp-sumrow" style="font-weight:700;border-top:1px solid var(--border);padding-top:8px"><span>Total</span><span><span data-peso="308400"></span></span></div>
+            </div>
+            <ol class="bp-timeline">
+              <li class="is-done"><span><b>Created</b> by Maria Santos, Sep 27, 4:10 PM</span></li>
+              <li class="is-done"><span><b>Sent</b> by email to orders@mindanaobakehouse.ph, Sep 27, 4:12 PM</span></li>
+              <li class="is-now"><span><b>Arriving today</b>, delivery window 2 to 4 PM</span></li>
+              <li><span><b>Received</b></span></li>
+            </ol>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Resend</button><button class="bp-btn bp-btn--sm">Cancel order</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="truck" data-size="18"></i>Receive delivery</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

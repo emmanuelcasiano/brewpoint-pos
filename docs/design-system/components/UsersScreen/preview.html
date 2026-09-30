@@ -1,0 +1,50 @@
+<!-- @dsCard group="Back-office screens" height=760 width=1440 subtitle="Users and roles: people with role, branch, PIN and status, and the role list that opens the permission editor" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>UsersScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="users" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Users and roles</h1><div class="bp-pagehead__meta">6 people. 6 of 10 users on your plan</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>Invite person</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-toolbar">
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search people" aria-label="Search users"></label>
+        <select class="bp-input bp-select" aria-label="Role"><option>All roles</option><option>Owner</option><option>Manager</option><option>Cashier</option><option>Barista</option><option>Inventory Clerk</option></select>
+        <select class="bp-input bp-select" aria-label="Status"><option>Active and invited</option><option>Deactivated</option></select>
+      </div>
+      <div class="bp-split">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Users</caption>
+            <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Branch</th><th scope="col">POS PIN</th><th scope="col">Last active</th><th scope="col">Status</th><th scope="col"><span class="bp-sr">Actions</span></th></tr></thead>
+            <tbody>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">CR</span><span>Carlo Reyes<span class="bp-table__sub">carlo@kapedavao.ph</span></span></div></td><td>Owner</td><td>All branches</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Set</span></td><td>Today, 11:20 AM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Carlo Reyes"><i data-icon="more"></i></button></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">MS</span><span>Maria Santos<span class="bp-table__sub">maria@kapedavao.ph</span></span></div></td><td>Manager</td><td>Main branch</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Set</span></td><td>Today, 2:52 PM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Maria Santos"><i data-icon="more"></i></button></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">AC</span><span>Ana Cruz<span class="bp-table__sub">ana@kapedavao.ph</span></span></div></td><td>Cashier</td><td>Main branch</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Set</span></td><td>Now, on T1</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Ana Cruz"><i data-icon="more"></i></button></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">JD</span><span>Jun Dela Cruz<span class="bp-table__sub">jun@kapedavao.ph</span></span></div></td><td>Cashier</td><td>Main branch</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Set</span></td><td>Now, on T2</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Jun Dela Cruz"><i data-icon="more"></i></button></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">LR</span><span>Liza Ramos<span class="bp-table__sub">liza@kapedavao.ph</span></span></div></td><td>Barista</td><td>Main branch</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Set</span></td><td>Sep 26</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Liza Ramos"><i data-icon="more"></i></button></td></tr>
+            <tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">PG</span><span>Paolo Garcia<span class="bp-table__sub">paolo@kapedavao.ph</span></span></div></td><td>Inventory Clerk</td><td>Main branch</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Not set</span></td><td>Never</td><td><span class="bp-chip bp-chip--info"><i data-icon="mail" data-size="16"></i>Invited</span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="More for Paolo Garcia"><i data-icon="more"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <section class="bp-group">
+          <div class="bp-group__head"><h3 class="bp-card__title">Roles</h3><button class="bp-btn bp-btn--quiet bp-btn--sm"><i data-icon="plus" data-size="18"></i>New role</button></div>
+          <div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Owner <span class="bp-chip__count">1</span></span><span class="bp-note">Every permission. Cannot be edited.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Manager <span class="bp-chip__count">1</span></span><span class="bp-note">Approvals, reports, stock and devices for their branch.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Cashier <span class="bp-chip__count">2</span></span><span class="bp-note">Sell, open and close the register.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Barista <span class="bp-chip__count">1</span></span><span class="bp-note">Sell only.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Inventory Clerk <span class="bp-chip__count">1</span></span><span class="bp-note">Receive, count and waste stock.</span></span><i data-icon="chevron-right" data-size="18"></i></div>
+          <div class="bp-perm" style="cursor:default"><span class="bp-note">Open a role to change its permissions. Changes apply at each device's next sync.</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

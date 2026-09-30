@@ -1,0 +1,66 @@
+<!-- @dsCard group="Back-office screens" height=900 width=1440 subtitle="Purchase order editor: many items from one supplier with quantity and cost per line, suggestions, totals, supplier and delivery" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PurchaseOrderEditScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="purchases" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">New purchase order</h1><div class="bp-pagehead__meta">PO-0045, draft. Saved 3:12 PM</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--quiet">Delete draft</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-split">
+        <div class="bp-stack" style="gap:16px">
+          <section class="bp-card">
+            <div class="bp-card__head"><h3 class="bp-card__title">Items</h3><span class="bp-card__meta">2 items from GreenLeaf Distributors</span></div>
+            <div class="bp-tablewrap">
+              <table class="bp-table bp-table--compact">
+                <caption class="bp-sr">Order lines</caption>
+                <thead><tr><th scope="col">Item</th><th scope="col" class="num">Quantity</th><th scope="col" class="num">Cost per unit, ₱</th><th scope="col" class="num">Line total</th><th scope="col"><span class="bp-sr">Remove</span></th></tr></thead>
+                <tbody>
+                <tr><td>Oat milk<span class="bp-table__sub">1 L box. 0.5 box on hand. Reorder point 2 boxes</span></td><td class="num bp-nowrap"><input class="bp-cellinput" value="6" aria-label="Oat milk quantity"> <span class="bp-note">boxes</span></td><td class="num"><input class="bp-cellinput" value="185.00" aria-label="Oat milk cost per unit"></td><td class="num bp-strong"><span data-peso="111000"></span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="Remove Oat milk"><i data-icon="trash" data-size="18"></i></button></td></tr>
+                <tr><td>Bottled Water<span class="bp-table__sub">piece. 0 pcs on hand. Reorder point 24 pcs</span></td><td class="num bp-nowrap"><input class="bp-cellinput" value="48" aria-label="Bottled Water quantity"> <span class="bp-note">pcs</span></td><td class="num"><input class="bp-cellinput" value="15.00" aria-label="Bottled Water cost per unit"></td><td class="num bp-strong"><span data-peso="72000"></span></td><td class="bp-table__actions"><button class="bp-iconbtn" aria-label="Remove Bottled Water"><i data-icon="trash" data-size="18"></i></button></td></tr>
+                <tr class="bp-addrow"><td colspan="5"><label class="bp-search" style="max-width:none"><i data-icon="search"></i><input class="bp-input" placeholder="Add an item this supplier sells: search by name or scan a barcode" aria-label="Add item"></label></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bp-row" style="gap:8px"><span class="bp-note">Also sold by GreenLeaf:</span><button class="bp-chip bp-chip--action"><i data-icon="plus" data-size="16"></i>Almond milk, 3 boxes left</button><button class="bp-chip bp-chip--action"><i data-icon="plus" data-size="16"></i>Coconut water, 18 pcs left</button></div>
+            <div class="bp-totals">
+              <div class="bp-sumrow"><span>Subtotal</span><span><span data-peso="183000"></span></span></div>
+              <div class="bp-sumrow"><span>Delivery fee</span><span><span data-peso="0"></span></span></div>
+              <div class="bp-sumrow bp-sumrow--total"><span>Total</span><span><span data-peso="183000"></span></span></div>
+              <span class="bp-note" style="text-align:right"><span style="color:var(--success)"><i data-icon="check" data-size="16"></i></span> Above GreenLeaf's <span data-peso="150000"></span> minimum order</span>
+            </div>
+          </section>
+          <label class="bp-field"><span class="bp-field__label">Note to supplier</span><input class="bp-input" value="Please deliver before 10 AM. Gate on Sample St."></label>
+        </div>
+        <div class="bp-stack" style="gap:16px">
+          <section class="bp-card">
+            <h3 class="bp-card__title">Supplier</h3>
+            <label class="bp-field"><span class="bp-field__label">Supplier</span><select class="bp-input bp-select"><option>GreenLeaf Distributors</option></select></label>
+            <dl class="bp-kv"><dt>Contact</dt><dd>Rico Tan, 0917 555 0142</dd><dt>Sends to</dt><dd>orders@greenleaf.ph</dd><dt>Takes orders</dt><dd>Mon, Wed, Fri</dd><dt>Lead time</dt><dd>2 days</dd><dt>Terms</dt><dd>Cash on delivery</dd></dl>
+          </section>
+          <section class="bp-card">
+            <h3 class="bp-card__title">Delivery</h3>
+            <label class="bp-field"><span class="bp-field__label">Deliver to</span><select class="bp-input bp-select"><option>Main branch</option></select></label>
+            <label class="bp-field"><span class="bp-field__label">Expected date</span><input class="bp-input" value="Wed, Sep 30, 2026"><span class="bp-field__help">Earliest with a 2-day lead time</span></label>
+          </section>
+          <div class="bp-stack" style="gap:8px">
+            <button class="bp-btn bp-btn--primary bp-btn--block"><i data-icon="mail"></i>Send to supplier</button>
+            <div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm bp-nowrap" style="flex:1;padding:0 12px"><i data-icon="download" data-size="18"></i>PDF</button><button class="bp-btn bp-btn--sm" style="flex:1">Save draft</button></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

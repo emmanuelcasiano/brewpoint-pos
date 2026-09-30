@@ -1,0 +1,35 @@
+<!-- @dsCard group="Staff console screens" height=620 width=1440 subtitle="Staff: BrewPoint team members with role, two-step sign-in and status, and the four staff roles" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleStaffScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="staff" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Staff</h1><div class="bp-pagehead__meta">5 people at BrewPoint</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="plus"></i>Invite staff</button>
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-split">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Staff</caption><thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Two-step sign-in</th><th scope="col">Last active</th><th scope="col">Status</th></tr></thead><tbody>
+<tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">EC</span>Emmanuel Casiano</div></td><td>Superadmin</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On</span></td><td class="bp-nowrap">Now</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td></tr>
+<tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">JR</span>Joy Ramirez</div></td><td>Support</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On</span></td><td class="bp-nowrap">Now</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td></tr>
+<tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">MV</span>Mark Villanueva</div></td><td>Billing</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On</span></td><td class="bp-nowrap">3:10 PM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td></tr>
+<tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">AS</span>Aira Santos</div></td><td>Engineer</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>On</span></td><td class="bp-nowrap">11:30 AM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Active</span></td></tr>
+<tr class="is-link"><td><div class="bp-cell"><span class="bp-avatar" aria-hidden="true">KP</span>Kim Perez</div></td><td>Support</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Not set</span></td><td class="bp-nowrap">Never</td><td><span class="bp-chip bp-chip--info"><i data-icon="mail" data-size="16"></i>Invited</span></td></tr>
+</tbody></table></div>
+        <section class="bp-group"><div class="bp-group__head"><h3 class="bp-card__title">Staff roles</h3></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Superadmin</span><span class="bp-note">Everything, including deleting shop data and managing staff.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Support</span><span class="bp-note">Shops (read), support access, tickets, announcements.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Billing</span><span class="bp-note">Billing, plans and prices, trials, credit notes.</span></span><i data-icon="chevron-right" data-size="18"></i></div><div class="bp-perm"><span class="bp-perm__text"><span class="bp-perm__name">Engineer</span><span class="bp-note">Releases, feature flags, device errors. No billing.</span></span><i data-icon="chevron-right" data-size="18"></i></div>
+          <div class="bp-perm" style="cursor:default"><span class="bp-note">Two-step sign-in is required for every staff account. Staff accounts are separate from shop accounts.</span></div></section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!-- @dsCard group="Back-office screens" height=1000 width=1440 subtitle="Settings: section navigation and the Notifications section with per-alert channels, timing and recipients" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>SettingsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="settings" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Settings</h1><div class="bp-pagehead__meta">Kape Davao. Changes apply to every branch unless noted</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-settings">
+        <nav class="bp-subnav" aria-label="Settings"><a href="#"><i data-icon="store"></i>Shop profile</a><a href="#"><i data-icon="store"></i>Branches</a><a href="#"><i data-icon="receipt"></i>Receipts</a><a href="#"><i data-icon="tag"></i>Taxes and discounts</a><a href="#"><i data-icon="card"></i>Payment methods</a><a href="#" aria-current="page"><i data-icon="bell"></i>Notifications</a><a href="#"><i data-icon="edit"></i>Appearance</a><a href="#"><i data-icon="refresh"></i>Data and backups</a></nav>
+        <div class="bp-stack" style="gap:16px">
+          <section class="bp-group">
+            <div class="bp-group__head"><div><h3 class="bp-card__title">Stock alerts</h3><span class="bp-note">Where each alert reaches you. In the back-office is always on for urgent alerts.</span></div></div>
+            <div class="bp-setrow bp-setrow--head"><span>Alert</span><span>Back-office</span><span>Push</span><span>Email digest</span></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Out of stock</span><span class="bp-setrow__help">When an item reaches 0 or below</span></div><input class="bp-switch" type="checkbox" aria-label="Out of stock, back-office" checked disabled><input class="bp-switch" type="checkbox" aria-label="Out of stock, push" checked><input class="bp-switch" type="checkbox" aria-label="Out of stock, email digest" checked></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Expired</span><span class="bp-setrow__help">When a batch passes its expiry date with stock left</span></div><input class="bp-switch" type="checkbox" aria-label="Expired, back-office" checked disabled><input class="bp-switch" type="checkbox" aria-label="Expired, push" checked><input class="bp-switch" type="checkbox" aria-label="Expired, email digest" checked></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Expiring soon</span><span class="bp-setrow__help">Inside the window set below</span></div><input class="bp-switch" type="checkbox" aria-label="Expiring soon, back-office" checked><input class="bp-switch" type="checkbox" aria-label="Expiring soon, push"><input class="bp-switch" type="checkbox" aria-label="Expiring soon, email digest" checked></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Low stock</span><span class="bp-setrow__help">When an item reaches its reorder point</span></div><input class="bp-switch" type="checkbox" aria-label="Low stock, back-office" checked><input class="bp-switch" type="checkbox" aria-label="Low stock, push"><input class="bp-switch" type="checkbox" aria-label="Low stock, email digest" checked></div>
+          </section>
+          <section class="bp-card">
+            <h3 class="bp-card__title">Timing</h3>
+            <div class="bp-formgrid">
+              <label class="bp-field"><span class="bp-field__label">Expiring soon window</span><select class="bp-input bp-select"><option>3 days before</option><option>5 days before</option><option>7 days before</option></select><span class="bp-field__help">Pastries use 1 day. Change it per category in Products.</span></label>
+              <label class="bp-field"><span class="bp-field__label">Daily digest time</span><select class="bp-input bp-select"><option>7:00 AM</option><option>6:00 AM</option><option>8:00 AM</option></select><span class="bp-field__help">Asia/Manila. Lists every open alert per branch.</span></label>
+              <label class="bp-field"><span class="bp-field__label">Quiet hours for push</span><select class="bp-input bp-select"><option>10:00 PM to 6:00 AM</option><option>Off</option></select><span class="bp-field__help">Alerts wait and arrive at 6:00 AM.</span></label>
+              <label class="bp-field"><span class="bp-field__label">Who gets alerts</span><select class="bp-input bp-select"><option>Owner and Managers</option><option>Owner only</option></select><span class="bp-field__help">Managers get their own branch only.</span></label>
+            </div>
+          </section>
+          <section class="bp-group">
+            <div class="bp-group__head"><h3 class="bp-card__title">Other notifications</h3></div>
+            <div class="bp-setrow bp-setrow--head"><span>Event</span><span>Back-office</span><span>Push</span><span>Email digest</span></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Cash variance over ₱500</span><span class="bp-setrow__help">A register closes short or over past the limit</span></div><input class="bp-switch" type="checkbox" aria-label="Cash variance over ₱500, back-office" checked><input class="bp-switch" type="checkbox" aria-label="Cash variance over ₱500, push" checked><input class="bp-switch" type="checkbox" aria-label="Cash variance over ₱500, email digest" checked></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Device offline for 2 days</span><span class="bp-setrow__help">Its license will need renewing</span></div><input class="bp-switch" type="checkbox" aria-label="Device offline for 2 days, back-office" checked><input class="bp-switch" type="checkbox" aria-label="Device offline for 2 days, push" checked><input class="bp-switch" type="checkbox" aria-label="Device offline for 2 days, email digest"></div>
+            <div class="bp-setrow"><div><span class="bp-setrow__name">Void or refund approved</span><span class="bp-setrow__help">Every approval, with who approved it</span></div><input class="bp-switch" type="checkbox" aria-label="Void or refund approved, back-office" checked><input class="bp-switch" type="checkbox" aria-label="Void or refund approved, push"><input class="bp-switch" type="checkbox" aria-label="Void or refund approved, email digest" checked></div>
+          </section>
+          <div class="bp-row" style="justify-content:flex-end;gap:8px"><button class="bp-btn bp-btn--sm">Discard changes</button><button class="bp-btn bp-btn--sm bp-btn--primary">Save settings</button></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

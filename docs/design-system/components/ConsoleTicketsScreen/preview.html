@@ -1,0 +1,52 @@
+<!-- @dsCard group="Staff console screens" height=760 width=1440 subtitle="Support tickets: open, mine and solved, with the conversation, device context and link to support access" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleTicketsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="tickets" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Tickets</h1><div class="bp-pagehead__meta">4 open. Median first reply today: 18 minutes</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-toolbar">
+        <button class="bp-chip bp-chip--action" aria-pressed="true">Open <span class="bp-chip__count">4</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Mine <span class="bp-chip__count">3</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Solved</button>
+        <span class="bp-toolbar__spacer"></span>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search tickets" aria-label="Search tickets"></label>
+      </div>
+      <div class="bp-split bp-split--wide">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Tickets</caption><thead><tr><th scope="col">Ticket</th><th scope="col">Subject and shop</th><th scope="col">Owner</th><th scope="col">Status</th><th scope="col">Updated</th></tr></thead><tbody>
+<tr class="is-link is-selected"><td class="bp-table__code bp-nowrap">T-1043</td><td>Receipt printer prints blank<span class="bp-table__sub">Brew Bros Cebu</span></td><td>Joy</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Waiting on us</span></td><td class="bp-nowrap">35 min</td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">T-1042</td><td>Card declined but money was taken<span class="bp-table__sub">Kapihan sa Iloilo</span></td><td>Mark</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Urgent</span></td><td class="bp-nowrap">2 h</td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">T-1041</td><td>How do I add a second branch?<span class="bp-table__sub">Morning Ritual BGC</span></td><td>Joy</td><td><span class="bp-chip"><i data-icon="mail" data-size="16"></i>Waiting on shop</span></td><td class="bp-nowrap">Yesterday</td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">T-1039</td><td>Stock count mismatch after sync<span class="bp-table__sub">Tambayan Coffee QC</span></td><td>Joy</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Waiting on us</span></td><td class="bp-nowrap">Yesterday</td></tr>
+<tr class="is-link"><td class="bp-table__code bp-nowrap">T-1036</td><td>Change receipt footer<span class="bp-table__sub">Bean There Makati</span></td><td>Aira</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Solved</span></td><td class="bp-nowrap">Sep 25</td></tr>
+</tbody></table></div>
+        <aside class="bp-drawer" aria-label="Ticket T-1043">
+          <div class="bp-drawer__head"><div><span class="bp-table__code">T-1043</span><h3 class="bp-card__title">Receipt printer prints blank</h3><span class="bp-note">Brew Bros Cebu. Jake Tan, Owner. From the back-office Help button</span></div><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Waiting on us</span></div>
+          <div class="bp-drawer__body">
+            <div class="bp-thread">
+              <div class="bp-msg"><span class="bp-msg__meta">Jake Tan, 2:20 PM</span>Since this morning T1 prints an empty receipt. Sales still save. 58 mm Bluetooth printer.</div>
+              <div class="bp-msg bp-msg--staff"><span class="bp-msg__meta">Joy, BrewPoint support, 2:44 PM</span>Thanks Jake. I've asked for read-only access to check T1's printer settings. Please approve it in your back-office.</div>
+            </div>
+            <dl class="bp-kv"><dt>Device</dt><dd>T1, app 2.3.8</dd><dt>Support access</dt><dd>Waiting for owner</dd></dl>
+            <label class="bp-field"><span class="bp-field__label">Reply</span><input class="bp-input" placeholder="Write a reply to Jake"></label>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Mark solved</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="mail" data-size="18"></i>Send reply</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

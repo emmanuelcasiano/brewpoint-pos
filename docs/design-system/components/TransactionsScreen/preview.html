@@ -1,0 +1,68 @@
+<!-- @dsCard group="Back-office screens" height=860 width=1440 subtitle="Transactions: search and filters, sales table with status chips, and a detail drawer with reprint, refund and void" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>TransactionsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="transactions" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Transactions</h1><div class="bp-pagehead__meta">Today, Main branch. 312 sales, <span data-peso="4294000"></span> net</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm"><i data-icon="download"></i>Export CSV</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-toolbar">
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search receipt number or item" aria-label="Search transactions"></label>
+        <select class="bp-input bp-select" aria-label="Date"><option>Today</option><option>Yesterday</option><option>Last 7 days</option><option>Custom range</option></select>
+        <select class="bp-input bp-select" aria-label="Register"><option>All registers</option><option>T1</option><option>T2</option></select>
+        <select class="bp-input bp-select" aria-label="Cashier"><option>All cashiers</option><option>Ana Cruz</option><option>Jun Dela Cruz</option></select>
+        <select class="bp-input bp-select" aria-label="Payment"><option>All payments</option><option>Cash</option><option>GCash</option><option>Card</option><option>Maya</option></select>
+        <select class="bp-input bp-select" aria-label="Status"><option>All statuses</option><option>Paid</option><option>Refunded</option><option>Voided</option><option>Not synced</option></select>
+      </div>
+      <div class="bp-split">
+        <div class="bp-stack" style="gap:12px">
+          <div class="bp-tablewrap">
+            <table class="bp-table bp-table--compact">
+              <caption class="bp-sr">Transactions today</caption>
+              <thead><tr><th scope="col">Time</th><th scope="col">Receipt</th><th scope="col">Cashier</th><th scope="col" class="num">Items</th><th scope="col">Payment</th><th scope="col" class="num">Total</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+            <tr class="is-link is-selected"><td class="bp-num bp-nowrap">3:05 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T1-000123</span></td><td>Ana Cruz</td><td class="num">3</td><td>Cash</td><td class="num"><span data-peso="37350"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:58 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T2-000087</span></td><td>Jun Dela Cruz</td><td class="num">1</td><td>GCash</td><td class="num"><span data-peso="16000"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:51 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T1-000122</span></td><td>Ana Cruz</td><td class="num">2</td><td>Card</td><td class="num"><span data-peso="30500"></span></td><td><span class="bp-chip"><i data-icon="refresh" data-size="16"></i>Refunded</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:40 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T1-000121</span></td><td>Ana Cruz</td><td class="num">4</td><td>Cash</td><td class="num"><span data-peso="54000"></span></td><td><span class="bp-chip bp-chip--danger"><i data-icon="x" data-size="16"></i>Voided</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:33 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T2-000086</span></td><td>Jun Dela Cruz</td><td class="num">2</td><td>Maya</td><td class="num"><span data-peso="29000"></span></td><td><span class="bp-chip"><i data-icon="wifi-off" data-size="16"></i>Not synced</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:20 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T1-000120</span></td><td>Ana Cruz</td><td class="num">1</td><td>GCash</td><td class="num"><span data-peso="14500"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:12 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T2-000085</span></td><td>Jun Dela Cruz</td><td class="num">5</td><td>Cash</td><td class="num"><span data-peso="68500"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+            <tr class="is-link"><td class="bp-num bp-nowrap">2:04 PM</td><td class="bp-nowrap"><span class="bp-table__code">ACK-T1-000119</span></td><td>Ana Cruz</td><td class="num">2</td><td>Cash</td><td class="num"><span data-peso="25500"></span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bp-pager"><span>Showing 1 to 8 of 312 transactions today</span><div class="bp-row" style="gap:8px"><button class="bp-btn bp-btn--sm" disabled>Previous</button><button class="bp-btn bp-btn--sm">Next</button></div></div>
+        </div>
+        <aside class="bp-drawer" aria-label="Transaction ACK-T1-000123">
+          <div class="bp-drawer__head"><div><span class="bp-table__code">ACK-T1-000123</span><h3 class="bp-card__title"><span data-peso="37350"></span></h3><span class="bp-note">Today, 3:05 PM</span></div><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Paid</span></div>
+          <div class="bp-drawer__body">
+            <dl class="bp-kv"><dt>Register</dt><dd>T1, Main branch</dd><dt>Cashier</dt><dd>Ana Cruz</dd><dt>Payment</dt><dd>Cash <span data-peso="40000"></span></dd><dt>Change</dt><dd><span data-peso="2650"></span></dd></dl>
+            <hr class="bp-divider">
+            <div class="bp-stack" style="gap:8px">
+              <div class="bp-sumrow"><span>2 Iced Latte<span class="bp-table__sub">Oat milk</span></span><span><span data-peso="32000"></span></span></div>
+              <div class="bp-sumrow"><span>1 Butter Croissant</span><span><span data-peso="9500"></span></span></div>
+              <div class="bp-sumrow bp-muted"><span>Subtotal</span><span><span data-peso="41500"></span></span></div>
+              <div class="bp-sumrow bp-muted"><span>Discount 10%, approved by Maria Santos</span><span><span data-peso="-4150"></span></span></div>
+              <div class="bp-sumrow" style="font-weight:700"><span>Total</span><span><span data-peso="37350"></span></span></div>
+            </div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm"><i data-icon="printer" data-size="18"></i>Reprint</button><button class="bp-btn bp-btn--sm">Refund</button><button class="bp-btn bp-btn--sm bp-btn--danger">Void sale</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

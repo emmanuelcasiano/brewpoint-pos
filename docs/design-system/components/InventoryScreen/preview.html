@@ -1,0 +1,71 @@
+<!-- @dsCard group="Back-office screens" height=1040 width=1440 subtitle="Inventory: stock KPIs, Needs attention filter, dual-unit table with reorder point and next expiry, and an item drawer with batches and what is on order" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>InventoryScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-sidenav="inventory" aria-label="Back-office"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Inventory</h1><div class="bp-pagehead__meta">Main branch. 38 items, 5 need attention</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        <button class="bp-btn bp-btn--sm">Count stock</button><button class="bp-btn bp-btn--sm">Adjust</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="truck"></i>Receive stock</button>
+        <button class="bp-bell" aria-label="Alerts, 5 unread"><i data-icon="bell"></i><span class="bp-bell__count">5</span></button>
+      </header>
+      <div class="bp-dash bp-dash--kpis">
+        <div class="bp-stat"><span class="bp-stat__label">Stock value</span><span class="bp-stat__value" data-peso="3825400"></span><span class="bp-stat__note">38 items at average cost</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Low stock</span><span class="bp-stat__value">2</span><span class="bp-stat__note">Oat milk, Butter Croissant</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Out of stock</span><span class="bp-stat__value">1</span><span class="bp-stat__delta bp-stat__delta--bad">Bottled Water, hidden from POS</span></div>
+        <div class="bp-stat"><span class="bp-stat__label">Expired or expiring</span><span class="bp-stat__value">2</span><span class="bp-stat__note">1 expired, 1 in 3 days</span></div>
+      </div>
+      <div class="bp-toolbar">
+        <button class="bp-chip bp-chip--action" aria-pressed="true">All items <span class="bp-chip__count">38</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false"><i data-icon="alert" data-size="16"></i>Needs attention <span class="bp-chip__count">5</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Ingredients <span class="bp-chip__count">22</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Packaging <span class="bp-chip__count">9</span></button>
+        <button class="bp-chip bp-chip--action" aria-pressed="false">Retail <span class="bp-chip__count">7</span></button>
+        <span class="bp-toolbar__spacer"></span>
+        <label class="bp-search"><i data-icon="search"></i><input class="bp-input" placeholder="Search items" aria-label="Search inventory"></label>
+      </div>
+      <div class="bp-split">
+        <div class="bp-tablewrap">
+          <table class="bp-table bp-table--compact">
+            <caption class="bp-sr">Inventory at Main branch</caption>
+            <thead><tr><th scope="col">Item</th><th scope="col" class="num">On hand</th><th scope="col" class="num">Reorder point</th><th scope="col" class="num">Stock value</th><th scope="col">Next expiry</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+            <tr class="is-link is-selected"><td>Fresh milk<span class="bp-table__sub">1 L box</span></td><td class="num">4.75 boxes<span class="bp-table__sub">4,750 ml</span></td><td class="num">3 boxes</td><td class="num"><span data-peso="42750"></span></td><td>Oct 2</td><td><span class="bp-chip bp-chip--danger"><i data-icon="calendar-x" data-size="16"></i>Expired batch</span></td></tr>
+            <tr class="is-link"><td>Oat milk<span class="bp-table__sub">1 L box</span></td><td class="num">0.5 box<span class="bp-table__sub">500 ml</span></td><td class="num">2 boxes</td><td class="num"><span data-peso="9000"></span></td><td>Mar 10, 2027</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Low</span></td></tr>
+            <tr class="is-link"><td>Whipped cream<span class="bp-table__sub">500 g can</span></td><td class="num">1 can<span class="bp-table__sub">500 g</span></td><td class="num">2 cans</td><td class="num"><span data-peso="31000"></span></td><td>Sep 30</td><td><span class="bp-chip bp-chip--warning"><i data-icon="clock" data-size="16"></i>Expires in 2 days</span></td></tr>
+            <tr class="is-link"><td>Butter Croissant<span class="bp-table__sub">piece</span></td><td class="num">3 pcs</td><td class="num">12 pcs</td><td class="num"><span data-peso="12600"></span></td><td>Sep 29</td><td><span class="bp-chip bp-chip--warning"><i data-icon="alert" data-size="16"></i>Low</span></td></tr>
+            <tr class="is-link"><td>Bottled Water<span class="bp-table__sub">piece</span></td><td class="num">0 pcs</td><td class="num">24 pcs</td><td class="num"><span data-peso="0"></span></td><td><span class="bp-muted">No expiry</span></td><td><span class="bp-chip bp-chip--danger"><i data-icon="x" data-size="16"></i>Out of stock</span></td></tr>
+            <tr class="is-link"><td>Espresso beans<span class="bp-table__sub">1 kg bag</span></td><td class="num">3.2 bags<span class="bp-table__sub">3,200 g</span></td><td class="num">2 bags</td><td class="num"><span data-peso="304000"></span></td><td>Dec 15</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>In stock</span></td></tr>
+            <tr class="is-link"><td>Cup and lid, 16 oz<span class="bp-table__sub">sleeve of 50</span></td><td class="num">6.4 sleeves<span class="bp-table__sub">320 pcs</span></td><td class="num">4 sleeves</td><td class="num"><span data-peso="208000"></span></td><td><span class="bp-muted">No expiry</span></td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>In stock</span></td></tr>
+            <tr class="is-link"><td>Matcha powder<span class="bp-table__sub">500 g pouch</span></td><td class="num">1.6 pouches<span class="bp-table__sub">800 g</span></td><td class="num">1 pouch</td><td class="num"><span data-peso="144000"></span></td><td>Jan 20, 2027</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>In stock</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="bp-drawer" aria-label="Fresh milk">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">Fresh milk</h3><span class="bp-note">1 L box. Ingredient in 9 products</span></div><button class="bp-iconbtn" aria-label="Close"><i data-icon="x"></i></button></div>
+          <div class="bp-drawer__body">
+            <dl class="bp-kv"><dt>On hand</dt><dd>4.75 boxes (4,750 ml)</dd><dt>Reorder point</dt><dd>3 boxes</dd><dt>Order up to</dt><dd>15 boxes</dd><dt>Average cost</dt><dd><span data-peso="9"></span>/ml</dd><dt>Default supplier</dt><dd>Dairy Fresh Davao</dd><dt>On order</dt><dd>12 boxes, PO-0044, Sep 29</dd></dl>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Batches, oldest used first</span>
+              <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Batches</caption><thead><tr><th scope="col">Batch</th><th scope="col">Expires</th><th scope="col" class="num">Left</th></tr></thead><tbody>
+                <tr><td><span class="bp-table__code">B-0921</span></td><td><span class="bp-chip bp-chip--danger"><i data-icon="calendar-x" data-size="16"></i>Expired Sep 27</span></td><td class="num">2 boxes</td></tr>
+                <tr><td><span class="bp-table__code">B-0925</span></td><td class="bp-nowrap">Oct 2</td><td class="num bp-nowrap">2.75 boxes</td></tr>
+              </tbody></table></div>
+            </div>
+            <span class="bp-note">Receive stock through Purchasing: open the order and choose Receive delivery, or Receive without an order for a walk-in delivery. Both take many items at once.</span>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Record waste</button><button class="bp-btn bp-btn--sm">Adjust</button><button class="bp-btn bp-btn--sm bp-btn--primary">Add to order</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>

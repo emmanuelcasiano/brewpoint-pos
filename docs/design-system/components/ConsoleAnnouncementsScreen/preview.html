@@ -1,0 +1,46 @@
+<!-- @dsCard group="Staff console screens" height=780 width=1440 subtitle="Announcements: sent and scheduled messages with audience and channel, and a composer with a live preview of the shop banner" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ConsoleAnnouncementsScreen</title></head>
+<body>
+<div class="bp-canvas" style="width:1440px">
+  <div class="bp-app">
+    <nav data-adminnav="announcements" aria-label="Staff console"></nav>
+    <main class="bp-app__main">
+      <header class="bp-pagehead">
+        <div><h1 class="bp-pagehead__title">Announcements</h1><div class="bp-pagehead__meta">Messages to shop owners, shown in their back-office and by email</div></div>
+        <span class="bp-pagehead__spacer"></span>
+        
+        <button class="bp-user"><i data-icon="user" data-size="18"></i>Emmanuel, Superadmin</button>
+      </header>
+      <div class="bp-split">
+        <div class="bp-tablewrap"><table class="bp-table bp-table--compact"><caption class="bp-sr">Announcements</caption><thead><tr><th scope="col">Title</th><th scope="col">Audience</th><th scope="col">Where</th><th scope="col">When</th><th scope="col">Status</th></tr></thead><tbody>
+<tr><td class="bp-strong">October maintenance window</td><td>All shops</td><td>Back-office banner and email</td><td class="bp-nowrap">Sent Sep 28, 9:05 AM</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Sent</span></td></tr>
+<tr><td class="bp-strong">Purchase orders are here</td><td>Growth and Multi-branch</td><td>Back-office banner</td><td class="bp-nowrap">Sent Sep 14</td><td><span class="bp-chip bp-chip--success"><i data-icon="check" data-size="16"></i>Sent</span></td></tr>
+<tr><td class="bp-strong">Price change for Growth v1 shops</td><td>4 shops</td><td>Email</td><td class="bp-nowrap">Scheduled Oct 1, 9:00 AM</td><td><span class="bp-chip bp-chip--info"><i data-icon="clock" data-size="16"></i>Scheduled</span></td></tr>
+</tbody></table></div>
+        <aside class="bp-drawer" aria-label="New announcement">
+          <div class="bp-drawer__head"><div><h3 class="bp-card__title">New announcement</h3><span class="bp-note">Draft</span></div></div>
+          <div class="bp-drawer__body">
+            <label class="bp-field"><span class="bp-field__label">Title</span><input class="bp-input" value="Sync will pause Sunday, Oct 4, 2 to 3 AM"></label>
+            <label class="bp-field"><span class="bp-field__label">Message</span><textarea class="bp-input" rows="3" style="padding:12px 16px">Registers keep selling offline. Sales sync after 3 AM. No action needed.</textarea></label>
+            <div class="bp-formgrid">
+              <label class="bp-field"><span class="bp-field__label">Audience</span><select class="bp-input bp-select"><option>All shops</option><option>A plan</option><option>Chosen shops</option></select></label>
+              <label class="bp-field"><span class="bp-field__label">Send</span><select class="bp-input bp-select"><option>Oct 1, 9:00 AM</option><option>Now</option></select></label>
+            </div>
+            <div class="bp-row" style="gap:16px"><label class="bp-row" style="gap:8px"><input class="bp-check" type="checkbox" checked>Back-office banner</label><label class="bp-row" style="gap:8px"><input class="bp-check" type="checkbox" checked>Email owners</label></div>
+            <div class="bp-stack" style="gap:8px"><span class="bp-field__label">Preview in a shop's back-office</span>
+              <div class="bp-banner" role="status"><span class="bp-banner__icon"><i data-icon="info"></i></span><div class="bp-banner__body"><span class="bp-banner__title">Sync will pause Sunday, Oct 4, 2 to 3 AM.</span> Registers keep selling offline. Sales sync after 3 AM. No action needed.</div><button class="bp-btn bp-btn--sm">Dismiss</button></div></div>
+          </div>
+          <div class="bp-drawer__foot"><button class="bp-btn bp-btn--sm">Save draft</button><button class="bp-btn bp-btn--sm bp-btn--primary"><i data-icon="calendar" data-size="18"></i>Schedule for Oct 1</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+
+  BrewPoint.mount();
+</script>
+</body>
+</html>
