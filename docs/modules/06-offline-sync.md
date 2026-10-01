@@ -64,6 +64,7 @@ A paired iPad keeps working with no internet: it saves every change locally, sen
 
 ## Decisions already made
 - Device-generated UUID v7 ids; device_id, client_created_at, synced_at on device-written tables.
+- From Module 01: the POS is a web app for now. Decide the native shell (Capacitor recommended) before choosing the local store: SQLite needs the native shell, IndexedDB works in the browser.
 
 ## Open questions
 - Local store: SQLite (Capacitor plugin) or IndexedDB. Recommendation: SQLite if Capacitor was chosen in Module 01.

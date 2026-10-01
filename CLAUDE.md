@@ -22,7 +22,7 @@ Stack: React, TypeScript and Tailwind on the web; PostgreSQL on the server. Subs
 | `docs/design-system/components/<Name>/preview.html` | The reference markup for it | Building that component or screen |
 | `docs/design-system/previews/<Name>.html` | The same preview as a standalone page (open it in a browser) | Checking what it should look like |
 | `docs/design-system/guidelines/*.md` | Layout and touch, offline and license states, per-shop accent, stock alerts, purchasing, staff console | Building those features |
-| `docs/database/schema.sql` | PostgreSQL schema: 70 tables, 157 foreign keys, key indexes (tested on PostgreSQL 16) | Writing migrations or queries |
+| `docs/database/schema.sql` | PostgreSQL schema: 70 tables, 157 foreign keys, key indexes (tested on PostgreSQL 16; the project runs PostgreSQL 18, see Module 01) | Writing migrations or queries |
 | `docs/database/schema-diagram.html` | Interactive diagram of every table, column and relation | Understanding how tables connect |
 | `docs/architecture/file-structure.md` | Where code goes, and the rules that keep modules separate | Before creating any file |
 | `docs/modules/README.md` | The build order: 20 modules, each with a brief | Before starting any work |

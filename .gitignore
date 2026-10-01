@@ -7,4 +7,9 @@ coverage/
 !.env.example
 .DS_Store
 .claude/settings.local.json
+.mcp.json
 brewpoint-handoff.zip
+.turbo/
+*.tsbuildinfo
+playwright-report/
+test-results/

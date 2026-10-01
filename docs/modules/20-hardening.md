@@ -32,8 +32,12 @@ BrewPoint is safe to trust with real shops: data is backed up and restorable, pr
 - [ ] CI runs the isolation, permission and staff-access tests on every change.
 - [ ] You receive an alert within 5 minutes when the webhook endpoint fails.
 
+## Decisions already made
+- From Module 01: CI (`.github/workflows/ci.yml`) already runs lint, typecheck, unit tests, the build, the Playwright smoke test and a gitleaks secret scan on every push and pull request. Add the isolation, permission and staff-access tests to it.
+- From Module 01: development uses Neon (PostgreSQL 18, AWS US East 2). Production hosting is not chosen yet.
+
 ## Open questions
-- Hosting region and provider (from Module 01).
+- Hosting region and provider (deferred in Module 01; Singapore suggested for latency to the Philippines).
 - Whether to get an outside security review before launch.
 
 ## How to work

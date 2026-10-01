@@ -25,7 +25,7 @@ One repository that holds every BrewPoint app, builds and tests on every change,
   - `apps/console`: the staff console web app (React, TypeScript, Tailwind)
   - `packages/shared`: types, `formatPeso`, validation schemas shared by server and apps
   - `packages/ui`: the design-system components (filled in Module 05)
-- Local PostgreSQL 16 via Docker Compose.
+- PostgreSQL 18 for development on Neon (free tier); the connection string lives in `.env`, never in the repository.
 - Lint, format, type-check and unit test commands that run for every package.
 - CI that runs those on every push and pull request.
 - Environment configuration (`.env.example`, no secrets committed) for local, staging and production.
@@ -61,13 +61,18 @@ One repository that holds every BrewPoint app, builds and tests on every change,
 
 ## Decisions already made
 - Web apps: React, TypeScript, Tailwind. Database: PostgreSQL. Billing provider later: Stripe.
+- POS app shell: the POS starts as a web app (runs in the browser at iPad size). The native shell (Capacitor or React Native) is decided later, before Module 06 picks the local store and Module 11 needs Bluetooth printing. Build the POS so a native shell can wrap it without a rewrite. (A plain web app in Safari cannot talk to Bluetooth receipt printers on iPad; Capacitor is the recommendation when this is decided.)
+- Server framework: Fastify, with each module's `routes.ts` as a Fastify plugin and Zod schemas for route validation.
+- Database library: Kysely. Its migrator runs migrations up and down (Module 02's "back one step"); raw SQL is used for RLS policies; `bigint` is returned as a TypeScript `number` via the pg type parser.
+- Monorepo: pnpm workspaces with Turborepo.
+- Web apps: Vite with React and TypeScript, one app per folder in `apps/`.
+- Development database: Neon free tier instead of Docker Compose (the development laptop has 8 GB of RAM). This does not decide production hosting.
+- PostgreSQL 18, not 16: the Neon project was created with 18, and the project moves to 18 rather than recreating it. `pnpm db:check` requires 18, and CI's database service (from Module 02) must run 18 too. schema.sql was tested on 16, so Module 02 checks that it migrates cleanly on 18. The development database is in AWS US East 2 (Ohio), so expect slower queries from the Philippines; the production region is decided with hosting.
+- Tooling: Vitest (unit tests), Zod (validation), Tailwind v4 (CSS-based config, `@theme inline` over tokens.css), ESLint and Prettier (lint and format), Playwright (end-to-end smoke test).
+- TypeScript 6.0, not 7: typescript-eslint's type-aware rules support TypeScript below 6.1. Versions of shared tools (TypeScript, ESLint, Vitest) live once in the pnpm catalog in `pnpm-workspace.yaml`. Keep pnpm's minimum release age guard; don't add exclusions to get around it.
 
-## Open questions (decide before planning)
-- **POS app shell.** A plain web app (PWA) in Safari cannot talk to Bluetooth receipt printers on iPad. Options: Capacitor (web app inside a native shell, keeps React code, has printer plugins) or React Native. Recommendation: Capacitor, so the POS shares components with the web apps.
-- **Server framework.** For example Fastify or NestJS with a query builder or ORM that supports PostgreSQL row-level security (Drizzle, Kysely or Prisma with RLS). It must return `bigint` money as a TypeScript `number` and support running migrations back one step (Module 02). Pick one and record it here.
-- **Monorepo tool.** pnpm workspaces alone, or with Turborepo.
-- **Tooling.** Preferred: Vitest (tests), Zod (validation), Tailwind v4 (CSS-based config, `@theme inline` over tokens.css), pnpm (workspaces). Confirm in planning and move to "Decisions already made".
-- **Hosting.** Where the server and database run (for example a managed PostgreSQL in Singapore for latency to the Philippines).
+## Open questions
+- **Hosting.** Where the server and database run (for example a managed PostgreSQL in Singapore for latency to the Philippines). Deferred: staging and production values stay placeholders in `.env.example`. Raise it again before the first deploy.
 
 ## How to work
 1. Read the files above. Ask about anything unclear before planning.

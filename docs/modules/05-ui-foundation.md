@@ -57,6 +57,7 @@ The shared React component library that every screen is built from, matching the
 
 ## Decisions already made
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (UI), IBM Plex Mono (receipts, codes).
+- From Module 01: Tailwind v4 with CSS-based configuration. Map the tokens with `@theme inline` over tokens.css; `inline` keeps theme and accent switching at runtime, including two themes side by side in the gallery. Shared Vite settings live in `packages/config/vite` and React lint rules in `packages/config/eslint` (`react`). Each app's placeholder `src/app/App.tsx` is replaced by real screens.
 
 ## Open questions
 - Gallery tool: Storybook or a lightweight in-app route.

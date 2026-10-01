@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+docs/
+context/
+.claude/
+CLAUDE.md
+dist/
+coverage/
+.turbo/
+playwright-report/
+test-results/

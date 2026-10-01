@@ -1,0 +1,4 @@
+{
+  "extends": "@brewpoint/config/tsconfig/base.json",
+  "include": ["src"]
+}
