@@ -1,11 +1,9 @@
-import { createHash, createHmac, pbkdf2Sync, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 
 export const MIGRATOR_ROLE = 'brewpoint_migrator';
 export const APP_ROLE = 'brewpoint_app';
 export const PLATFORM_ROLE = 'brewpoint_platform';
-
-const SCRAM_ITERATIONS = 4096;
 
 /**
  * Creates the three BrewPoint roles if they are missing and lets the owner login
@@ -42,20 +40,15 @@ export async function appRoleCanLogin(db: Kysely<unknown>): Promise<boolean> {
   return result.rows[0]?.rolcanlogin ?? false;
 }
 
-/** Lets brewpoint_app log in with this password. Only a SCRAM verifier is sent, never the password. */
+/**
+ * Lets brewpoint_app log in with this password. Neon accepts only the plain password and
+ * stores it as a SCRAM hash. ALTER ROLE takes no parameters, so the literal is quoted here.
+ */
 export async function setAppRolePassword(db: Kysely<unknown>, password: string): Promise<void> {
-  await sql.raw(`ALTER ROLE ${APP_ROLE} LOGIN PASSWORD '${scramVerifier(password)}'`).execute(db);
+  const literal = `'${password.replaceAll("'", "''")}'`;
+  await sql.raw(`ALTER ROLE ${APP_ROLE} LOGIN PASSWORD ${literal}`).execute(db);
 }
 
 export function newRolePassword(): string {
   return randomBytes(24).toString('hex');
-}
-
-function scramVerifier(password: string): string {
-  const salt = randomBytes(16);
-  const salted = pbkdf2Sync(password, salt, SCRAM_ITERATIONS, 32, 'sha256');
-  const clientKey = createHmac('sha256', salted).update('Client Key').digest();
-  const storedKey = createHash('sha256').update(clientKey).digest();
-  const serverKey = createHmac('sha256', salted).update('Server Key').digest();
-  return `SCRAM-SHA-256$${SCRAM_ITERATIONS}:${salt.toString('base64')}$${storedKey.toString('base64')}:${serverKey.toString('base64')}`;
 }
