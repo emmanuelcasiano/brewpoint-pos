@@ -13,10 +13,11 @@ const envSchema = z.object({
     .min(1, { error: PORT_ERROR })
     .max(65535, { error: PORT_ERROR })
     .default(3000),
-  // Required from Module 02, when the server starts using the database.
-  DATABASE_URL: z
-    .url({ error: 'must be the full connection string from Neon, starting with postgresql://' })
-    .optional(),
+  // The brewpoint_app login, printed by pnpm db:roles. Never the owner: it skips row-level security.
+  DATABASE_URL: z.url({
+    error:
+      'must be the brewpoint_app connection string printed by pnpm db:roles, starting with postgresql://',
+  }),
 });
 
 export type Env = z.infer<typeof envSchema>;

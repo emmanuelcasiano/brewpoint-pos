@@ -19,6 +19,7 @@
     "db:roles": "pnpm --filter @brewpoint/server db:roles",
     "db:migrate": "pnpm --filter @brewpoint/server db:migrate",
     "db:migrate:down": "pnpm --filter @brewpoint/server db:migrate:down",
+    "db:seed": "pnpm --filter @brewpoint/server db:seed",
     "db:types": "pnpm --filter @brewpoint/server db:types"
   },
   "devDependencies": {

@@ -19,7 +19,7 @@ docs/modules/02-database-and-tenancy.md
 ## Build steps
 
 - [x] Migration: role bootstrap script, 12 migrations, migrate scripts, generated DB types, schema.sql, diagram and doc updates
-- [ ] Server logic and tests: db client, tenant transaction, uuid v7, permission codes, seeds, test database harness, RLS and migration tests, CI database
+- [x] Server logic and tests: db client, tenant transaction, uuid v7, permission codes, seeds, test database harness, RLS and migration tests, CI database
 - API: none (out of scope)
 - Screens: none (out of scope)
 

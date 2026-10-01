@@ -11,6 +11,22 @@ jobs:
   checks:
     name: Lint, typecheck, test, build and smoke test
     runs-on: ubuntu-latest
+    services:
+      # A throwaway database for the row-level security tests; they rebuild it from empty.
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: brewpoint_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MIGRATION_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/brewpoint_test
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -19,6 +35,13 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The tests set brewpoint_app's password from TEST_DATABASE_URL; a new one each run.
+      - name: Set the app database login
+        run: |
+          APP_URL="postgresql://brewpoint_app:$(openssl rand -hex 16)@localhost:5432/brewpoint_test"
+          echo "::add-mask::${APP_URL}"
+          echo "TEST_DATABASE_URL=${APP_URL}" >> "$GITHUB_ENV"
+          echo "DATABASE_URL=${APP_URL}" >> "$GITHUB_ENV"
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

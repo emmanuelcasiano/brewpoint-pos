@@ -1,4 +1,4 @@
 {
   "extends": "@brewpoint/config/tsconfig/node.json",
-  "include": ["src", "scripts", "tsup.config.ts"]
+  "include": ["src", "scripts", "tsup.config.ts", "vitest.config.ts"]
 }

@@ -11,12 +11,14 @@
     "db:roles": "tsx --env-file-if-exists=../../.env scripts/db-roles.ts",
     "db:migrate": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts",
     "db:migrate:down": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts down",
+    "db:seed": "tsx --env-file-if-exists=../../.env scripts/db-seed.ts",
     "db:types": "kysely-codegen && prettier --write src/db/types.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
+    "@brewpoint/shared": "workspace:*",
     "fastify": "^5.12.5",
     "kysely": "^0.29.6",
     "pg": "^8.23.0",
