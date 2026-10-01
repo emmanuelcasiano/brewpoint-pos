@@ -58,9 +58,12 @@ The full schema exists as migrations, and the database itself guarantees that on
 
 ## Decisions already made
 - PostgreSQL 18 (changed from 16 in Module 01). schema.sql was tested on 16: confirm it migrates cleanly on 18, and run CI's database service on 18. Isolation by row-level security on `tenant_id`, not separate databases per shop.
+- From Module 01: the database library is Kysely. Migrations are Kysely migrator files in `apps/server/src/db/migrations/`, each with `up` and `down`; RLS policies and roles are raw SQL. Return `bigint` as a TypeScript `number` with the pg type parser in `core/db/client.ts`.
+- From Module 01: development runs on Neon, which gives a pooled and a direct connection string. Migrations use the direct one with the migration role; the app role can use the pooled one (`SET LOCAL` works inside a transaction). Make `DATABASE_URL` required in `apps/server/src/env.ts`.
+- From Module 01: CI has no database yet. Add a PostgreSQL 18 service to `.github/workflows/ci.yml` for the isolation tests.
 
 ## Open questions
-- Migration tool (follows the Module 01 choice).
+- None from Module 01: the migration tool is Kysely (see Decisions already made).
 
 ## How to work
 1. Read the files above. Ask about anything unclear before planning.

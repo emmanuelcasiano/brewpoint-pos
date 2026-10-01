@@ -62,6 +62,7 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 
 ## Decisions already made
 - Staff and shop identities are separate tables (users, platform_users).
+- From Module 01: the server is Fastify. `apps/server/src/app.ts` builds the app and mounts routes; validate input with Zod. New settings go in `apps/server/src/env.ts`, each with a plain-language error message.
 
 ## Open questions
 - Build sign-in yourself or use a library/service (for example Lucia-style sessions, Auth.js, or a hosted provider). A hosted provider must support offline PIN on the POS, which usually means PINs stay in BrewPoint regardless.
