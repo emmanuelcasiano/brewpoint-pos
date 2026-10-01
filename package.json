@@ -13,7 +13,8 @@
     "lint": "turbo run lint && prettier --check .",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:check": "pnpm --filter @brewpoint/server db:check"
   },
   "devDependencies": {
     "prettier": "^3.9.9",

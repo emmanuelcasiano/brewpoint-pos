@@ -19,7 +19,7 @@ docs/modules/01-project-skeleton.md
 
 - [x] Migration: none (no tables until Module 02)
 - [x] Server logic and tests: workspace, shared config, packages/shared with formatPeso and tests
-- [ ] API: Fastify server with the health endpoint, env validation, Neon connection check
+- [x] API: Fastify server with the health endpoint, env validation, Neon connection check
 - [ ] Screens: three Vite app placeholders, Playwright smoke test, CI, README
 
 ## Plan

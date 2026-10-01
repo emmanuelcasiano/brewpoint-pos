@@ -1,0 +1,30 @@
+{
+  "name": "@brewpoint/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=../../.env src/main.ts",
+    "build": "tsup",
+    "start": "node --env-file-if-exists=../../.env dist/main.js",
+    "db:check": "tsx --env-file-if-exists=../../.env scripts/db-check.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "fastify": "^5.12.5",
+    "pg": "^8.23.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@brewpoint/config": "workspace:*",
+    "@types/node": "^22.20.4",
+    "@types/pg": "^8.23.1",
+    "eslint": "catalog:",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

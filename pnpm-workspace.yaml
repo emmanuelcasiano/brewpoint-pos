@@ -2,6 +2,10 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+# Dependencies allowed to run install scripts. esbuild installs the compiler used by tsx, tsup and Vite.
+allowBuilds:
+  esbuild: true
+
 # One version of each shared tool for every package. Packages depend on them as "catalog:".
 catalog:
   # typescript-eslint supports TypeScript below 6.1, so stay on 6.0 until it supports 7.
