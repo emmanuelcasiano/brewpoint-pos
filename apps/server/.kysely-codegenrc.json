@@ -1,0 +1,10 @@
+{
+  "dialect": "postgres",
+  "envFile": "../../.env",
+  "url": "env(MIGRATION_DATABASE_URL)",
+  "outFile": "./src/db/types.ts",
+  "excludePattern": "kysely_*",
+  "typeMapping": {
+    "int8": "number"
+  }
+}

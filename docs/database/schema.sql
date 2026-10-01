@@ -1,16 +1,18 @@
--- BrewPoint database schema (PostgreSQL 15+)
--- Generated from the BrewPoint schema diagram. A starting point: review names, indexes and constraints before migrating.
+-- BrewPoint database schema (PostgreSQL 18)
+-- The source of truth. The migrations in apps/server/src/db/migrations/ build exactly this, in order
+-- (tables, then foreign keys, then rule indexes, then row-level security, then grants).
 --
 -- Conventions
---   * Every business table has tenant_id; every query filters on it (consider row-level security).
---   * Primary keys are UUIDs generated on the device (uuid v7 recommended) so registers can create rows offline.
+--   * Every table that belongs to a shop has tenant_id, child tables included. Row-level security limits
+--     every query to the tenant set on the transaction (see the end of this file).
+--   * Primary keys are UUIDs generated on the device (uuid v7) so registers can create rows offline.
+--     Rows created on the server default to uuidv7(), built into PostgreSQL 18.
 --   * Device-written rows carry device_id, client_created_at (when it happened) and synced_at (when the server got it).
 --   * Money is integer centavos (bigint). Stock is numeric in the item base unit (ml, g, pc).
 --   * Nothing important is deleted: use status columns. audit_log, platform_audit_log and stock_movements are append-only.
 --   * Staff (platform_users) are separate from shop users. They see inside a shop only through an active support_access_grants row.
 --   * Billing is provider-neutral: provider + provider_*_id columns. Webhooks land in payment_events (unique provider_event_id) before they touch invoices.
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- ======================================================================
 -- Shops, people and access
@@ -18,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- One coffee business (a customer of BrewPoint).
 CREATE TABLE tenants (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text NOT NULL,
   tin text,  -- BIR tax ID
   timezone text NOT NULL,  -- default Asia/Manila
@@ -31,7 +33,7 @@ CREATE TABLE tenants (
 );
 
 CREATE TABLE branches (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   address text NOT NULL,
@@ -41,7 +43,7 @@ CREATE TABLE branches (
 CREATE INDEX ON branches (tenant_id);
 
 CREATE TABLE users (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   email text NOT NULL UNIQUE,
@@ -54,7 +56,7 @@ CREATE TABLE users (
 CREATE INDEX ON users (tenant_id);
 
 CREATE TABLE roles (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   summary text NOT NULL,
@@ -70,14 +72,16 @@ CREATE TABLE permissions (
 );
 
 CREATE TABLE role_permissions (
+  tenant_id uuid NOT NULL,
   role_id uuid NOT NULL,
   permission_code text NOT NULL,
   PRIMARY KEY (role_id, permission_code)
 );
+CREATE INDEX ON role_permissions (tenant_id);
 
 -- A user’s role in a branch.
 CREATE TABLE user_assignments (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   user_id uuid NOT NULL,
   branch_id uuid,  -- empty = all branches
@@ -90,7 +94,7 @@ CREATE INDEX ON user_assignments (tenant_id);
 
 -- A paired register (T1, T2).
 CREATE TABLE devices (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   name text NOT NULL,  -- T1
@@ -124,7 +128,7 @@ CREATE INDEX ON pairing_codes (tenant_id);
 -- ======================================================================
 
 CREATE TABLE plans (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text NOT NULL,
   price_monthly bigint NOT NULL,
   price_yearly bigint NOT NULL,
@@ -135,7 +139,7 @@ CREATE TABLE plans (
 );
 
 CREATE TABLE subscriptions (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   plan_id uuid NOT NULL,
   plan_price_id uuid NOT NULL,  -- the price version this shop pays
@@ -153,7 +157,7 @@ CREATE INDEX ON subscriptions (plan_price_id);
 CREATE INDEX ON subscriptions (tenant_id);
 
 CREATE TABLE invoices (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   subscription_id uuid NOT NULL,
   number text NOT NULL UNIQUE,  -- INV-2026-0931
@@ -177,7 +181,8 @@ CREATE INDEX ON invoices (paid_manually_by);
 CREATE INDEX ON invoices (tenant_id);
 
 CREATE TABLE invoice_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   invoice_id uuid NOT NULL,
   description text NOT NULL,  -- Growth plan, monthly
   qty int NOT NULL,
@@ -185,10 +190,11 @@ CREATE TABLE invoice_lines (
   amount bigint NOT NULL
 );
 CREATE INDEX ON invoice_lines (invoice_id);
+CREATE INDEX ON invoice_lines (tenant_id);
 
 -- A new price is a new version; shops keep theirs.
 CREATE TABLE plan_prices (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   plan_id uuid NOT NULL,
   version int NOT NULL,  -- 2
   price_monthly bigint NOT NULL,  -- includes 12% VAT
@@ -201,7 +207,7 @@ CREATE INDEX ON plan_prices (plan_id);
 
 -- The shop as the payment provider knows it.
 CREATE TABLE billing_customers (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   provider text NOT NULL,  -- stripe, paymongo, xendit
   provider_customer_id text NOT NULL,
@@ -211,7 +217,8 @@ CREATE TABLE billing_customers (
 CREATE INDEX ON billing_customers (tenant_id);
 
 CREATE TABLE payment_methods (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   billing_customer_id uuid NOT NULL,
   type text NOT NULL,  -- card, gcash_link, maya, bank_debit
   brand text,  -- visa
@@ -221,10 +228,11 @@ CREATE TABLE payment_methods (
   is_default boolean NOT NULL
 );
 CREATE INDEX ON payment_methods (billing_customer_id);
+CREATE INDEX ON payment_methods (tenant_id);
 
 -- Webhook inbox. Processed once per event.
 CREATE TABLE payment_events (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   provider text NOT NULL,
   provider_event_id text NOT NULL UNIQUE,  -- idempotency key
   type text NOT NULL,  -- invoice.payment_failed
@@ -239,7 +247,7 @@ CREATE INDEX ON payment_events (invoice_id);
 CREATE INDEX ON payment_events (tenant_id);
 
 CREATE TABLE credit_notes (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   invoice_id uuid NOT NULL,
   number text NOT NULL UNIQUE,
@@ -258,7 +266,7 @@ CREATE INDEX ON credit_notes (tenant_id);
 
 -- One shift on one register.
 CREATE TABLE register_sessions (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   opened_by uuid NOT NULL,
@@ -285,15 +293,18 @@ CREATE INDEX ON register_sessions (tenant_id);
 
 -- Bills and coins counted at close.
 CREATE TABLE cash_counts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   session_id uuid NOT NULL,
   denomination bigint NOT NULL,  -- centavos, 100000 = ₱1,000
   count int NOT NULL
 );
 CREATE INDEX ON cash_counts (session_id);
+CREATE INDEX ON cash_counts (tenant_id);
 
 CREATE TABLE cash_movements (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   session_id uuid NOT NULL,
   direction text NOT NULL,  -- in, out
   amount bigint NOT NULL,
@@ -308,13 +319,14 @@ CREATE INDEX ON cash_movements (session_id);
 CREATE INDEX ON cash_movements (user_id);
 CREATE INDEX ON cash_movements (approved_by);
 CREATE INDEX ON cash_movements (device_id);
+CREATE INDEX ON cash_movements (tenant_id);
 
 CREATE TABLE sales (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   session_id uuid NOT NULL,
-  receipt_no text NOT NULL UNIQUE,  -- ACK-T1-000123
+  receipt_no text NOT NULL,  -- ACK-T1-000123, unique per shop (one_receipt_no_per_tenant)
   cashier_id uuid NOT NULL,
   status text NOT NULL,  -- paid, voided, refunded, partly_refunded
   subtotal bigint NOT NULL,
@@ -335,7 +347,8 @@ CREATE INDEX ON sales (device_id);
 CREATE INDEX ON sales (tenant_id);
 
 CREATE TABLE sale_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   sale_id uuid NOT NULL,
   product_id uuid NOT NULL,
   name_snapshot text NOT NULL,  -- name at time of sale
@@ -345,9 +358,11 @@ CREATE TABLE sale_lines (
 );
 CREATE INDEX ON sale_lines (sale_id);
 CREATE INDEX ON sale_lines (product_id);
+CREATE INDEX ON sale_lines (tenant_id);
 
 CREATE TABLE sale_line_modifiers (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   sale_line_id uuid NOT NULL,
   modifier_id uuid NOT NULL,
   name_snapshot text NOT NULL,
@@ -355,9 +370,11 @@ CREATE TABLE sale_line_modifiers (
 );
 CREATE INDEX ON sale_line_modifiers (sale_line_id);
 CREATE INDEX ON sale_line_modifiers (modifier_id);
+CREATE INDEX ON sale_line_modifiers (tenant_id);
 
 CREATE TABLE sale_discounts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   sale_id uuid NOT NULL,
   type text NOT NULL,  -- senior, pwd, promo, manual
   percent numeric NOT NULL,
@@ -367,9 +384,11 @@ CREATE TABLE sale_discounts (
 );
 CREATE INDEX ON sale_discounts (sale_id);
 CREATE INDEX ON sale_discounts (approved_by);
+CREATE INDEX ON sale_discounts (tenant_id);
 
 CREATE TABLE payments (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   sale_id uuid NOT NULL,
   method text NOT NULL,  -- cash, gcash, card, maya
   amount bigint NOT NULL,
@@ -378,9 +397,11 @@ CREATE TABLE payments (
   reference text  -- GCash or card ref
 );
 CREATE INDEX ON payments (sale_id);
+CREATE INDEX ON payments (tenant_id);
 
 CREATE TABLE refunds (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   sale_id uuid NOT NULL,
   reason text NOT NULL,
   amount bigint NOT NULL,
@@ -391,9 +412,11 @@ CREATE TABLE refunds (
 CREATE INDEX ON refunds (sale_id);
 CREATE INDEX ON refunds (requested_by);
 CREATE INDEX ON refunds (approved_by);
+CREATE INDEX ON refunds (tenant_id);
 
 CREATE TABLE refund_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   refund_id uuid NOT NULL,
   sale_line_id uuid NOT NULL,
   qty int NOT NULL,
@@ -401,10 +424,11 @@ CREATE TABLE refund_lines (
 );
 CREATE INDEX ON refund_lines (refund_id);
 CREATE INDEX ON refund_lines (sale_line_id);
+CREATE INDEX ON refund_lines (tenant_id);
 
 -- Settings, Taxes and discounts.
 CREATE TABLE discount_rules (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   type text NOT NULL,  -- senior, pwd, promo, manual
   percent numeric NOT NULL,  -- 20 for senior and PWD
@@ -419,7 +443,7 @@ CREATE INDEX ON discount_rules (tenant_id);
 
 -- Which payment types a shop accepts.
 CREATE TABLE tenant_payment_methods (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   method text NOT NULL,  -- cash, gcash, card, maya
   is_enabled boolean NOT NULL,
@@ -433,7 +457,7 @@ CREATE INDEX ON tenant_payment_methods (tenant_id);
 -- ======================================================================
 
 CREATE TABLE categories (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   sort_order int NOT NULL,
@@ -443,7 +467,7 @@ CREATE INDEX ON categories (tenant_id);
 
 -- What the POS sells.
 CREATE TABLE products (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   category_id uuid NOT NULL,
   name text NOT NULL,
@@ -458,7 +482,7 @@ CREATE INDEX ON products (updated_by);
 CREATE INDEX ON products (tenant_id);
 
 CREATE TABLE modifier_groups (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,  -- Milk
   min_select int NOT NULL,
@@ -467,45 +491,53 @@ CREATE TABLE modifier_groups (
 CREATE INDEX ON modifier_groups (tenant_id);
 
 CREATE TABLE modifiers (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   group_id uuid NOT NULL,
   name text NOT NULL,  -- Oat milk
   price_delta bigint NOT NULL,
   sort_order int NOT NULL
 );
 CREATE INDEX ON modifiers (group_id);
+CREATE INDEX ON modifiers (tenant_id);
 
 CREATE TABLE product_modifier_groups (
+  tenant_id uuid NOT NULL,
   product_id uuid NOT NULL,
   modifier_group_id uuid NOT NULL,
   PRIMARY KEY (product_id, modifier_group_id)
 );
+CREATE INDEX ON product_modifier_groups (tenant_id);
 
 -- Connects the menu to stock.
 CREATE TABLE recipe_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   product_id uuid NOT NULL,
   inventory_item_id uuid NOT NULL,
   qty_base numeric NOT NULL  -- 18 (g), 180 (ml)
 );
 CREATE INDEX ON recipe_lines (product_id);
 CREATE INDEX ON recipe_lines (inventory_item_id);
+CREATE INDEX ON recipe_lines (tenant_id);
 
 CREATE TABLE modifier_recipe_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   modifier_id uuid NOT NULL,
   inventory_item_id uuid NOT NULL,
   qty_base_delta numeric NOT NULL  -- -180 fresh milk, +180 oat milk
 );
 CREATE INDEX ON modifier_recipe_lines (modifier_id);
 CREATE INDEX ON modifier_recipe_lines (inventory_item_id);
+CREATE INDEX ON modifier_recipe_lines (tenant_id);
 
 -- ======================================================================
 -- Inventory
 -- ======================================================================
 
 CREATE TABLE inventory_items (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   kind text NOT NULL,  -- ingredient, packaging, retail
@@ -520,6 +552,7 @@ CREATE INDEX ON inventory_items (tenant_id);
 
 -- One row per item per branch.
 CREATE TABLE item_branch_settings (
+  tenant_id uuid NOT NULL,
   item_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   on_hand numeric NOT NULL,  -- cached sum of movements
@@ -531,10 +564,11 @@ CREATE TABLE item_branch_settings (
   PRIMARY KEY (item_id, branch_id)
 );
 CREATE INDEX ON item_branch_settings (default_supplier_id);
+CREATE INDEX ON item_branch_settings (tenant_id);
 
 -- Stock with an expiry date.
 CREATE TABLE batches (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   item_id uuid NOT NULL,
@@ -553,7 +587,7 @@ CREATE INDEX ON batches (tenant_id);
 
 -- Every stock change, never edited.
 CREATE TABLE stock_movements (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   item_id uuid NOT NULL,
@@ -578,7 +612,7 @@ CREATE INDEX ON stock_movements (device_id);
 CREATE INDEX ON stock_movements (tenant_id);
 
 CREATE TABLE stock_counts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   counted_by uuid NOT NULL,
@@ -591,7 +625,8 @@ CREATE INDEX ON stock_counts (counted_by);
 CREATE INDEX ON stock_counts (tenant_id);
 
 CREATE TABLE stock_count_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   count_id uuid NOT NULL,
   item_id uuid NOT NULL,
   expected_qty numeric NOT NULL,
@@ -599,13 +634,14 @@ CREATE TABLE stock_count_lines (
 );
 CREATE INDEX ON stock_count_lines (count_id);
 CREATE INDEX ON stock_count_lines (item_id);
+CREATE INDEX ON stock_count_lines (tenant_id);
 
 -- ======================================================================
 -- Purchasing
 -- ======================================================================
 
 CREATE TABLE suppliers (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   name text NOT NULL,
   contact_name text NOT NULL,
@@ -621,6 +657,7 @@ CREATE INDEX ON suppliers (tenant_id);
 
 -- Who sells what, at what price.
 CREATE TABLE supplier_items (
+  tenant_id uuid NOT NULL,
   supplier_id uuid NOT NULL,
   item_id uuid NOT NULL,
   supplier_sku text,
@@ -631,13 +668,14 @@ CREATE TABLE supplier_items (
   is_default boolean NOT NULL,
   PRIMARY KEY (supplier_id, item_id)
 );
+CREATE INDEX ON supplier_items (tenant_id);
 
 CREATE TABLE purchase_orders (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   supplier_id uuid NOT NULL,
-  number text NOT NULL UNIQUE,  -- PO-0043
+  number text NOT NULL,  -- PO-0043, unique per shop (one_po_number_per_tenant)
   status text NOT NULL,  -- draft, sent, partly_received, received, cancelled
   expected_date date,
   note text,
@@ -656,7 +694,8 @@ CREATE INDEX ON purchase_orders (approved_by);
 CREATE INDEX ON purchase_orders (tenant_id);
 
 CREATE TABLE purchase_order_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   po_id uuid NOT NULL,
   item_id uuid NOT NULL,
   qty_ordered numeric NOT NULL,  -- in packs
@@ -665,10 +704,11 @@ CREATE TABLE purchase_order_lines (
 );
 CREATE INDEX ON purchase_order_lines (po_id);
 CREATE INDEX ON purchase_order_lines (item_id);
+CREATE INDEX ON purchase_order_lines (tenant_id);
 
 -- One delivery.
 CREATE TABLE goods_receipts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   supplier_id uuid NOT NULL,
@@ -687,7 +727,8 @@ CREATE INDEX ON goods_receipts (tenant_id);
 
 -- Each line creates one batch.
 CREATE TABLE goods_receipt_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   receipt_id uuid NOT NULL,
   po_line_id uuid,
   item_id uuid NOT NULL,
@@ -699,6 +740,7 @@ CREATE TABLE goods_receipt_lines (
 CREATE INDEX ON goods_receipt_lines (receipt_id);
 CREATE INDEX ON goods_receipt_lines (po_line_id);
 CREATE INDEX ON goods_receipt_lines (item_id);
+CREATE INDEX ON goods_receipt_lines (tenant_id);
 
 -- ======================================================================
 -- Alerts, notifications and audit
@@ -706,7 +748,7 @@ CREATE INDEX ON goods_receipt_lines (item_id);
 
 -- One open alert per item, branch and type.
 CREATE TABLE alerts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid NOT NULL,
   item_id uuid NOT NULL,
@@ -727,14 +769,16 @@ CREATE INDEX ON alerts (tenant_id);
 
 -- Drives the unread count on the bell.
 CREATE TABLE alert_reads (
+  tenant_id uuid NOT NULL,
   alert_id uuid NOT NULL,
   user_id uuid NOT NULL,
   read_at timestamptz NOT NULL,
   PRIMARY KEY (alert_id, user_id)
 );
+CREATE INDEX ON alert_reads (tenant_id);
 
 CREATE TABLE notification_settings (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   event_type text NOT NULL,  -- low, expired, cash_variance
   channel text NOT NULL,  -- in_app, push, email
@@ -747,7 +791,8 @@ CREATE TABLE notification_settings (
 CREATE INDEX ON notification_settings (tenant_id);
 
 CREATE TABLE notification_deliveries (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   alert_id uuid,
   user_id uuid NOT NULL,
   channel text NOT NULL,
@@ -756,10 +801,11 @@ CREATE TABLE notification_deliveries (
 );
 CREATE INDEX ON notification_deliveries (alert_id);
 CREATE INDEX ON notification_deliveries (user_id);
+CREATE INDEX ON notification_deliveries (tenant_id);
 
 -- Append-only record of who did what.
 CREATE TABLE audit_log (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   branch_id uuid,
   user_id uuid,  -- empty = System
@@ -786,7 +832,7 @@ CREATE INDEX ON audit_log (tenant_id);
 
 -- BrewPoint staff. Separate from shop users.
 CREATE TABLE platform_users (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text NOT NULL,
   email text NOT NULL UNIQUE,
   password_hash text NOT NULL,
@@ -799,7 +845,7 @@ CREATE TABLE platform_users (
 CREATE INDEX ON platform_users (role_id);
 
 CREATE TABLE platform_roles (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text NOT NULL UNIQUE,  -- Superadmin, Support, Billing, Engineer
   summary text NOT NULL
 );
@@ -817,7 +863,7 @@ CREATE TABLE platform_role_permissions (
 
 -- Staff see inside a shop only with an approved grant.
 CREATE TABLE support_access_grants (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   staff_id uuid NOT NULL,
   ticket_id uuid,
@@ -838,7 +884,7 @@ CREATE INDEX ON support_access_grants (tenant_id);
 
 -- Every staff action. Append-only.
 CREATE TABLE platform_audit_log (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   staff_id uuid,  -- empty = system
   target_tenant_id uuid,
   grant_id uuid,
@@ -859,7 +905,7 @@ CREATE INDEX ON platform_audit_log (grant_id);
 
 -- A shop’s account history.
 CREATE TABLE tenant_events (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   type text NOT NULL,  -- signed_up, trial_extended, plan_changed, suspended, reactivated, price_moved, closed
   detail jsonb NOT NULL,
@@ -871,7 +917,7 @@ CREATE INDEX ON tenant_events (staff_id);
 CREATE INDEX ON tenant_events (tenant_id);
 
 CREATE TABLE data_requests (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   type text NOT NULL,  -- export, delete
   requested_by uuid NOT NULL,
@@ -898,7 +944,7 @@ CREATE TABLE feature_flags (
 
 -- A flag or a plan limit, per shop.
 CREATE TABLE tenant_feature_overrides (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   flag_key text,
   limit_name text,  -- devices, branches, users
@@ -922,7 +968,7 @@ CREATE TABLE app_releases (
 CREATE INDEX ON app_releases (released_by);
 
 CREATE TABLE device_error_reports (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   app_version text NOT NULL,
   error_code text NOT NULL,
@@ -936,7 +982,7 @@ CREATE INDEX ON device_error_reports (device_id);
 CREATE INDEX ON device_error_reports (tenant_id);
 
 CREATE TABLE announcements (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   title text NOT NULL,
   body text NOT NULL,
   audience text NOT NULL,  -- all, plans, tenants
@@ -952,15 +998,17 @@ CREATE TABLE announcements (
 CREATE INDEX ON announcements (created_by);
 
 CREATE TABLE announcement_reads (
+  tenant_id uuid NOT NULL,
   announcement_id uuid NOT NULL,
   user_id uuid NOT NULL,
   dismissed_at timestamptz NOT NULL,
   PRIMARY KEY (announcement_id, user_id)
 );
+CREATE INDEX ON announcement_reads (tenant_id);
 
 -- Optional: skip if you use an outside help desk.
 CREATE TABLE support_tickets (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   tenant_id uuid NOT NULL,
   number text NOT NULL UNIQUE,  -- T-1043
   subject text NOT NULL,
@@ -978,7 +1026,8 @@ CREATE INDEX ON support_tickets (device_id);
 CREATE INDEX ON support_tickets (tenant_id);
 
 CREATE TABLE support_ticket_messages (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
   ticket_id uuid NOT NULL,
   author_user_id uuid,
   author_staff_id uuid,
@@ -988,6 +1037,7 @@ CREATE TABLE support_ticket_messages (
 CREATE INDEX ON support_ticket_messages (ticket_id);
 CREATE INDEX ON support_ticket_messages (author_user_id);
 CREATE INDEX ON support_ticket_messages (author_staff_id);
+CREATE INDEX ON support_ticket_messages (tenant_id);
 
 -- ======================================================================
 -- Foreign keys (added last so table order does not matter)
@@ -995,6 +1045,7 @@ CREATE INDEX ON support_ticket_messages (author_staff_id);
 ALTER TABLE branches ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE users ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE roles ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE role_permissions ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE role_permissions ADD FOREIGN KEY (role_id) REFERENCES roles;
 ALTER TABLE role_permissions ADD FOREIGN KEY (permission_code) REFERENCES permissions;
 ALTER TABLE user_assignments ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1013,9 +1064,11 @@ ALTER TABLE subscriptions ADD FOREIGN KEY (plan_price_id) REFERENCES plan_prices
 ALTER TABLE invoices ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE invoices ADD FOREIGN KEY (subscription_id) REFERENCES subscriptions;
 ALTER TABLE invoices ADD FOREIGN KEY (paid_manually_by) REFERENCES platform_users;
+ALTER TABLE invoice_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE invoice_lines ADD FOREIGN KEY (invoice_id) REFERENCES invoices;
 ALTER TABLE plan_prices ADD FOREIGN KEY (plan_id) REFERENCES plans;
 ALTER TABLE billing_customers ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE payment_methods ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE payment_methods ADD FOREIGN KEY (billing_customer_id) REFERENCES billing_customers;
 ALTER TABLE payment_events ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE payment_events ADD FOREIGN KEY (invoice_id) REFERENCES invoices;
@@ -1028,7 +1081,9 @@ ALTER TABLE register_sessions ADD FOREIGN KEY (opened_by) REFERENCES users;
 ALTER TABLE register_sessions ADD FOREIGN KEY (closed_by) REFERENCES users;
 ALTER TABLE register_sessions ADD FOREIGN KEY (approved_by) REFERENCES users;
 ALTER TABLE register_sessions ADD FOREIGN KEY (device_id) REFERENCES devices;
+ALTER TABLE cash_counts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE cash_counts ADD FOREIGN KEY (session_id) REFERENCES register_sessions;
+ALTER TABLE cash_movements ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE cash_movements ADD FOREIGN KEY (session_id) REFERENCES register_sessions;
 ALTER TABLE cash_movements ADD FOREIGN KEY (user_id) REFERENCES users;
 ALTER TABLE cash_movements ADD FOREIGN KEY (approved_by) REFERENCES users;
@@ -1039,16 +1094,22 @@ ALTER TABLE sales ADD FOREIGN KEY (session_id) REFERENCES register_sessions;
 ALTER TABLE sales ADD FOREIGN KEY (cashier_id) REFERENCES users;
 ALTER TABLE sales ADD FOREIGN KEY (voided_by) REFERENCES users;
 ALTER TABLE sales ADD FOREIGN KEY (device_id) REFERENCES devices;
+ALTER TABLE sale_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE sale_lines ADD FOREIGN KEY (sale_id) REFERENCES sales;
 ALTER TABLE sale_lines ADD FOREIGN KEY (product_id) REFERENCES products;
+ALTER TABLE sale_line_modifiers ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE sale_line_modifiers ADD FOREIGN KEY (sale_line_id) REFERENCES sale_lines;
 ALTER TABLE sale_line_modifiers ADD FOREIGN KEY (modifier_id) REFERENCES modifiers;
+ALTER TABLE sale_discounts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE sale_discounts ADD FOREIGN KEY (sale_id) REFERENCES sales;
 ALTER TABLE sale_discounts ADD FOREIGN KEY (approved_by) REFERENCES users;
+ALTER TABLE payments ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE payments ADD FOREIGN KEY (sale_id) REFERENCES sales;
+ALTER TABLE refunds ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE refunds ADD FOREIGN KEY (sale_id) REFERENCES sales;
 ALTER TABLE refunds ADD FOREIGN KEY (requested_by) REFERENCES users;
 ALTER TABLE refunds ADD FOREIGN KEY (approved_by) REFERENCES users;
+ALTER TABLE refund_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE refund_lines ADD FOREIGN KEY (refund_id) REFERENCES refunds;
 ALTER TABLE refund_lines ADD FOREIGN KEY (sale_line_id) REFERENCES sale_lines;
 ALTER TABLE discount_rules ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1059,14 +1120,19 @@ ALTER TABLE products ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE products ADD FOREIGN KEY (category_id) REFERENCES categories;
 ALTER TABLE products ADD FOREIGN KEY (updated_by) REFERENCES users;
 ALTER TABLE modifier_groups ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE modifiers ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE modifiers ADD FOREIGN KEY (group_id) REFERENCES modifier_groups;
+ALTER TABLE product_modifier_groups ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE product_modifier_groups ADD FOREIGN KEY (product_id) REFERENCES products;
 ALTER TABLE product_modifier_groups ADD FOREIGN KEY (modifier_group_id) REFERENCES modifier_groups;
+ALTER TABLE recipe_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE recipe_lines ADD FOREIGN KEY (product_id) REFERENCES products;
 ALTER TABLE recipe_lines ADD FOREIGN KEY (inventory_item_id) REFERENCES inventory_items;
+ALTER TABLE modifier_recipe_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE modifier_recipe_lines ADD FOREIGN KEY (modifier_id) REFERENCES modifiers;
 ALTER TABLE modifier_recipe_lines ADD FOREIGN KEY (inventory_item_id) REFERENCES inventory_items;
 ALTER TABLE inventory_items ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE item_branch_settings ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE item_branch_settings ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
 ALTER TABLE item_branch_settings ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE item_branch_settings ADD FOREIGN KEY (default_supplier_id) REFERENCES suppliers;
@@ -1084,9 +1150,11 @@ ALTER TABLE stock_movements ADD FOREIGN KEY (device_id) REFERENCES devices;
 ALTER TABLE stock_counts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE stock_counts ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE stock_counts ADD FOREIGN KEY (counted_by) REFERENCES users;
+ALTER TABLE stock_count_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE stock_count_lines ADD FOREIGN KEY (count_id) REFERENCES stock_counts;
 ALTER TABLE stock_count_lines ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
 ALTER TABLE suppliers ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE supplier_items ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE supplier_items ADD FOREIGN KEY (supplier_id) REFERENCES suppliers;
 ALTER TABLE supplier_items ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
 ALTER TABLE purchase_orders ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1094,6 +1162,7 @@ ALTER TABLE purchase_orders ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE purchase_orders ADD FOREIGN KEY (supplier_id) REFERENCES suppliers;
 ALTER TABLE purchase_orders ADD FOREIGN KEY (created_by) REFERENCES users;
 ALTER TABLE purchase_orders ADD FOREIGN KEY (approved_by) REFERENCES users;
+ALTER TABLE purchase_order_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE purchase_order_lines ADD FOREIGN KEY (po_id) REFERENCES purchase_orders;
 ALTER TABLE purchase_order_lines ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
 ALTER TABLE goods_receipts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1101,6 +1170,7 @@ ALTER TABLE goods_receipts ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE goods_receipts ADD FOREIGN KEY (supplier_id) REFERENCES suppliers;
 ALTER TABLE goods_receipts ADD FOREIGN KEY (po_id) REFERENCES purchase_orders;
 ALTER TABLE goods_receipts ADD FOREIGN KEY (received_by) REFERENCES users;
+ALTER TABLE goods_receipt_lines ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE goods_receipt_lines ADD FOREIGN KEY (receipt_id) REFERENCES goods_receipts;
 ALTER TABLE goods_receipt_lines ADD FOREIGN KEY (po_line_id) REFERENCES purchase_order_lines;
 ALTER TABLE goods_receipt_lines ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
@@ -1108,9 +1178,11 @@ ALTER TABLE alerts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE alerts ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE alerts ADD FOREIGN KEY (item_id) REFERENCES inventory_items;
 ALTER TABLE alerts ADD FOREIGN KEY (batch_id) REFERENCES batches;
+ALTER TABLE alert_reads ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE alert_reads ADD FOREIGN KEY (alert_id) REFERENCES alerts;
 ALTER TABLE alert_reads ADD FOREIGN KEY (user_id) REFERENCES users;
 ALTER TABLE notification_settings ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE notification_deliveries ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE notification_deliveries ADD FOREIGN KEY (alert_id) REFERENCES alerts;
 ALTER TABLE notification_deliveries ADD FOREIGN KEY (user_id) REFERENCES users;
 ALTER TABLE audit_log ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1140,12 +1212,14 @@ ALTER TABLE app_releases ADD FOREIGN KEY (released_by) REFERENCES platform_users
 ALTER TABLE device_error_reports ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE device_error_reports ADD FOREIGN KEY (device_id) REFERENCES devices;
 ALTER TABLE announcements ADD FOREIGN KEY (created_by) REFERENCES platform_users;
+ALTER TABLE announcement_reads ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE announcement_reads ADD FOREIGN KEY (announcement_id) REFERENCES announcements;
 ALTER TABLE announcement_reads ADD FOREIGN KEY (user_id) REFERENCES users;
 ALTER TABLE support_tickets ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE support_tickets ADD FOREIGN KEY (requester_id) REFERENCES users;
 ALTER TABLE support_tickets ADD FOREIGN KEY (assignee_id) REFERENCES platform_users;
 ALTER TABLE support_tickets ADD FOREIGN KEY (device_id) REFERENCES devices;
+ALTER TABLE support_ticket_messages ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE support_ticket_messages ADD FOREIGN KEY (ticket_id) REFERENCES support_tickets;
 ALTER TABLE support_ticket_messages ADD FOREIGN KEY (author_user_id) REFERENCES users;
 ALTER TABLE support_ticket_messages ADD FOREIGN KEY (author_staff_id) REFERENCES platform_users;
@@ -1158,3 +1232,69 @@ CREATE UNIQUE INDEX one_billing_customer_per_provider ON billing_customers (tena
 CREATE UNIQUE INDEX one_price_version ON plan_prices (plan_id, version);
 CREATE INDEX active_support_grants ON support_access_grants (tenant_id) WHERE status = 'active';
 CREATE INDEX batches_fefo ON batches (branch_id, item_id, expiry_date) WHERE qty_remaining > 0;
+
+-- ======================================================================
+-- Roles (created once per database by `pnpm db:roles`, not by a migration: roles belong to the cluster)
+-- ======================================================================
+-- brewpoint_migrator  NOLOGIN. Owns every table. Migrations and seeds connect as the owner login and SET ROLE to it.
+-- brewpoint_app       LOGIN. The server at runtime. NOBYPASSRLS and not an owner, so row-level security always applies.
+-- brewpoint_platform  The staff console (login from Module 18). Platform tables, plus the tables BrewPoint runs for each shop.
+
+-- ======================================================================
+-- Row-level security
+-- ======================================================================
+
+-- The tenant set by the server's tenant transaction (SET LOCAL app.tenant_id), or NULL when none is set.
+CREATE FUNCTION app_current_tenant() RETURNS uuid
+  LANGUAGE sql STABLE
+  AS $$ SELECT nullif(current_setting('app.tenant_id', true), '')::uuid $$;
+
+-- tenants: a shop sees and changes only itself.
+ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tenants FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON tenants
+  USING (id = (SELECT app_current_tenant())) WITH CHECK (id = (SELECT app_current_tenant()));
+
+-- The same three statements for each of the 58 tables with tenant_id:
+--   branches, users, roles, role_permissions, user_assignments, devices, pairing_codes,
+--   subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events, credit_notes,
+--   register_sessions, cash_counts, cash_movements, sales, sale_lines, sale_line_modifiers, sale_discounts,
+--   payments, refunds, refund_lines, discount_rules, tenant_payment_methods,
+--   categories, products, modifier_groups, modifiers, product_modifier_groups, recipe_lines, modifier_recipe_lines,
+--   inventory_items, item_branch_settings, batches, stock_movements, stock_counts, stock_count_lines,
+--   suppliers, supplier_items, purchase_orders, purchase_order_lines, goods_receipts, goods_receipt_lines,
+--   alerts, alert_reads, notification_settings, notification_deliveries, audit_log,
+--   support_access_grants, tenant_events, data_requests, tenant_feature_overrides, device_error_reports,
+--   announcement_reads, support_tickets, support_ticket_messages
+-- payment_events.tenant_id may be empty (a webhook before the shop is known); those rows are platform-only.
+ALTER TABLE sales ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sales FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON sales
+  USING (tenant_id = (SELECT app_current_tenant())) WITH CHECK (tenant_id = (SELECT app_current_tenant()));
+
+-- The staff console sees these across shops:
+--   tenants, subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events,
+--   credit_notes, support_access_grants, tenant_events, data_requests, tenant_feature_overrides,
+--   device_error_reports, support_tickets, support_ticket_messages
+CREATE POLICY platform_all ON invoices TO brewpoint_platform USING (true) WITH CHECK (true);
+
+-- No row-level security (global): plans, plan_prices, permissions, feature_flags, app_releases, announcements
+-- (shops read them) and platform_users, platform_roles, platform_permissions, platform_role_permissions,
+-- platform_audit_log (staff only).
+
+-- ======================================================================
+-- Grants
+-- ======================================================================
+-- brewpoint_app
+--   SELECT, INSERT, UPDATE  every shop table above, except the append-only ones
+--   SELECT, INSERT          audit_log, stock_movements, tenant_events (append-only)
+--   DELETE                  role_permissions, user_assignments, product_modifier_groups, recipe_lines,
+--                           modifier_recipe_lines, supplier_items, pairing_codes, purchase_order_lines
+--   SELECT                  payment_events, plans, plan_prices, permissions, feature_flags, app_releases, announcements
+--   nothing                 platform_users, platform_roles, platform_permissions, platform_role_permissions, platform_audit_log
+-- brewpoint_platform
+--   SELECT, INSERT, UPDATE  the global and platform tables, and the cross-shop tables listed for platform_all
+--   SELECT, INSERT          platform_audit_log, tenant_events (append-only)
+--   DELETE                  platform_role_permissions
+--   nothing                 shop business data (sales, stock, menu, people); staff reach it through the tenant
+--                           transaction after the server checks an active support_access_grants row (Module 18)

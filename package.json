@@ -15,7 +15,11 @@
     "test": "turbo run test",
     "test:e2e": "turbo run build && playwright test",
     "format": "prettier --write .",
-    "db:check": "pnpm --filter @brewpoint/server db:check"
+    "db:check": "pnpm --filter @brewpoint/server db:check",
+    "db:roles": "pnpm --filter @brewpoint/server db:roles",
+    "db:migrate": "pnpm --filter @brewpoint/server db:migrate",
+    "db:migrate:down": "pnpm --filter @brewpoint/server db:migrate:down",
+    "db:types": "pnpm --filter @brewpoint/server db:types"
   },
   "devDependencies": {
     "@brewpoint/config": "workspace:*",
