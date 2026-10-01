@@ -41,13 +41,16 @@ jobs:
           APP_URL="postgresql://brewpoint_app:$(openssl rand -hex 16)@localhost:5432/brewpoint_test"
           echo "::add-mask::${APP_URL}"
           echo "TEST_DATABASE_URL=${APP_URL}" >> "$GITHUB_ENV"
-          echo "DATABASE_URL=${APP_URL}" >> "$GITHUB_ENV"
       - run: pnpm lint
       - run: pnpm typecheck
+      # No DATABASE_URL here: the tests refuse to run when a test URL equals it.
       - run: pnpm test
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium webkit
+      # The server needs DATABASE_URL to start; in CI it is the throwaway test database.
       - run: pnpm test:e2e
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
 
   secrets:
     name: Secret scan
