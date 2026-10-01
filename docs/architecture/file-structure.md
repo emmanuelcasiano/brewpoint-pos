@@ -23,7 +23,12 @@ brewpoint/
 │   ├── ui/                       design-system components
 │   └── config/                   shared TypeScript, lint and Tailwind settings
 ├── infra/                        deploy files (development uses a Neon database, see Module 01)
-└── package.json                  workspace root
+├── tests/
+│   └── e2e/                      Playwright smoke tests across the server and apps
+├── .github/workflows/            CI: lint, typecheck, unit tests, build, smoke test, secret scan
+├── package.json                  workspace root and its scripts
+├── pnpm-workspace.yaml           workspace packages and shared tool versions (catalog)
+└── turbo.json                    task graph for dev, build, lint, typecheck and test
 ```
 
 ## Server
@@ -74,8 +79,12 @@ apps/server/src/
 ├── db/
 │   ├── migrations/               one ordered file per change
 │   └── seed/                     two demo shops, permissions, plans
-└── main.ts                       starts the server and mounts each module's routes
+├── app.ts                        builds the Fastify app and mounts each module's routes
+├── env.ts                        reads and checks .env at start-up
+└── main.ts                       starts the server
 ```
+
+Outside `src/`, `apps/server/scripts/` holds developer scripts such as `db-check.ts` (`pnpm db:check`), and `tsup.config.ts` bundles the server for production.
 
 Inside every module folder, the same five files:
 
@@ -172,6 +181,11 @@ packages/ui/src/
 ├── components/                   Button, Field, DataTable, Drawer, SideNav, Numpad, Chart…
 ├── accent/                       deriveAccent, applyAccent
 └── icons/
+
+packages/config/
+├── tsconfig/                     base, node and react settings every package extends
+├── eslint/                       shared lint rules (base, and react for the apps)
+└── vite/                         shared Vite settings for the three apps
 ```
 
 ## Rules
@@ -183,7 +197,7 @@ packages/ui/src/
 5. **Stock changes only through `core/stock/record-movement.ts`.**
 6. **`packages/ui` has no data fetching and no business rules.** It only renders what it is given.
 7. **`packages/shared` has no framework code**, so the server and all apps can use it.
-8. **Tests sit next to the code they test.** File and folder names are kebab-case; React components are PascalCase.
+8. **Tests sit next to the code they test**, except the smoke tests that cross apps, which live in `tests/e2e/`. File and folder names are kebab-case; React components are PascalCase.
 9. **The staff console's server code lives only under `modules/platform/`**, and its routes use platform permissions and the platform audit writer.
 
 ## Why this structure

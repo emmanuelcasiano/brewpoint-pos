@@ -11,9 +11,9 @@ docs/modules/01-project-skeleton.md
 ## Goals
 
 - [ ] A fresh clone runs every app and the database with documented commands.
-- [ ] CI fails on a type error, a lint error or a failing test.
-- [ ] `formatPeso` tests pass and the function is imported by at least one app.
-- [ ] No secret values are committed.
+- [x] CI fails on a type error, a lint error or a failing test.
+- [x] `formatPeso` tests pass and the function is imported by at least one app.
+- [x] No secret values are committed.
 
 ## Build steps
 
@@ -116,6 +116,11 @@ Open questions, answered (recorded in the brief's "Decisions already made"):
 - Monorepo: pnpm workspaces with Turborepo.
 - Tooling: Vite, Vitest, Zod, Tailwind v4, ESLint and Prettier, Playwright.
 - Development database: Neon free tier (PostgreSQL 16, Singapore) instead of Docker, because the laptop has 8 GB of RAM. Brief scope and file-structure.md `infra/` line updated.
+
+Verification:
+- CI run 36798084743 passed on the screens commit, including the Playwright smoke test and the gitleaks scan.
+- CI fails as required: throwaway branches with one error each failed at the expected step (lint: run 36799229521, typecheck: 36799233826, test: 36799239685). The branches were deleted.
+- Still to verify: `pnpm db:check` against Neon (goal 1, database part).
 
 For Module 02: Neon gives a pooled and a direct connection string. Migrations should use the direct one; the app role can use the pooled one (`SET LOCAL` works inside a transaction).
 
