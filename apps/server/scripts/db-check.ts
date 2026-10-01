@@ -1,6 +1,6 @@
 import pg from 'pg';
 
-const REQUIRED_MAJOR = 16;
+const REQUIRED_MAJOR = 18;
 
 const url = process.env.DATABASE_URL;
 if (!url) {

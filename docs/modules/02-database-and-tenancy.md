@@ -57,7 +57,7 @@ The full schema exists as migrations, and the database itself guarantees that on
 - Given the app database role, when it tries `SET row_security = off`, then it is refused.
 
 ## Decisions already made
-- PostgreSQL 16. Isolation by row-level security on `tenant_id`, not separate databases per shop.
+- PostgreSQL 18 (changed from 16 in Module 01). schema.sql was tested on 16: confirm it migrates cleanly on 18, and run CI's database service on 18. Isolation by row-level security on `tenant_id`, not separate databases per shop.
 
 ## Open questions
 - Migration tool (follows the Module 01 choice).

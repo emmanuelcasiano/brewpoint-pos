@@ -25,7 +25,7 @@ One repository that holds every BrewPoint app, builds and tests on every change,
   - `apps/console`: the staff console web app (React, TypeScript, Tailwind)
   - `packages/shared`: types, `formatPeso`, validation schemas shared by server and apps
   - `packages/ui`: the design-system components (filled in Module 05)
-- PostgreSQL 16 for development on Neon (free tier, Singapore region); the connection string lives in `.env`, never in the repository.
+- PostgreSQL 18 for development on Neon (free tier); the connection string lives in `.env`, never in the repository.
 - Lint, format, type-check and unit test commands that run for every package.
 - CI that runs those on every push and pull request.
 - Environment configuration (`.env.example`, no secrets committed) for local, staging and production.
@@ -66,7 +66,8 @@ One repository that holds every BrewPoint app, builds and tests on every change,
 - Database library: Kysely. Its migrator runs migrations up and down (Module 02's "back one step"); raw SQL is used for RLS policies; `bigint` is returned as a TypeScript `number` via the pg type parser.
 - Monorepo: pnpm workspaces with Turborepo.
 - Web apps: Vite with React and TypeScript, one app per folder in `apps/`.
-- Development database: Neon free tier, PostgreSQL 16, Singapore region, instead of Docker Compose (the development laptop has 8 GB of RAM). CI runs its own PostgreSQL 16 service. This does not decide production hosting.
+- Development database: Neon free tier instead of Docker Compose (the development laptop has 8 GB of RAM). This does not decide production hosting.
+- PostgreSQL 18, not 16: the Neon project was created with 18, and the project moves to 18 rather than recreating it. `pnpm db:check` requires 18, and CI's database service (from Module 02) must run 18 too. schema.sql was tested on 16, so Module 02 checks that it migrates cleanly on 18. The development database is in AWS US East 2 (Ohio), so expect slower queries from the Philippines; the production region is decided with hosting.
 - Tooling: Vitest (unit tests), Zod (validation), Tailwind v4 (CSS-based config, `@theme inline` over tokens.css), ESLint and Prettier (lint and format), Playwright (end-to-end smoke test).
 - TypeScript 6.0, not 7: typescript-eslint's type-aware rules support TypeScript below 6.1. Versions of shared tools (TypeScript, ESLint, Vitest) live once in the pnpm catalog in `pnpm-workspace.yaml`. Keep pnpm's minimum release age guard; don't add exclusions to get around it.
 

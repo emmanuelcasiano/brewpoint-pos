@@ -6,14 +6,14 @@ Multi-tenant, offline-first point of sale for small coffee shops in the Philippi
 
 - Node.js 22 (see `.nvmrc`)
 - pnpm 12: `npm install -g pnpm`
-- A Neon project running PostgreSQL 16 in the AWS Asia Pacific (Singapore) region
+- A Neon project running PostgreSQL 18
 
 ## Set up a fresh clone
 
 ```bash
 pnpm install
 cp .env.example .env        # then paste your Neon connection string as DATABASE_URL
-pnpm db:check               # confirms the database answers and runs PostgreSQL 16
+pnpm db:check               # confirms the database answers and runs PostgreSQL 18
 pnpm dev                    # starts the server and all three apps
 ```
 

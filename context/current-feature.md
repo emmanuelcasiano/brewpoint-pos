@@ -10,7 +10,7 @@ docs/modules/01-project-skeleton.md
 
 ## Goals
 
-- [ ] A fresh clone runs every app and the database with documented commands.
+- [x] A fresh clone runs every app and the database with documented commands.
 - [x] CI fails on a type error, a lint error or a failing test.
 - [x] `formatPeso` tests pass and the function is imported by at least one app.
 - [x] No secret values are committed.
@@ -27,7 +27,7 @@ docs/modules/01-project-skeleton.md
 ### Prerequisites (before /feature start)
 
 - Install pnpm: `npm install -g pnpm` (not installed yet). Node 22.14 is fine.
-- Create a Neon account and a project: PostgreSQL version **16**, region **AWS Asia Pacific (Singapore)**. Keep its connection string for `.env` in step 3.
+- Create a Neon account and a project (PostgreSQL 18, see Notes). Keep its connection string for `.env` in step 3.
 
 ### Layout (docs/architecture/file-structure.md)
 
@@ -61,7 +61,7 @@ Empty folders get a `.gitkeep`. Package names: `@brewpoint/<folder>`.
 - **TypeScript.** `packages/config/tsconfig/base.json` sets `strict` and `noUncheckedIndexedAccess`; `react.json` and `node.json` extend it. Every package runs `tsc --noEmit` as `typecheck`.
 - **Lint and format.** ESLint flat config in `packages/config/eslint` (typescript-eslint type-checked rules, `no-explicit-any` as an error, React hooks rules for the apps). Prettier at the root; `lint` includes `prettier --check`.
 - **Environment.** One root `.env`, copied from `.env.example`. The server loads it with Node's `--env-file` and validates it with Zod at start-up, naming any missing variable in plain language. The Vite apps read `VITE_` variables from the root (`envDir`).
-- **Database.** `DATABASE_URL` is the Neon connection string. `pnpm db:check` connects with `pg` and prints the server version, failing unless it is PostgreSQL 16. The server does not use the database until Module 02.
+- **Database.** `DATABASE_URL` is the Neon connection string. `pnpm db:check` connects with `pg` and prints the server version, failing unless it is PostgreSQL 18. The server does not use the database until Module 02.
 - **Tailwind v4.** `@tailwindcss/vite` in each app with `@import "tailwindcss"` only. The token mapping (`@theme inline` over tokens.css) is Module 05. The placeholders use layout and type utilities only, no color classes.
 - **Build version.** `packages/config/vite/app-config.ts` injects the package version and the short git commit at build time ("dev" when git is unavailable). Shared by the three apps.
 - **Ports.** Server 3000, backoffice 5173, POS 5174, console 5175. All can be changed in `.env`.
@@ -93,13 +93,13 @@ Empty folders get a `.gitkeep`. Package names: `@brewpoint/<folder>`.
 
 | Brief | Test |
 |---|---|
-| Fresh clone runs every app and the database | README commands; `pnpm db:check` confirms PostgreSQL 16 on Neon; the Playwright smoke test checks health 200 and each placeholder; one manual run from a fresh clone |
+| Fresh clone runs every app and the database | README commands; `pnpm db:check` confirms PostgreSQL 18 on Neon; the Playwright smoke test checks health 200 and each placeholder; one manual run from a fresh clone |
 | CI fails on a type error, lint error or failing test | CI runs lint, typecheck, test, build and test:e2e; checked once on a scratch branch with one deliberate error of each kind, not merged |
 | `formatPeso` tests pass and it is imported by an app | 124500 → "₱1,245.00", -4150 → "-₱41.50", 0 → "₱0.00", plus 5 → "₱0.05", 100000000 → "₱1,000,000.00"; all three apps import it and the smoke test finds "₱1,245.00" in each |
 | No secret values are committed | `.gitignore` covers `.env*` except `.env.example`; the Neon connection string exists only in `.env`; a gitleaks secret scan runs in CI |
 | Test case: clean checkout, all apps start, health 200 | The smoke test runs in CI from a clean checkout |
 
-CI needs no database in this module; it gets a PostgreSQL 16 service when Module 02 adds tables.
+CI needs no database in this module; it gets a PostgreSQL 18 service when Module 02 adds tables.
 
 ### Definition of Done items that do not apply
 
@@ -115,12 +115,13 @@ Open questions, answered (recorded in the brief's "Decisions already made"):
 - Server: Fastify. Database library: Kysely.
 - Monorepo: pnpm workspaces with Turborepo.
 - Tooling: Vite, Vitest, Zod, Tailwind v4, ESLint and Prettier, Playwright.
-- Development database: Neon free tier (PostgreSQL 16, Singapore) instead of Docker, because the laptop has 8 GB of RAM. Brief scope and file-structure.md `infra/` line updated.
+- Development database: Neon free tier instead of Docker, because the laptop has 8 GB of RAM. Brief scope and file-structure.md `infra/` line updated.
+- PostgreSQL 18, not 16: the Neon project runs 18 in AWS US East 2 (Ohio), and the project moves to 18 rather than recreating it. Updated: db-check, .env.example, README, CLAUDE.md, Module 01 and 02 briefs.
 
 Verification:
 - CI run 36798084743 passed on the screens commit, including the Playwright smoke test and the gitleaks scan.
 - CI fails as required: throwaway branches with one error each failed at the expected step (lint: run 36799229521, typecheck: 36799233826, test: 36799239685). The branches were deleted.
-- Still to verify: `pnpm db:check` against Neon (goal 1, database part).
+- `pnpm db:check` connected to PostgreSQL 18.6 on Neon (AWS US East 2) using `.env` (goal 1, database part).
 
 For Module 02: Neon gives a pooled and a direct connection string. Migrations should use the direct one; the app role can use the pooled one (`SET LOCAL` works inside a transaction).
 
