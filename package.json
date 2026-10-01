@@ -10,13 +10,18 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint && prettier --check .",
-    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint && eslint tests playwright.config.ts eslint.config.js && prettier --check .",
+    "typecheck": "turbo run typecheck && tsc --noEmit",
     "test": "turbo run test",
+    "test:e2e": "turbo run build && playwright test",
     "format": "prettier --write .",
     "db:check": "pnpm --filter @brewpoint/server db:check"
   },
   "devDependencies": {
+    "@brewpoint/config": "workspace:*",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.4",
+    "eslint": "catalog:",
     "prettier": "^3.9.9",
     "turbo": "^2.11.5",
     "typescript": "catalog:"

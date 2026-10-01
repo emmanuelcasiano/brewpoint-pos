@@ -7,13 +7,22 @@
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/node.json": "./tsconfig/node.json",
     "./tsconfig/react.json": "./tsconfig/react.json",
-    "./eslint": "./eslint/index.js"
+    "./eslint": "./eslint/index.js",
+    "./vite": {
+      "types": "./vite/app-config.d.ts",
+      "default": "./vite/app-config.js"
+    }
   },
   "dependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
     "eslint": "catalog:",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
     "typescript": "catalog:",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.0",
+    "vite": "catalog:"
   }
 }

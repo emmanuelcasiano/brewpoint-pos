@@ -6,3 +6,5 @@ CLAUDE.md
 dist/
 coverage/
 .turbo/
+playwright-report/
+test-results/

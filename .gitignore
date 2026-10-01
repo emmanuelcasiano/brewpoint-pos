@@ -11,3 +11,5 @@ coverage/
 brewpoint-handoff.zip
 .turbo/
 *.tsbuildinfo
+playwright-report/
+test-results/

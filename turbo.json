@@ -4,6 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["GITHUB_SHA"],
       "outputs": ["dist/**"]
     },
     "lint": {},
