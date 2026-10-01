@@ -37,6 +37,15 @@ describe.skipIf(!testDatabaseUrls())('migrations', () => {
     expect(await tableCount()).toBe(70);
   });
 
+  it('never deletes rows through a foreign key: no ON DELETE CASCADE or SET NULL', async () => {
+    const result = await sql<{ name: string }>`
+      SELECT conname AS name FROM pg_constraint
+      WHERE contype = 'f' AND connamespace = 'public'::regnamespace AND confdeltype <> 'a'
+    `.execute(db);
+
+    expect(result.rows).toEqual([]);
+  });
+
   it('goes back one step and forward again', async () => {
     const down = await migrator.migrateDown();
     expect(down.error).toBeUndefined();
