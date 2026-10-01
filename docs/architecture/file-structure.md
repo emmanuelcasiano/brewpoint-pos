@@ -22,7 +22,7 @@ brewpoint/
 │   ├── shared/                   code the server and all apps use
 │   ├── ui/                       design-system components
 │   └── config/                   shared TypeScript, lint and Tailwind settings
-├── infra/                        Docker Compose for local PostgreSQL, deploy files
+├── infra/                        deploy files (development uses a Neon database, see Module 01)
 └── package.json                  workspace root
 ```
 

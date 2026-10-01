@@ -1,0 +1,23 @@
+{
+  "name": "brewpoint",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint && prettier --check .",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9",
+    "turbo": "^2.11.5",
+    "typescript": "catalog:"
+  }
+}

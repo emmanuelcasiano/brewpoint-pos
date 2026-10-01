@@ -1,0 +1,10 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# One version of each shared tool for every package. Packages depend on them as "catalog:".
+catalog:
+  # typescript-eslint supports TypeScript below 6.1, so stay on 6.0 until it supports 7.
+  typescript: ~6.0.3
+  eslint: ^10.11.0
+  vitest: ^5.0.2
