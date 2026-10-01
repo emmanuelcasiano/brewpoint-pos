@@ -8,12 +8,19 @@
     "build": "tsup",
     "start": "node --env-file-if-exists=../../.env dist/main.js",
     "db:check": "tsx --env-file-if-exists=../../.env scripts/db-check.ts",
+    "db:roles": "tsx --env-file-if-exists=../../.env scripts/db-roles.ts",
+    "db:migrate": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts",
+    "db:migrate:down": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts down",
+    "db:seed": "tsx --env-file-if-exists=../../.env scripts/db-seed.ts",
+    "db:types": "kysely-codegen && prettier --write src/db/types.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
+    "@brewpoint/shared": "workspace:*",
     "fastify": "^5.12.5",
+    "kysely": "^0.29.6",
     "pg": "^8.23.0",
     "zod": "^4.6.5"
   },
@@ -22,6 +29,7 @@
     "@types/node": "^22.20.4",
     "@types/pg": "^8.23.1",
     "eslint": "catalog:",
+    "kysely-codegen": "^0.20.0",
     "tsup": "^8.5.1",
     "tsx": "^4.23.15",
     "typescript": "catalog:",

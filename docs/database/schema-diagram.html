@@ -165,7 +165,7 @@
     ['permissions', 'access', 'Global list, the same for every shop.', [
       'code text pk | sale.void.approve', 'group_name text', 'label text']],
     ['role_permissions', 'access', null, [
-      'role_id uuid pk fk:roles', 'permission_code text pk fk:permissions']],
+      'tenant_id uuid fk:tenants', 'role_id uuid pk fk:roles', 'permission_code text pk fk:permissions']],
     ['user_assignments', 'access', 'A user’s role in a branch.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'user_id uuid fk:users', 'branch_id uuid null fk:branches | empty = all branches', 'role_id uuid fk:roles']],
     ['devices', 'access', 'A paired register (T1, T2).', [
@@ -179,13 +179,13 @@
     ['invoices', 'billing', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'subscription_id uuid fk:subscriptions', 'number text uq | INV-2026-0931', 'period_start date', 'period_end date', 'subtotal bigint', 'vat_amount bigint | 12%', 'total bigint', 'status text | draft, open, paid, failed, void, credited', 'provider text | stripe, manual', 'provider_invoice_id text null', 'payment_link_url text null | GCash payment link', 'due_at timestamptz', 'issued_at timestamptz', 'paid_at timestamptz null', 'paid_manually_by uuid null fk:platform_users', 'pdf_url text']],
     ['invoice_lines', 'billing', null, [
-      'id uuid pk', 'invoice_id uuid fk:invoices', 'description text | Growth plan, monthly', 'qty int', 'unit_amount bigint', 'amount bigint']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'invoice_id uuid fk:invoices', 'description text | Growth plan, monthly', 'qty int', 'unit_amount bigint', 'amount bigint']],
     ['plan_prices', 'billing', 'A new price is a new version; shops keep theirs.', [
       'id uuid pk', 'plan_id uuid fk:plans', 'version int | 2', 'price_monthly bigint | includes 12% VAT', 'price_yearly bigint', 'valid_from date', 'valid_until date null', 'provider_price_id text null | Stripe price ID']],
     ['billing_customers', 'billing', 'The shop as the payment provider knows it.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'provider text | stripe, paymongo, xendit', 'provider_customer_id text', 'email text', 'created_at timestamptz']],
     ['payment_methods', 'billing', null, [
-      'id uuid pk', 'billing_customer_id uuid fk:billing_customers', 'type text | card, gcash_link, maya, bank_debit', 'brand text null | visa', 'last4 text null', 'expires text null | 12/28', 'provider_method_id text null', 'is_default boolean']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'billing_customer_id uuid fk:billing_customers', 'type text | card, gcash_link, maya, bank_debit', 'brand text null | visa', 'last4 text null', 'expires text null | 12/28', 'provider_method_id text null', 'is_default boolean']],
     ['payment_events', 'billing', 'Webhook inbox. Processed once per event.', [
       'id uuid pk', 'provider text', 'provider_event_id text uq | idempotency key', 'type text | invoice.payment_failed', 'tenant_id uuid null fk:tenants', 'invoice_id uuid null fk:invoices', 'payload jsonb', 'received_at timestamptz', 'processed_at timestamptz null', 'error text null']],
     ['credit_notes', 'billing', null, [
@@ -194,23 +194,23 @@
     ['register_sessions', 'sales', 'One shift on one register.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'opened_by uuid fk:users', 'opened_at timestamptz', 'opening_float bigint', 'closed_by uuid null fk:users', 'closed_at timestamptz null', 'expected_cash bigint null', 'counted_cash bigint null', 'variance bigint null | counted - expected', 'note text null', 'approved_by uuid null fk:users', 'status text | open, closed, needs_review, approved'].concat(SYNC)],
     ['cash_counts', 'sales', 'Bills and coins counted at close.', [
-      'id uuid pk', 'session_id uuid fk:register_sessions', 'denomination bigint | centavos, 100000 = ₱1,000', 'count int']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'session_id uuid fk:register_sessions', 'denomination bigint | centavos, 100000 = ₱1,000', 'count int']],
     ['cash_movements', 'sales', null, [
-      'id uuid pk', 'session_id uuid fk:register_sessions', 'direction text | in, out', 'amount bigint', 'reason text | milk delivery', 'user_id uuid fk:users', 'approved_by uuid null fk:users'].concat(SYNC)],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'session_id uuid fk:register_sessions', 'direction text | in, out', 'amount bigint', 'reason text | milk delivery', 'user_id uuid fk:users', 'approved_by uuid null fk:users'].concat(SYNC)],
     ['sales', 'sales', null, [
-      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'session_id uuid fk:register_sessions', 'receipt_no text uq | ACK-T1-000123', 'cashier_id uuid fk:users', 'status text | paid, voided, refunded, partly_refunded', 'subtotal bigint', 'discount_total bigint', 'vat_amount bigint', 'total bigint', 'voided_by uuid null fk:users', 'void_reason text null'].concat(SYNC)],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'session_id uuid fk:register_sessions', 'receipt_no text | ACK-T1-000123, unique per shop', 'cashier_id uuid fk:users', 'status text | paid, voided, refunded, partly_refunded', 'subtotal bigint', 'discount_total bigint', 'vat_amount bigint', 'total bigint', 'voided_by uuid null fk:users', 'void_reason text null'].concat(SYNC)],
     ['sale_lines', 'sales', null, [
-      'id uuid pk', 'sale_id uuid fk:sales', 'product_id uuid fk:products', 'name_snapshot text | name at time of sale', 'qty int', 'unit_price bigint', 'line_total bigint']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'sale_id uuid fk:sales', 'product_id uuid fk:products', 'name_snapshot text | name at time of sale', 'qty int', 'unit_price bigint', 'line_total bigint']],
     ['sale_line_modifiers', 'sales', null, [
-      'id uuid pk', 'sale_line_id uuid fk:sale_lines', 'modifier_id uuid fk:modifiers', 'name_snapshot text', 'price_delta bigint']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'sale_line_id uuid fk:sale_lines', 'modifier_id uuid fk:modifiers', 'name_snapshot text', 'price_delta bigint']],
     ['sale_discounts', 'sales', null, [
-      'id uuid pk', 'sale_id uuid fk:sales', 'type text | senior, pwd, promo, manual', 'percent numeric', 'amount bigint', 'id_number text null | senior or PWD ID', 'approved_by uuid null fk:users']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'sale_id uuid fk:sales', 'type text | senior, pwd, promo, manual', 'percent numeric', 'amount bigint', 'id_number text null | senior or PWD ID', 'approved_by uuid null fk:users']],
     ['payments', 'sales', null, [
-      'id uuid pk', 'sale_id uuid fk:sales', 'method text | cash, gcash, card, maya', 'amount bigint', 'tendered bigint null', 'change_given bigint null', 'reference text null | GCash or card ref']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'sale_id uuid fk:sales', 'method text | cash, gcash, card, maya', 'amount bigint', 'tendered bigint null', 'change_given bigint null', 'reference text null | GCash or card ref']],
     ['refunds', 'sales', null, [
-      'id uuid pk', 'sale_id uuid fk:sales', 'reason text', 'amount bigint', 'requested_by uuid fk:users', 'approved_by uuid null fk:users', 'created_at timestamptz']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'sale_id uuid fk:sales', 'reason text', 'amount bigint', 'requested_by uuid fk:users', 'approved_by uuid null fk:users', 'created_at timestamptz']],
     ['refund_lines', 'sales', null, [
-      'id uuid pk', 'refund_id uuid fk:refunds', 'sale_line_id uuid fk:sale_lines', 'qty int', 'amount bigint']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'refund_id uuid fk:refunds', 'sale_line_id uuid fk:sale_lines', 'qty int', 'amount bigint']],
     ['discount_rules', 'sales', 'Settings, Taxes and discounts.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'type text | senior, pwd, promo, manual', 'percent numeric | 20 for senior and PWD', 'vat_exempt boolean', 'requires_id boolean', 'role_id uuid null fk:roles | limit applies to this role', 'max_percent numeric null | 10', 'max_amount bigint null | 10000 = \u20b1100']],
     ['tenant_payment_methods', 'sales', 'Which payment types a shop accepts.', [
@@ -223,18 +223,18 @@
     ['modifier_groups', 'catalog', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'name text | Milk', 'min_select int', 'max_select int']],
     ['modifiers', 'catalog', null, [
-      'id uuid pk', 'group_id uuid fk:modifier_groups', 'name text | Oat milk', 'price_delta bigint', 'sort_order int']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'group_id uuid fk:modifier_groups', 'name text | Oat milk', 'price_delta bigint', 'sort_order int']],
     ['product_modifier_groups', 'catalog', null, [
-      'product_id uuid pk fk:products', 'modifier_group_id uuid pk fk:modifier_groups']],
+      'tenant_id uuid fk:tenants', 'product_id uuid pk fk:products', 'modifier_group_id uuid pk fk:modifier_groups']],
     ['recipe_lines', 'catalog', 'Connects the menu to stock.', [
-      'id uuid pk', 'product_id uuid fk:products', 'inventory_item_id uuid fk:inventory_items', 'qty_base numeric | 18 (g), 180 (ml)']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'product_id uuid fk:products', 'inventory_item_id uuid fk:inventory_items', 'qty_base numeric | 18 (g), 180 (ml)']],
     ['modifier_recipe_lines', 'catalog', null, [
-      'id uuid pk', 'modifier_id uuid fk:modifiers', 'inventory_item_id uuid fk:inventory_items', 'qty_base_delta numeric | -180 fresh milk, +180 oat milk']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'modifier_id uuid fk:modifiers', 'inventory_item_id uuid fk:inventory_items', 'qty_base_delta numeric | -180 fresh milk, +180 oat milk']],
 
     ['inventory_items', 'inventory', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'kind text | ingredient, packaging, retail', 'base_unit text | ml, g, pc', 'pack_unit text | box', 'pack_size numeric | 1000', 'is_perishable boolean', 'default_shelf_days int null', 'barcode text null']],
     ['item_branch_settings', 'inventory', 'One row per item per branch.', [
-      'item_id uuid pk fk:inventory_items', 'branch_id uuid pk fk:branches', 'on_hand numeric | cached sum of movements', 'reorder_point numeric null', 'order_up_to numeric null', 'avg_cost numeric | centavos per base unit', 'last_cost numeric', 'default_supplier_id uuid null fk:suppliers']],
+      'tenant_id uuid fk:tenants', 'item_id uuid pk fk:inventory_items', 'branch_id uuid pk fk:branches', 'on_hand numeric | cached sum of movements', 'reorder_point numeric null', 'order_up_to numeric null', 'avg_cost numeric | centavos per base unit', 'last_cost numeric', 'default_supplier_id uuid null fk:suppliers']],
     ['batches', 'inventory', 'Stock with an expiry date.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'item_id uuid fk:inventory_items', 'batch_code text | B-0921', 'expiry_date date null', 'qty_received numeric', 'qty_remaining numeric', 'unit_cost numeric', 'receipt_line_id uuid null fk:goods_receipt_lines', 'received_at timestamptz']],
     ['stock_movements', 'inventory', 'Every stock change, never edited.', [
@@ -242,29 +242,29 @@
     ['stock_counts', 'inventory', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'counted_by uuid fk:users', 'status text | in_progress, finished', 'started_at timestamptz', 'finished_at timestamptz null']],
     ['stock_count_lines', 'inventory', null, [
-      'id uuid pk', 'count_id uuid fk:stock_counts', 'item_id uuid fk:inventory_items', 'expected_qty numeric', 'counted_qty numeric']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'count_id uuid fk:stock_counts', 'item_id uuid fk:inventory_items', 'expected_qty numeric', 'counted_qty numeric']],
 
     ['suppliers', 'purchasing', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'name text', 'contact_name text', 'phone text', 'email text | where orders are sent', 'order_days text[] | mon, wed, fri', 'lead_time_days int', 'min_order bigint', 'terms text | COD, 7 days', 'is_active boolean']],
     ['supplier_items', 'purchasing', 'Who sells what, at what price.', [
-      'supplier_id uuid pk fk:suppliers', 'item_id uuid pk fk:inventory_items', 'supplier_sku text null', 'pack_unit text', 'pack_size numeric', 'last_cost bigint | per pack', 'last_cost_at timestamptz null', 'is_default boolean']],
+      'tenant_id uuid fk:tenants', 'supplier_id uuid pk fk:suppliers', 'item_id uuid pk fk:inventory_items', 'supplier_sku text null', 'pack_unit text', 'pack_size numeric', 'last_cost bigint | per pack', 'last_cost_at timestamptz null', 'is_default boolean']],
     ['purchase_orders', 'purchasing', null, [
-      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'supplier_id uuid fk:suppliers', 'number text uq | PO-0043', 'status text | draft, sent, partly_received, received, cancelled', 'expected_date date null', 'note text null', 'subtotal bigint', 'delivery_fee bigint', 'total bigint', 'created_by uuid fk:users', 'approved_by uuid null fk:users', 'sent_at timestamptz null', 'cancelled_at timestamptz null']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'supplier_id uuid fk:suppliers', 'number text | PO-0043, unique per shop', 'status text | draft, sent, partly_received, received, cancelled', 'expected_date date null', 'note text null', 'subtotal bigint', 'delivery_fee bigint', 'total bigint', 'created_by uuid fk:users', 'approved_by uuid null fk:users', 'sent_at timestamptz null', 'cancelled_at timestamptz null']],
     ['purchase_order_lines', 'purchasing', null, [
-      'id uuid pk', 'po_id uuid fk:purchase_orders', 'item_id uuid fk:inventory_items', 'qty_ordered numeric | in packs', 'unit_cost bigint | per pack', 'qty_received numeric | cached']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'po_id uuid fk:purchase_orders', 'item_id uuid fk:inventory_items', 'qty_ordered numeric | in packs', 'unit_cost bigint | per pack', 'qty_received numeric | cached']],
     ['goods_receipts', 'purchasing', 'One delivery.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'supplier_id uuid fk:suppliers', 'po_id uuid null fk:purchase_orders | empty = walk-in delivery', 'dr_number text null | DR 11873', 'received_by uuid fk:users', 'closed_short boolean', 'total bigint', 'received_at timestamptz']],
     ['goods_receipt_lines', 'purchasing', 'Each line creates one batch.', [
-      'id uuid pk', 'receipt_id uuid fk:goods_receipts', 'po_line_id uuid null fk:purchase_order_lines', 'item_id uuid fk:inventory_items', 'qty_received numeric | in packs', 'unit_cost bigint | per pack', 'batch_code text null', 'expiry_date date null']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'receipt_id uuid fk:goods_receipts', 'po_line_id uuid null fk:purchase_order_lines', 'item_id uuid fk:inventory_items', 'qty_received numeric | in packs', 'unit_cost bigint | per pack', 'batch_code text null', 'expiry_date date null']],
 
     ['alerts', 'alerts', 'One open alert per item, branch and type.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid fk:branches', 'item_id uuid fk:inventory_items', 'batch_id uuid null fk:batches', 'type text | out_of_stock, expired, expiring, low', 'status text | open, snoozed, resolved', 'started_at timestamptz | when it happened on the device', 'synced_at timestamptz', 'snoozed_until timestamptz null', 'resolved_at timestamptz null', 'resolved_by_source text null | receipt, waste, adjustment, count', 'resolved_ref uuid null']],
     ['alert_reads', 'alerts', 'Drives the unread count on the bell.', [
-      'alert_id uuid pk fk:alerts', 'user_id uuid pk fk:users', 'read_at timestamptz']],
+      'tenant_id uuid fk:tenants', 'alert_id uuid pk fk:alerts', 'user_id uuid pk fk:users', 'read_at timestamptz']],
     ['notification_settings', 'alerts', null, [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'event_type text | low, expired, cash_variance', 'channel text | in_app, push, email', 'enabled boolean', 'digest_time time | 07:00', 'quiet_start time null', 'quiet_end time null', 'recipients text | owner, owner_managers']],
     ['notification_deliveries', 'alerts', null, [
-      'id uuid pk', 'alert_id uuid null fk:alerts', 'user_id uuid fk:users', 'channel text', 'status text | sent, failed', 'sent_at timestamptz']],
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'alert_id uuid null fk:alerts', 'user_id uuid fk:users', 'channel text', 'status text | sent, failed', 'sent_at timestamptz']],
     ['audit_log', 'alerts', 'Append-only record of who did what.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'branch_id uuid null fk:branches', 'user_id uuid null fk:users | empty = System', 'action_code text | catalog.price.edit', 'sentence text', 'entity_type text', 'entity_id uuid', 'before jsonb null', 'after jsonb null', 'is_sensitive boolean', 'happened_at timestamptz'].concat(SYNC)],
     ['platform_users', 'platform', 'BrewPoint staff. Separate from shop users.', [
@@ -294,11 +294,11 @@
     ['announcements', 'platform', null, [
       'id uuid pk', 'title text', 'body text', 'audience text | all, plans, tenants', 'plan_ids uuid[] null', 'tenant_ids uuid[] null', 'show_banner boolean', 'send_email boolean', 'send_at timestamptz', 'ends_at timestamptz null', 'status text | draft, scheduled, sent', 'created_by uuid fk:platform_users']],
     ['announcement_reads', 'platform', null, [
-      'announcement_id uuid pk fk:announcements', 'user_id uuid pk fk:users', 'dismissed_at timestamptz']],
+      'tenant_id uuid fk:tenants', 'announcement_id uuid pk fk:announcements', 'user_id uuid pk fk:users', 'dismissed_at timestamptz']],
     ['support_tickets', 'platform', 'Optional: skip if you use an outside help desk.', [
       'id uuid pk', 'tenant_id uuid fk:tenants', 'number text uq | T-1043', 'subject text', 'requester_id uuid fk:users', 'assignee_id uuid null fk:platform_users', 'status text | waiting_on_us, waiting_on_shop, urgent, solved', 'device_id uuid null fk:devices', 'app_version text null', 'created_at timestamptz', 'solved_at timestamptz null']],
     ['support_ticket_messages', 'platform', null, [
-      'id uuid pk', 'ticket_id uuid fk:support_tickets', 'author_user_id uuid null fk:users', 'author_staff_id uuid null fk:platform_users', 'body text', 'created_at timestamptz']]
+      'id uuid pk', 'tenant_id uuid fk:tenants', 'ticket_id uuid fk:support_tickets', 'author_user_id uuid null fk:users', 'author_staff_id uuid null fk:platform_users', 'body text', 'created_at timestamptz']]
   ];
 
   function parse(spec) {

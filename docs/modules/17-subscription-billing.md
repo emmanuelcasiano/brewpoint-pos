@@ -63,6 +63,8 @@ Shops pay BrewPoint monthly or yearly. Cards are charged automatically through S
 
 ## Decisions already made
 - Stripe first, provider-neutral design. GCash by monthly payment link.
+- From Module 02: plans and plan_prices are seeded with fixed IDs: Starter v1 ₱699.00, Growth v1 ₱1,299.00 (Jan 5 to Jul 31, 2026) and v2 ₱1,499.00 (from Aug 1, 2026), Multi-branch v1 ₱3,499.00; yearly is 10 × monthly. `plans.features` holds cumulative keys (Growth includes Starter's); refine them here if needed.
+- From Module 02: `brewpoint_app` can only read `payment_events`, and sees only its own shop's rows. Webhooks (often before the shop is known) are written by `brewpoint_platform`, which has cross-shop access to the billing tables through `platform_all` policies.
 
 ## Open questions
 - Stripe account entity: Stripe does not list the Philippines as a supported country. Decide the business entity that owns the Stripe account, or start with PayMongo or Xendit behind the same interface.

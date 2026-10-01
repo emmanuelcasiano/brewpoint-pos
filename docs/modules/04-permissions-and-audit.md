@@ -59,6 +59,8 @@ One way to check "may this user do this?" on the server, and one way to record s
 
 ## Decisions already made
 - Roles are per shop; permissions are a global list.
+- From Module 02: the 42 permission codes are already seeded from `packages/shared/src/permissions/codes.ts` (the PermissionMatrix preview plus `inventory.alerts.view` and `inventory.alerts.settings`). Build the default roles on them; no new permission seed is needed. No roles exist yet and the demo owners have no assignment.
+- From Module 02: `audit_log` is already append-only by grant: `brewpoint_app` has SELECT and INSERT only, so UPDATE and DELETE fail with "permission denied" (tested in `apps/server/src/db/rls.test.ts`).
 
 ## Open questions
 - None.
