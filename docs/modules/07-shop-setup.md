@@ -58,6 +58,7 @@ A new coffee shop owner signs up, sets up the shop and first branch, and pairs t
 
 ## Decisions already made
 - Trial: 14 days on Growth.
+- From Module 02: the app may insert a `tenants` row only inside `withTenant` set to that new tenant's ID (generate it with `uuidv7()` first); it can never see or create another tenant. Plans have fixed IDs (`PLAN_IDS` in `apps/server/src/db/seed/reference.ts`); the trial uses `PLAN_IDS.growth`.
 
 ## Open questions
 - Email verification required before pairing a device, or only before the trial ends.

@@ -60,6 +60,7 @@ The BrewPoint team can see every shop's account, help a shop safely with owner-a
 
 ## Decisions already made
 - Console is a separate app with its own sign-in and navigation.
+- From Module 02: the `brewpoint_platform` role exists without a login. Give it one and a `PLATFORM_DATABASE_URL` here, the same way `pnpm db:roles` does for the app. Through `platform_all` policies it reads and writes these shop tables across shops: tenants, subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events, credit_notes, support_access_grants, tenant_events, data_requests, tenant_feature_overrides, device_error_reports, support_tickets, support_ticket_messages. It has no grant on shop business data: staff read it through `withTenant` on the app connection after the server checks an active grant. `platform_audit_log` and `tenant_events` are append-only by grant.
 
 ## Open questions
 - Should owners be able to pre-approve support access (for example "always allow read-only for 30 minutes")? Recommendation: no, approve each time.

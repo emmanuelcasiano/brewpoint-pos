@@ -60,6 +60,7 @@ Owners order stock from suppliers with purchase orders holding many items, and r
 
 ## Decisions already made
 - Orders are per supplier and per branch. Email sends a PDF from the shop's name.
+- From Module 02: brewpoint_app may DELETE only from role_permissions, user_assignments, product_modifier_groups, recipe_lines, modifier_recipe_lines, supplier_items, pairing_codes and purchase_order_lines; everything else is voided, cancelled or deactivated with a status column. A new DELETE needs a grant in a new migration.
 
 ## Open questions
 - Email sending service (for example Postmark, Resend or SES), shared with Module 15.

@@ -57,6 +57,7 @@ Inventory items exist with their units, and every stock change in the product go
 
 ## Decisions already made
 - Base units only in storage: ml, g, pc.
+- From Module 02: `numeric` columns (stock in base units, costs per base unit) come back from the driver as strings; decide here how they are read. `item_branch_settings.avg_cost`, `last_cost` and `batches.unit_cost` stay `numeric` because they can be fractions of a centavo. `stock_movements` is append-only by grant (SELECT and INSERT only).
 
 ## Open questions
 - Which permission creates inventory items: catalog.manage or a new inventory.manage. Recommendation: add inventory.manage.

@@ -63,6 +63,8 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 ## Decisions already made
 - Staff and shop identities are separate tables (users, platform_users).
 - From Module 01: the server is Fastify. `apps/server/src/app.ts` builds the app and mounts routes; validate input with Zod. New settings go in `apps/server/src/env.ts`, each with a plain-language error message.
+- From Module 02: the server connects as `brewpoint_app` (`DATABASE_URL`, required in `env.ts`), so row-level security applies to every query. Create the connection with `createDb` (`core/db/client.ts`) and run every shop query inside `withTenant(db, tenantId, fn)` (`core/db/tenant-transaction.ts`).
+- From Module 02: `users.email` is unique across all shops and sign-in looks it up before the shop is known, but with no tenant set the app sees no users. Sign-in needs a narrow lookup path added by migration (for example a `SECURITY DEFINER` function that returns only the tenant id and hashes for one email). The demo owners (`carlo@kapedavao.test`, `jake@brewbroscebu.test`) have no password or PIN yet.
 
 ## Open questions
 - Build sign-in yourself or use a library/service (for example Lucia-style sessions, Auth.js, or a hosted provider). A hosted provider must support offline PIN on the POS, which usually means PINs stay in BrewPoint regardless.

@@ -35,6 +35,8 @@ BrewPoint is safe to trust with real shops: data is backed up and restorable, pr
 ## Decisions already made
 - From Module 01: CI (`.github/workflows/ci.yml`) already runs lint, typecheck, unit tests, the build, the Playwright smoke test and a gitleaks secret scan on every push and pull request. Add the isolation, permission and staff-access tests to it.
 - From Module 01: development uses Neon (PostgreSQL 18, AWS US East 2). Production hosting is not chosen yet.
+- From Module 02: foreign keys ignore row-level security, so a row can reference another shop's row by ID. Consider composite `(tenant_id, id)` foreign keys. CI already runs the isolation test (`apps/server/src/db/rls.test.ts`) against a PostgreSQL 18 service.
+- From Module 02: production needs `pnpm db:roles` run once against its database, and the server must use the `brewpoint_app` URL, never the owner. From the Philippines each query to Neon US East 2 takes about 230 ms; consider the region when hosting is chosen.
 
 ## Open questions
 - Hosting region and provider (deferred in Module 01; Singapore suggested for latency to the Philippines).
