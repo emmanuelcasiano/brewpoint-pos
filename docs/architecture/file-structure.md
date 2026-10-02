@@ -184,10 +184,19 @@ packages/shared/src/
 └── permissions/codes.ts          the permission code list as constants
 
 packages/ui/src/
-├── tokens.css                    from the design system
+├── styles/                       @brewpoint/ui/styles.css: imported once by each app after Tailwind
+│   ├── fonts.css                     bundled fonts (works offline)
+│   ├── tokens.css                    verbatim copy of the design system's tokens.css
+│   ├── theme.css                     Tailwind @theme mapping to the token variables
+│   ├── compat.css                    undoes the preflight resets bundle.css relies on
+│   └── components.css                verbatim port of bundle.css (the bp- classes)
 ├── components/                   Button, Field, DataTable, Drawer, SideNav, Numpad, Chart…
-├── accent/                       deriveAccent, applyAccent
-└── icons/
+├── accent/                       contrast, deriveAccent, applyAccent
+├── theme/                        Daylight or Night shift per device, useTheme
+├── icons/                        the bundled stroke icons and <Icon>
+└── test/                         test setup and design-system sync helpers
+
+packages/ui/gallery/              dev-only component gallery (pnpm --filter @brewpoint/ui gallery)
 
 packages/config/
 ├── tsconfig/                     base, node and react settings every package extends

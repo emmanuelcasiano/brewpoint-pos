@@ -1,0 +1,152 @@
+/*
+ * Tailwind reads the design tokens from here. Tailwind's own palette, spacing, radii, shadows and
+ * fonts are switched off, so only token values exist (bg-red-500 or p-3 compile to nothing).
+ *
+ * `inline` makes each utility use the CSS variable itself (bg-surface is
+ * background-color: var(--surface)), so data-theme and applyAccent restyle the page at runtime.
+ * `reference` is used where Tailwind's variable name is the token's own name (--radius-*,
+ * --shadow-*, --font-*): Tailwind then never declares --radius-md: var(--radius-md) on :root.
+ */
+@theme {
+  --color-*: initial;
+  --spacing-*: initial;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-pressed: var(--accent-pressed);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-focus: var(--focus);
+  --color-focus-inverse: var(--focus-inverse);
+  --color-scrim: var(--scrim);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-compare: var(--chart-compare);
+  --color-chart-grid: var(--chart-grid);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --spacing: initial;
+  --spacing-0: 0px;
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-8: var(--space-8);
+  --spacing-12: var(--space-12);
+  --spacing-target-min: var(--target-min);
+  --spacing-target-pos: var(--target-pos);
+  --spacing-target-key: var(--target-key);
+  --spacing-tile-min: var(--tile-min);
+  --spacing-cart-width: var(--cart-width);
+  --spacing-rail-width: var(--rail-width);
+  --spacing-sidenav-width: var(--sidenav-width);
+  --spacing-topbar-height: var(--topbar-height);
+  --spacing-panel-width: var(--panel-width);
+
+  --z-index-sticky: var(--z-sticky);
+  --z-index-banner: var(--z-banner);
+  --z-index-modal: var(--z-modal);
+  --z-index-toast: var(--z-toast);
+}
+
+@theme inline reference {
+  --radius-*: initial;
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-*: initial;
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+
+  --font-*: initial;
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* Type styles from tokens.json. They are the same in both themes, so they are plain values. */
+@theme {
+  --text-*: initial;
+  --text-display-xl: 48px;
+  --text-display-xl--line-height: 52px;
+  --text-display-xl--font-weight: 700;
+  --text-display-xl--letter-spacing: -0.5px;
+  --text-display-lg: 34px;
+  --text-display-lg--line-height: 40px;
+  --text-display-lg--font-weight: 700;
+  --text-display-lg--letter-spacing: -0.3px;
+  --text-heading-md: 24px;
+  --text-heading-md--line-height: 30px;
+  --text-heading-md--font-weight: 600;
+  --text-heading-sm: 20px;
+  --text-heading-sm--line-height: 26px;
+  --text-heading-sm--font-weight: 600;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 26px;
+  --text-body-lg--font-weight: 400;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body--font-weight: 400;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 600;
+  --text-eyebrow: 12px;
+  --text-eyebrow--line-height: 16px;
+  --text-eyebrow--font-weight: 600;
+  --text-eyebrow--letter-spacing: 0.8px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 400;
+  --text-amount-xl: 44px;
+  --text-amount-xl--line-height: 48px;
+  --text-amount-xl--font-weight: 700;
+  --text-amount-lg: 28px;
+  --text-amount-lg--line-height: 32px;
+  --text-amount-lg--font-weight: 700;
+  --text-amount: 18px;
+  --text-amount--line-height: 24px;
+  --text-amount--font-weight: 600;
+  --text-key: 28px;
+  --text-key--line-height: 32px;
+  --text-key--font-weight: 600;
+  --text-receipt: 9.4px;
+  --text-receipt--line-height: 12px;
+  --text-receipt--font-weight: 400;
+  --text-receipt-strong: 9.4px;
+  --text-receipt-strong--line-height: 12px;
+  --text-receipt-strong--font-weight: 700;
+}

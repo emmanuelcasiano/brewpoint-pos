@@ -1,5 +1,8 @@
 pnpm-lock.yaml
 docs/
+# Verbatim copies of the design system, kept in step by packages/ui's sync tests.
+packages/ui/src/styles/tokens.css
+packages/ui/src/styles/components.css
 context/
 .claude/
 CLAUDE.md

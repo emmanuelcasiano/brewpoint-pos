@@ -68,6 +68,10 @@ The shared React component library that every screen is built from, matching the
 - Chart is a React SVG component with the same geometry, classes and tooltip as bundle.js, not an HTML string.
 - SideNav and ConsoleNav take a `renderLink` prop; the router is chosen when each app's shell is built.
 - The theme is stored per device in localStorage under `brewpoint.theme`; Daylight is the default.
+- The Crema values in tokens.css are hand-tuned and differ slightly from `deriveAccent('#E2A13B')` (the port matches bundle.js exactly; a test runs bundle.js to check). So `applyTheme` applies an accent only for a shop color other than Crema; with no shop color or Crema, tokens.css applies unchanged.
+- tokens.css and components.css are verbatim copies (Prettier skips them) with tests that keep them in step with the design system. The type styles live in theme.css as Tailwind `text-*` values, also checked against tokens.json.
+- `compat.css` undoes the Tailwind preflight resets that bundle.css relies on, starting with icons (preflight makes every svg a block). It is the only place to add such fixes.
+- Fonts are declared by BrewPoint's own `@font-face` rules over the fontsource files (latin and latin-ext per weight, so ₱ is covered), because fontsource names the variable font "Bricolage Grotesque Variable".
 - Not built here: ProductTile, CartLine, Receipt, AccentPicker, PermissionMatrix, the notification panel and alert rows. Each is built with the module that uses it.
 
 ## Open questions

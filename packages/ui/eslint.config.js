@@ -1,3 +1,3 @@
-import { base } from '@brewpoint/config/eslint';
+import { react } from '@brewpoint/config/eslint';
 
-export default base(import.meta.dirname);
+export default react(import.meta.dirname);
