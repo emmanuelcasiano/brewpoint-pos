@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ACCENT_HEX_ERROR, DEFAULT_ACCENT, isAccentHex, useTheme } from '../src';
+import { ACCENT_HEX_ERROR, DEFAULT_ACCENT, isAccentHex, Segmented, useTheme } from '../src';
 import { SECTIONS } from './sections';
 import { Specimen } from './Specimen';
+import { THEME_OPTIONS } from './themes';
 
 /** Crema means "no shop accent": the hand-tuned values in tokens.css apply. */
 function shopAccent(value: string): string | null {
@@ -25,14 +26,7 @@ export function Gallery() {
           </p>
         </div>
         <span className="flex-1" />
-        <span className="bp-segmented" role="group" aria-label="Page theme">
-          <button type="button" aria-pressed={theme === 'light'} onClick={() => setTheme('light')}>
-            Daylight
-          </button>
-          <button type="button" aria-pressed={theme === 'dark'} onClick={() => setTheme('dark')}>
-            Night shift
-          </button>
-        </span>
+        <Segmented label="Page theme" options={THEME_OPTIONS} value={theme} onChange={setTheme} />
         <div className={accentInvalid ? 'bp-field bp-field--error' : 'bp-field'}>
           <label className="bp-field__label" htmlFor="gallery-accent">
             Shop accent

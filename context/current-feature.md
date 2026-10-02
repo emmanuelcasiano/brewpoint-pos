@@ -23,7 +23,7 @@ docs/modules/05-ui-foundation.md
 - Screens, in four parts, each stopped for review and committed on approval:
   - [x] 5a Foundation: styles, tokens, fonts, helpers, icons, theme, test setup, gallery shell, app wiring
   - [x] 5b Actions, forms and feedback: Button, IconButton, Field and inputs, StatusChip, Banner, Toast, Modal, Numpad, PinPrompt
-  - [ ] 5c Layout and navigation: Tabs, Segmented, Split, Drawer, Toolbar, Search, PageHead, Bell, SideNav, ConsoleNav, TopBar, DataTable, Pager
+  - [x] 5c Layout and navigation: Tabs, Segmented, Split, Drawer, Toolbar, Search, PageHead, Bell, SideNav, ConsoleNav, TopBar, DataTable, Pager
   - [ ] 5d Data display and checks: Card, StatTile, Sparkline, Chart, Meter, Timeline; gallery Playwright checks and screenshot baselines
 
 ## Plan
@@ -147,7 +147,7 @@ Not built here: ProductTile, CartLine, Receipt, AccentPicker, PermissionMatrix, 
 |---|---|
 | Every component renders in both themes, no visible differences from preview.html | Reviewed by eye in the gallery in each step. After approval, `tests/e2e/gallery.spec.ts` takes a screenshot of every section in both themes, on Linux Chromium only. Baselines come from the manual CI job (no Docker locally); Windows runs skip the screenshot tests |
 | Accent #9C3D54 recolors only accent tokens; accent text pairs at 4.5:1 or more | `accent.test.ts`, in both themes: on-accent against accent, hover and pressed is at least 4.5; accent-strong against surface-raised and accent-soft is at least 4.5. In `gallery.spec.ts`, every token variable's computed value is read before and after applying #9C3D54, and only the six accent variables changed |
-| Keyboard focus visible on every interactive component | In `gallery.spec.ts`, Tab through every focusable element in each section and assert a 2px solid outline with a 2px offset (`focus-inverse` on the side navigation) |
+| Keyboard focus visible on every interactive component | In `gallery.spec.ts`, Tab through every focusable element in each section and assert a 2px solid outline with a 2px offset (`focus-inverse` on the side navigation; -2px, inside the row, on clickable table rows) |
 | Unit tests for states (disabled, selected, error, loading) | The `.test.tsx` beside each component, with the states in the table above |
 | Given accent #222222 in Night shift, deriveAccent lifts it to at least 3:1 against the dark ground | `accent.test.ts` |
 | No hex values in components | `no-hex.test.ts` |

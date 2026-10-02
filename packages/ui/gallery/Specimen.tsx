@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { applyAccent, clearAccent, type ThemeName } from '../src';
+import { applyAccent, clearAccent, Segmented, type ThemeName } from '../src';
+import { THEME_LABEL, THEME_OPTIONS } from './themes';
 
 export interface GallerySection {
   id: string;
@@ -8,8 +9,6 @@ export interface GallerySection {
   preview?: string;
   render: () => ReactNode;
 }
-
-const THEME_LABEL: Record<ThemeName, string> = { light: 'Daylight', dark: 'Night shift' };
 
 function setAccent(el: HTMLElement, accent: string | null, theme: ThemeName) {
   if (accent) applyAccent(el, accent, theme);
@@ -69,13 +68,12 @@ function PreviewFrame({ name, accent }: { name: string; accent: string | null })
     <div className="flex min-w-0 flex-col gap-2">
       <div className="flex items-center gap-2">
         <span className="bp-eyebrow">preview.html</span>
-        <span className="bp-segmented" role="group" aria-label={`${name} preview theme`}>
-          {(['light', 'dark'] as const).map((t) => (
-            <button key={t} type="button" aria-pressed={theme === t} onClick={() => setTheme(t)}>
-              {THEME_LABEL[t]}
-            </button>
-          ))}
-        </span>
+        <Segmented
+          label={`${name} preview theme`}
+          options={THEME_OPTIONS}
+          value={theme}
+          onChange={setTheme}
+        />
       </div>
       <iframe
         ref={frame}

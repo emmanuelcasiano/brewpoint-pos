@@ -79,6 +79,11 @@ The shared React component library that every screen is built from, matching the
 - Numpad takes an optional full-width confirm key (`confirmLabel`) for entries whose length varies.
 - Modal renders through a portal over the page (`fixed`, `z-modal`), moves focus in, traps Tab, cancels on Escape and returns focus on close. `contained` renders it in place inside a `bp-stage` without moving or trapping focus; it is for the gallery and previews only.
 - Banner picks its role from its tone (danger is `alert`, the rest `status`) and a default icon per tone; Toast pauses its 8 seconds while hovered or focused.
+- Tabs use a roving tab stop: only the selected tab is in the Tab order, arrow keys, Home and End move focus, and Enter or Space selects (manual activation).
+- SideNav and ConsoleNav call `renderLink({ destination, className, 'aria-current', children })`; the app spreads everything but `destination` onto its router link. Both take `hidden` (destinations the user may not open are removed, and an emptied group loses its heading). Badge labels are plural-aware ("1 unread alert", "5 items need attention"; console: "4 open").
+- DataTable takes column definitions (`cell`, optional `sub` line, `numeric`, `className`). Numeric cells also get `bp-nowrap`, so numbers never wrap and the wrapper scrolls instead. Clickable rows (`onRowClick`) are focusable and open on Enter or Space; their focus ring is a 2px `focus` outline drawn inside the row (offset -2px, Tailwind utilities on the row) so the scrolling wrapper never clips it. The selected row has `is-selected` and `aria-current="true"`.
+- Bell's name keeps the real count ("Alerts, 120 unread") while the badge shows "99+"; with nothing unread it reads "Alerts, none unread" and shows no badge.
+- TopBar takes `register`, `license` (only when due), `sync` and `user` slots and renders them in the fixed order. Pager takes `hasPrevious`/`hasNext` and labels that default to Previous and Next (logs pass Newer and Older).
 
 ## Open questions
 - None. Gallery tool answered under "Decisions already made".
