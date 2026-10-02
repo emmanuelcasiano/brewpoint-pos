@@ -58,9 +58,20 @@ The shared React component library that every screen is built from, matching the
 ## Decisions already made
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (UI), IBM Plex Mono (receipts, codes).
 - From Module 01: Tailwind v4 with CSS-based configuration. Map the tokens with `@theme inline` over tokens.css; `inline` keeps theme and accent switching at runtime, including two themes side by side in the gallery. Shared Vite settings live in `packages/config/vite` and React lint rules in `packages/config/eslint` (`react`). Each app's placeholder `src/app/App.tsx` is replaced by real screens.
+- Built before Module 03, because the 03 sign-in screens use Button, Field, Numpad and PinPrompt.
+- Gallery: a dev-only Vite page inside packages/ui, run with `pnpm --filter @brewpoint/ui gallery`. It shows each component in Daylight and Night shift beside an iframe of its preview.html, with an accent input. Nothing from it ships in an app.
+- Styling: bundle.css is ported into packages/ui as CSS in Tailwind's `components` layer, using only token variables. Components set the bp- classes; screens use Tailwind utilities for layout. This is how "Tailwind for all styling" applies to bp- components (noted in context/coding-standards.md).
+- Visual check: compare by eye in the gallery (both themes, beside preview.html) while building, then lock the approved look with Playwright screenshot baselines of the gallery in CI.
+- Screenshot tests run on Linux Chromium only. Their baselines come from a manual `update-gallery-snapshots` CI job (no Docker is used locally), and Windows runs skip them.
+- Fonts are bundled from `@fontsource` packages in packages/ui's stylesheet, used by all three apps; no Google Fonts request.
+- Tailwind's default palette and spacing are switched off; only token values exist. Where a Tailwind setting has the same name as a token (`--radius-*`, `--shadow-*`, `--font-*`), the mapping uses `reference` so the variable is never redeclared as itself.
+- Chart is a React SVG component with the same geometry, classes and tooltip as bundle.js, not an HTML string.
+- SideNav and ConsoleNav take a `renderLink` prop; the router is chosen when each app's shell is built.
+- The theme is stored per device in localStorage under `brewpoint.theme`; Daylight is the default.
+- Not built here: ProductTile, CartLine, Receipt, AccentPicker, PermissionMatrix, the notification panel and alert rows. Each is built with the module that uses it.
 
 ## Open questions
-- Gallery tool: Storybook or a lightweight in-app route.
+- None. Gallery tool answered under "Decisions already made".
 
 ## How to work
 1. Read the files above. Ask about anything unclear before planning.

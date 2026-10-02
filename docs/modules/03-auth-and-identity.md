@@ -65,9 +65,13 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 - From Module 01: the server is Fastify. `apps/server/src/app.ts` builds the app and mounts routes; validate input with Zod. New settings go in `apps/server/src/env.ts`, each with a plain-language error message.
 - From Module 02: the server connects as `brewpoint_app` (`DATABASE_URL`, required in `env.ts`), so row-level security applies to every query. Create the connection with `createDb` (`core/db/client.ts`) and run every shop query inside `withTenant(db, tenantId, fn)` (`core/db/tenant-transaction.ts`).
 - From Module 02: `users.email` is unique across all shops and sign-in looks it up before the shop is known, but with no tenant set the app sees no users. Sign-in needs a narrow lookup path added by migration (for example a `SECURITY DEFINER` function that returns only the tenant id and hashes for one email). The demo owners (`carlo@kapedavao.test`, `jake@brewbroscebu.test`) have no password or PIN yet.
+- Sign-in is built in BrewPoint, not with a library or hosted provider: opaque session tokens stored hashed in BrewPoint's own sessions tables, back-office sessions sliding to 12 hours of inactivity, Argon2id for passwords and PINs, and a small library for TOTP only.
+- Module 05 (UI foundation) is built before this module's screens, so the sign-in screens use the real Button, Field, Numpad and PinPrompt components from `packages/ui`.
+- Offline PIN in this module is a minimal cache: a server endpoint returns the PIN hashes of a branch's active users, and the POS keeps them in a small IndexedDB cache with its own verifier and per-device lockout, tested offline. It uses the seeded demo device until Module 06 adds pairing, the device credential and sync.
+- Email goes through a small mailer interface. In local and CI it logs the link and keeps it for tests; a real provider is chosen before staging.
 
 ## Open questions
-- Build sign-in yourself or use a library/service (for example Lucia-style sessions, Auth.js, or a hosted provider). A hosted provider must support offline PIN on the POS, which usually means PINs stay in BrewPoint regardless.
+- None. Sign-in approach answered under "Decisions already made".
 
 ## How to work
 1. Read the files above. Ask about anything unclear before planning.
