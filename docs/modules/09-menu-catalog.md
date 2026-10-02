@@ -58,6 +58,7 @@ Owners set up what the POS sells: categories, products with prices, add-ons like
 
 ## Decisions already made
 - Recipes are in base units; modifiers can change recipes.
+- From Module 05: ProductTile is not in packages/ui yet; build it with the module that first shows it, following the same rules (bp- classes from its README, no data fetching).
 - From Module 02: brewpoint_app may DELETE only from role_permissions, user_assignments, product_modifier_groups, recipe_lines, modifier_recipe_lines, supplier_items, pairing_codes and purchase_order_lines; everything else is voided, cancelled or deactivated with a status column. A new DELETE needs a grant in a new migration.
 
 ## Open questions

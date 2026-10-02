@@ -69,6 +69,7 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 - Module 05 (UI foundation) is built before this module's screens, so the sign-in screens use the real Button, Field, Numpad and PinPrompt components from `packages/ui`.
 - Offline PIN in this module is a minimal cache: a server endpoint returns the PIN hashes of a branch's active users, and the POS keeps them in a small IndexedDB cache with its own verifier and per-device lockout, tested offline. It uses the seeded demo device until Module 06 adds pairing, the device credential and sync.
 - Email goes through a small mailer interface. In local and CI it logs the link and keeps it for tests; a real provider is chosen before staging.
+- From Module 05: PinPrompt and Numpad are controlled. The screen holds the PIN (`pin`, `onPinChange`), checks it and counts the tries; show a wrong PIN by clearing `pin` and passing `error`, and a lock with `locked`. `applyNumpadKey` is the shared key rule. Field passes its id and error to the TextInput or Select inside it (`<Field label error><TextInput /></Field>`). Each app's `main.tsx` already calls `applyTheme(readStoredTheme())`. Browse every component with `pnpm --filter @brewpoint/ui gallery`.
 
 ## Open questions
 - None. Sign-in approach answered under "Decisions already made".

@@ -58,6 +58,7 @@ Managers and clerks keep stock accurate: see every item in both units, count and
 
 ## Decisions already made
 - Expiry windows come from categories.expiry_warn_days (default 3).
+- From Module 05: Split, Drawer, Toolbar, FilterChip, SearchInput, DataTable (sub-lines for the base unit, selected row, clickable rows), StatTile and Chart are in `@brewpoint/ui`.
 
 ## Open questions
 - Allow counts on the iPad in this module, or back-office only for now.

@@ -54,6 +54,7 @@ Owners manage their team, devices and settings, and can see a permanent record o
 
 ## Decisions already made
 - Default roles from the PermissionMatrix preview.
+- From Module 05: PermissionMatrix is not in packages/ui yet; it is built in this module, keeping its bp- classes. Switch, Checkbox, Tabs and DataTable are ready.
 - From Module 02: brewpoint_app may DELETE only from role_permissions, user_assignments, product_modifier_groups, recipe_lines, modifier_recipe_lines, supplier_items, pairing_codes and purchase_order_lines; everything else is voided, cancelled or deactivated with a status column. A new DELETE needs a grant in a new migration.
 
 ## Open questions
