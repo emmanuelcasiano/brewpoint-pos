@@ -17,7 +17,14 @@ describe('checkTestDatabaseUrls', () => {
       MIGRATION_TEST_DATABASE_URL: TEST_DIRECT,
     });
 
-    expect(check).toEqual({ ok: true, urls: { owner: TEST_DIRECT, app: TEST_POOLED } });
+    expect(check).toEqual({
+      ok: true,
+      urls: {
+        owner: TEST_DIRECT,
+        app: TEST_POOLED,
+        platform: TEST_POOLED.replace('brewpoint_app', 'brewpoint_platform'),
+      },
+    });
   });
 
   it('skips when a test URL is missing', () => {

@@ -1,15 +1,14 @@
 import { uuidv7 } from '@brewpoint/shared';
 import { sql, type Kysely } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createDb } from '../core/db/client';
+import { createDb, createPlatformDb } from '../core/db/client';
 import { withTenant } from '../core/db/tenant-transaction';
 import { Fixtures, insertStatement, literal } from './fixtures';
-import { createMigrationDb, createSessionRoleDb } from './migrator';
-import { PLATFORM_ROLE } from './roles';
+import { createMigrationDb } from './migrator';
 import { requireTestDatabaseUrls, testDatabaseUrls } from './test-database';
 import type { DB } from './types';
 
-// Every one of the 70 tables is in exactly one of these lists; a test below fails when a new
+// Every one of the 74 tables is in exactly one of these lists; a test below fails when a new
 // table is added without deciding which.
 
 /** Rows belong to one shop. Row-level security limits them to the tenant on the transaction. */
@@ -73,6 +72,9 @@ const TENANT_TABLES = [
   'announcement_reads',
   'support_tickets',
   'support_ticket_messages',
+  'sessions',
+  'auth_tokens',
+  'pin_lockouts',
 ];
 
 /** The same for every shop; shops may read them. */
@@ -92,6 +94,7 @@ const PLATFORM_ONLY_TABLES = [
   'platform_permissions',
   'platform_role_permissions',
   'platform_audit_log',
+  'platform_sessions',
 ];
 
 const RLS_VIOLATION = /^42501 new row violates row-level security policy/;
@@ -116,7 +119,7 @@ describe.skipIf(!testDatabaseUrls())('row-level security', () => {
     const urls = requireTestDatabaseUrls();
     app = createDb(urls.app);
     migrator = createMigrationDb(urls.owner);
-    platform = createSessionRoleDb(urls.owner, PLATFORM_ROLE);
+    platform = createPlatformDb(urls.platform);
 
     fixtures = await Fixtures.insert(migrator, [tenantA, tenantB]);
     appPrivileges = await privilegesOf(migrator, 'brewpoint_app', TENANT_TABLES);
@@ -148,7 +151,7 @@ describe.skipIf(!testDatabaseUrls())('row-level security', () => {
   });
 
   describe('every table is covered', () => {
-    it('puts each of the 70 tables in exactly one list', async () => {
+    it('puts each of the 74 tables in exactly one list', async () => {
       const tables = await sql<{ name: string }>`
         SELECT tablename AS name FROM pg_tables
         WHERE schemaname = 'public' AND tablename NOT LIKE 'kysely%'
@@ -157,7 +160,7 @@ describe.skipIf(!testDatabaseUrls())('row-level security', () => {
 
       expect(new Set(listed).size).toBe(listed.length);
       expect(tables.rows.map((t) => t.name).sort()).toEqual([...listed].sort());
-      expect(listed).toHaveLength(70);
+      expect(listed).toHaveLength(74);
     });
 
     it('forces row-level security with a tenant_isolation policy on every tenant table, and on no other', async () => {
@@ -258,6 +261,32 @@ describe.skipIf(!testDatabaseUrls())('row-level security', () => {
       }
     });
 
+    it('finds one user by email before the shop is known, and gets only the ids', async () => {
+      const user = fixtures.rowOf('users', tenantA);
+
+      const found = await sql<{ user_id: string; tenant_id: string }>`
+        SELECT * FROM auth_find_user(${` ${String(user.email).toUpperCase()} `})
+      `.execute(app);
+      const visible = await sql`SELECT id FROM users`.execute(app);
+
+      expect(found.rows).toEqual([{ user_id: user.id, tenant_id: tenantA }]);
+      expect(visible.rows).toEqual([]);
+    });
+
+    it('finds nobody for an email no user has', async () => {
+      const found = await sql`SELECT * FROM auth_find_user('nobody@example.test')`.execute(app);
+
+      expect(found.rows).toEqual([]);
+    });
+
+    it("leaves the lookup's owner, the migrator, limited to one shop once a tenant is set", async () => {
+      const tenants = await withTenant(migrator, tenantA, (trx) =>
+        trx.selectFrom('users').select('tenant_id').distinct().execute(),
+      );
+
+      expect(tenants).toEqual([{ tenant_id: tenantA }]);
+    });
+
     it('can read the global tables shops need', async () => {
       for (const table of SHOP_READABLE_GLOBAL_TABLES) {
         const result = await sql`SELECT * FROM ${sql.table(table)}`.execute(app);
@@ -292,8 +321,16 @@ describe.skipIf(!testDatabaseUrls())('row-level security', () => {
       }
     });
 
-    it("cannot read a shop's business data", async () => {
-      for (const table of ['sales', 'stock_movements', 'products', 'users']) {
+    it('logs in on its own and reads staff sessions', async () => {
+      const result = await sql<{ role: string }>`SELECT current_user AS role`.execute(platform);
+      const sessions = await sql`SELECT id FROM platform_sessions`.execute(platform);
+
+      expect(result.rows).toEqual([{ role: 'brewpoint_platform' }]);
+      expect(sessions.rows.length).toBeGreaterThan(0);
+    });
+
+    it("cannot read a shop's business data or its sign-in data", async () => {
+      for (const table of ['sales', 'stock_movements', 'products', 'users', 'sessions']) {
         await expect(sql`SELECT * FROM ${sql.table(table)}`.execute(platform)).rejects.toThrow(
           `permission denied for table ${table}`,
         );

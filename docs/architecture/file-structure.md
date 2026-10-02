@@ -50,8 +50,10 @@ apps/server/src/
 │   ├── stock/
 │   │   └── record-movement.ts        the only way stock changes (FEFO inside)
 │   ├── money/                        VAT and discount maths on centavos
+│   ├── mail/                         the mailer interface (logs mail in local and tests)
 │   └── errors.ts                     plain-language error responses
 ├── modules/                      one folder per module brief
+│   ├── auth/                         03 sign-in endpoints: back-office, POS PIN, staff two-step
 │   ├── shops/                        07 shop setup, branches, settings
 │   ├── inventory/                    08 items and ledger, 13 counts, waste, expiry
 │   ├── catalog/                      09 categories, products, modifiers, recipes
@@ -91,7 +93,7 @@ apps/server/src/
 └── main.ts                       starts the server
 ```
 
-Outside `src/`, `apps/server/scripts/` holds developer scripts (`db-check.ts`, `db-roles.ts`, `db-migrate.ts`, `db-seed.ts`, run as `pnpm db:check`, `db:roles`, `db:migrate`, `db:seed`), `vitest.config.ts` sets up the database tests, `.kysely-codegenrc.json` configures `pnpm db:types`, and `tsup.config.ts` bundles the server for production.
+Outside `src/`, `apps/server/scripts/` holds developer scripts (`db-check.ts`, `db-roles.ts`, `db-migrate.ts`, `db-seed.ts`, `staff-create.ts`, run as `pnpm db:check`, `db:roles`, `db:migrate`, `db:seed`, `staff:create`), `vitest.config.ts` sets up the database tests, `.kysely-codegenrc.json` configures `pnpm db:types`, and `tsup.config.ts` bundles the server for production.
 
 Inside every module folder, the same five files:
 

@@ -5,7 +5,8 @@ import { createMigrationDb, createMigrator } from './migrator';
 import { requireTestDatabaseUrls, testDatabaseUrls } from './test-database';
 import type { DB } from './types';
 
-const MIGRATION_COUNT = 12;
+const MIGRATION_COUNT = 13;
+const TABLE_COUNT = 74;
 
 // The global setup has already migrated the test database from empty to the latest migration.
 describe.skipIf(!testDatabaseUrls())('migrations', () => {
@@ -29,12 +30,12 @@ describe.skipIf(!testDatabaseUrls())('migrations', () => {
     return result.rows[0]?.count ?? -1;
   }
 
-  it('builds all 70 tables from empty', async () => {
+  it('builds all 74 tables from empty', async () => {
     const migrations = await migrator.getMigrations();
 
     expect(migrations).toHaveLength(MIGRATION_COUNT);
     expect(migrations.every((migration) => migration.executedAt)).toBe(true);
-    expect(await tableCount()).toBe(70);
+    expect(await tableCount()).toBe(TABLE_COUNT);
   });
 
   it('never deletes rows through a foreign key: no ON DELETE CASCADE or SET NULL', async () => {
@@ -50,13 +51,13 @@ describe.skipIf(!testDatabaseUrls())('migrations', () => {
     const down = await migrator.migrateDown();
     expect(down.error).toBeUndefined();
     expect(down.results?.map((r) => [r.migrationName, r.direction, r.status])).toEqual([
-      ['0012-role-grants', 'Down', 'Success'],
+      ['0013-auth', 'Down', 'Success'],
     ]);
 
     const up = await migrator.migrateToLatest();
     expect(up.error).toBeUndefined();
     expect(up.results?.map((r) => [r.migrationName, r.direction, r.status])).toEqual([
-      ['0012-role-grants', 'Up', 'Success'],
+      ['0013-auth', 'Up', 'Success'],
     ]);
   });
 
@@ -69,6 +70,6 @@ describe.skipIf(!testDatabaseUrls())('migrations', () => {
     const up = await migrator.migrateToLatest();
     expect(up.error).toBeUndefined();
     expect(up.results).toHaveLength(MIGRATION_COUNT);
-    expect(await tableCount()).toBe(70);
+    expect(await tableCount()).toBe(TABLE_COUNT);
   });
 });

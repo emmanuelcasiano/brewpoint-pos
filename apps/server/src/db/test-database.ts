@@ -1,12 +1,14 @@
 import { sql } from 'kysely';
 import { createMigrationDb, createMigrator, createOwnerDb } from './migrator';
-import { bootstrapRoles, setAppRolePassword } from './roles';
+import { APP_ROLE, bootstrapRoles, PLATFORM_ROLE, setRolePassword } from './roles';
 
 export interface TestDatabaseUrls {
   /** neondb_owner (or postgres in CI), direct connection: resets, migrates, seeds. */
   owner: string;
   /** brewpoint_app, pooled connection: what the server will use. */
   app: string;
+  /** brewpoint_platform: the app URL with the platform role, given the same password by the test setup. */
+  platform: string;
 }
 
 export type TestDatabaseCheck =
@@ -35,7 +37,7 @@ export function checkTestDatabaseUrls(env: Record<string, string | undefined>): 
   try {
     ownerKey = databaseKey(owner);
     appKey = databaseKey(app);
-    devKeys = [env.DATABASE_URL, env.MIGRATION_DATABASE_URL]
+    devKeys = [env.DATABASE_URL, env.MIGRATION_DATABASE_URL, env.PLATFORM_DATABASE_URL]
       .filter((url): url is string => Boolean(url))
       .map(databaseKey);
   } catch {
@@ -62,7 +64,13 @@ export function checkTestDatabaseUrls(env: Record<string, string | undefined>): 
         'MIGRATION_TEST_DATABASE_URL and TEST_DATABASE_URL point at different databases. Both must be the test branch.',
     };
   }
-  return { ok: true, urls: { owner, app } };
+  return { ok: true, urls: { owner, app, platform: platformUrl(app) } };
+}
+
+function platformUrl(appUrl: string): string {
+  const url = new URL(appUrl);
+  url.username = PLATFORM_ROLE;
+  return url.toString();
 }
 
 /** Host, port and database, with Neon's -pooler removed: the pooled and direct URL are the same database. */
@@ -89,15 +97,17 @@ export function requireTestDatabaseUrls(): TestDatabaseUrls {
 }
 
 /**
- * Wipes the test database and builds it from empty: roles, every migration, and the app
- * login's password taken from TEST_DATABASE_URL so the tests log in exactly like the server.
+ * Wipes the test database and builds it from empty: roles, every migration, and the app and
+ * platform logins' password taken from TEST_DATABASE_URL so the tests log in exactly like the server.
  */
 export async function prepareTestDatabase(urls: TestDatabaseUrls): Promise<void> {
   const owner = createOwnerDb(urls.owner);
   try {
     await sql`DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;`.execute(owner);
     await bootstrapRoles(owner);
-    await setAppRolePassword(owner, decodeURIComponent(new URL(urls.app).password));
+    const password = decodeURIComponent(new URL(urls.app).password);
+    await setRolePassword(owner, APP_ROLE, password);
+    await setRolePassword(owner, PLATFORM_ROLE, password);
   } finally {
     await owner.destroy();
   }

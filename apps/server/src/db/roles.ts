@@ -33,20 +33,27 @@ export async function bootstrapRoles(db: Kysely<unknown>): Promise<void> {
   `.execute(db);
 }
 
-export async function appRoleCanLogin(db: Kysely<unknown>): Promise<boolean> {
+/** The two roles the server logs in as: the shops' app role and the staff console's platform role. */
+export type LoginRole = typeof APP_ROLE | typeof PLATFORM_ROLE;
+
+export async function roleCanLogin(db: Kysely<unknown>, role: LoginRole): Promise<boolean> {
   const result = await sql<{ rolcanlogin: boolean }>`
-    SELECT rolcanlogin FROM pg_roles WHERE rolname = ${APP_ROLE}
+    SELECT rolcanlogin FROM pg_roles WHERE rolname = ${role}
   `.execute(db);
   return result.rows[0]?.rolcanlogin ?? false;
 }
 
 /**
- * Lets brewpoint_app log in with this password. Neon accepts only the plain password and
+ * Lets the role log in with this password. Neon accepts only the plain password and
  * stores it as a SCRAM hash. ALTER ROLE takes no parameters, so the literal is quoted here.
  */
-export async function setAppRolePassword(db: Kysely<unknown>, password: string): Promise<void> {
+export async function setRolePassword(
+  db: Kysely<unknown>,
+  role: LoginRole,
+  password: string,
+): Promise<void> {
   const literal = `'${password.replaceAll("'", "''")}'`;
-  await sql.raw(`ALTER ROLE ${APP_ROLE} LOGIN PASSWORD ${literal}`).execute(db);
+  await sql.raw(`ALTER ROLE ${role} LOGIN PASSWORD ${literal}`).execute(db);
 }
 
 export function newRolePassword(): string {

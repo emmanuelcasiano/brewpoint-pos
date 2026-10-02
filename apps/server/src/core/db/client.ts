@@ -31,3 +31,14 @@ export function createDb(connectionString: string): Database {
     dialect: new PostgresDialect({ pool: new pg.Pool({ connectionString }) }),
   });
 }
+
+export type PlatformDatabase = Kysely<DB> & { readonly __platform: true };
+
+/**
+ * The staff console's database: the brewpoint_platform login (PLATFORM_DATABASE_URL). It reads
+ * the platform tables and, across shops, only the tables BrewPoint runs; never shop business data.
+ * A separate type, so code that needs the platform connection cannot be given the app's by mistake.
+ */
+export function createPlatformDb(connectionString: string): PlatformDatabase {
+  return createDb(connectionString) as PlatformDatabase;
+}
