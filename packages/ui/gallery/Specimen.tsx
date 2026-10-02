@@ -7,6 +7,8 @@ export interface GallerySection {
   title: string;
   /** The standalone page in docs/design-system/previews to compare with, without ".html". */
   preview?: string;
+  /** Stacks the three columns at full width, for components that need a screen's width. */
+  wide?: boolean;
   render: () => ReactNode;
 }
 
@@ -98,7 +100,7 @@ export function Specimen({ section, accent }: { section: GallerySection; accent:
       <h2 id={`${section.id}-title`} className="bp-h-md">
         {section.title}
       </h2>
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className={section.wide ? 'grid gap-4' : 'grid gap-4 xl:grid-cols-3'}>
         <ThemeColumn theme="light" accent={accent}>
           {section.render()}
         </ThemeColumn>

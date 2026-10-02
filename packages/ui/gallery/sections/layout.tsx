@@ -32,6 +32,7 @@ export const dataTableSection: GallerySection = {
   id: 'data-table',
   title: 'DataTable and Pager',
   preview: 'DataTable',
+  wide: true,
   render: () => <OnHandTable />,
 };
 
@@ -39,5 +40,6 @@ export const splitSection: GallerySection = {
   id: 'split',
   title: 'Split and Drawer',
   preview: 'InventoryScreen',
+  wide: true,
   render: () => <InventorySplit />,
 };

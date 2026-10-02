@@ -8,6 +8,7 @@ export const topBarSection: GallerySection = {
   id: 'top-bar',
   title: 'TopBar and UserButton',
   preview: 'Navigation',
+  wide: true,
   render: () => (
     <div className="bp-stack gap-2">
       <span className="bp-eyebrow">POS top bar</span>
