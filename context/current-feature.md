@@ -19,7 +19,7 @@ docs/modules/03-auth-and-identity.md
 
 - [x] Migration: `0013-auth`, platform login in `db:roles`, env and test setup, seed, schema.sql, regenerated types
 - [x] Server logic and tests: `core/auth`, `core/audit`, `core/errors.ts`, `core/mail`, the auth service, DB tests
-- [ ] API: routes, schemas, cookie and bearer hooks, rate limit, shared contracts, route tests
+- [x] API: routes, schemas, cookie and bearer hooks, rate limit, shared contracts, route tests
 - [ ] Screens: back-office, POS (with the offline PIN cache), console, app test setup
 
 ## Plan

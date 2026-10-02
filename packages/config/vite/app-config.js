@@ -25,6 +25,9 @@ function shortCommit() {
  */
 export function appConfig({ port }) {
   const { version } = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8'));
+  // The apps call the server at /api on their own address, so sign-in cookies (SameSite=Strict,
+  // Path=/api) belong to the app's origin. Vite passes /api through to the local server.
+  const proxy = { '/api': `http://127.0.0.1:${process.env.SERVER_PORT ?? '3000'}` };
 
   return defineConfig({
     plugins: [react(), tailwindcss()],
@@ -32,7 +35,7 @@ export function appConfig({ port }) {
       __APP_VERSION__: JSON.stringify(version),
       __APP_COMMIT__: JSON.stringify(shortCommit()),
     },
-    server: { host: '127.0.0.1', port, strictPort: true },
-    preview: { host: '127.0.0.1', port, strictPort: true },
+    server: { host: '127.0.0.1', port, strictPort: true, proxy },
+    preview: { host: '127.0.0.1', port, strictPort: true, proxy },
   });
 }

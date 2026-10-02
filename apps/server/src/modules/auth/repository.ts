@@ -307,6 +307,47 @@ export async function userExists(trx: TenantTransaction, userId: string): Promis
   return row !== undefined;
 }
 
+export interface ShopSummary {
+  shop: { id: string; name: string; accentHex: string };
+  branches: { id: string; name: string }[];
+  device: { id: string; name: string } | null;
+}
+
+/** The names the signed-in screens show: the shop, the user's branches and the register. */
+export async function shopSummary(
+  trx: TenantTransaction,
+  tenantId: string,
+  branchIds: string[],
+  deviceId: string | null,
+): Promise<ShopSummary> {
+  const tenant = await trx
+    .selectFrom('tenants')
+    .select(['id', 'name', 'accent_hex'])
+    .where('id', '=', tenantId)
+    .executeTakeFirstOrThrow();
+  const branches =
+    branchIds.length === 0
+      ? []
+      : await trx
+          .selectFrom('branches')
+          .select(['id', 'name'])
+          .where('id', 'in', branchIds)
+          .orderBy('name')
+          .execute();
+  const device = deviceId
+    ? await trx
+        .selectFrom('devices')
+        .select(['id', 'name'])
+        .where('id', '=', deviceId)
+        .executeTakeFirst()
+    : undefined;
+  return {
+    shop: { id: tenant.id, name: tenant.name, accentHex: tenant.accent_hex },
+    branches,
+    device: device ?? null,
+  };
+}
+
 export async function deviceName(trx: TenantTransaction, deviceId: string): Promise<string> {
   const row = await trx
     .selectFrom('devices')

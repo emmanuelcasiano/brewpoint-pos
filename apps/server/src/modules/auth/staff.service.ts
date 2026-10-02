@@ -1,3 +1,4 @@
+import type { StaffMe } from '@brewpoint/shared';
 import type { Transaction } from 'kysely';
 import { writePlatformAudit } from '../../core/audit/platform-audit';
 import type { StaffIdentity, StaffStage } from '../../core/auth/identity';
@@ -177,6 +178,15 @@ export async function confirmTwoStepSetup(
     return succeed(undefined);
   });
   unwrap(outcome);
+}
+
+export function describeStaff(identity: StaffIdentity): StaffMe {
+  return {
+    stage: identity.stage,
+    staff: { id: identity.staffId, name: identity.name, email: identity.email },
+    role: { id: identity.roleId, name: identity.roleName },
+    twoStepOn: identity.twoStepOn,
+  };
 }
 
 /** Ends the staff session at any stage. */

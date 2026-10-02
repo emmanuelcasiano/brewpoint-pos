@@ -1,4 +1,4 @@
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '@brewpoint/shared';
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, type ShopMe } from '@brewpoint/shared';
 import { writeAudit } from '../../core/audit/audit';
 import { loadBranchAccess, type ShopIdentity } from '../../core/auth/identity';
 import { ACCOUNT_LOCK, isLocked, recordFailure } from '../../core/auth/lockout';
@@ -123,6 +123,21 @@ async function openBackofficeSession(
       deviceId: null,
       ...access,
     },
+  };
+}
+
+/** What the signed-in screens show about the user, on the back-office or a register. */
+export async function describeShopUser(deps: AuthDeps, identity: ShopIdentity): Promise<ShopMe> {
+  const summary = await withTenant(deps.db, identity.tenantId, (trx) =>
+    repo.shopSummary(trx, identity.tenantId, identity.branchIds, identity.deviceId),
+  );
+  return {
+    user: { id: identity.userId, name: identity.name, email: identity.email },
+    shop: summary.shop,
+    branches: summary.branches,
+    roles: identity.roles.map(({ branchId, roleName }) => ({ branchId, roleName })),
+    surface: identity.surface,
+    device: summary.device,
   };
 }
 

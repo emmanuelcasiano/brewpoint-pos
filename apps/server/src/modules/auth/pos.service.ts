@@ -1,3 +1,4 @@
+import type { DeviceAuthEventType } from '@brewpoint/shared';
 import { writeAudit } from '../../core/audit/audit';
 import type { DeviceIdentity } from '../../core/auth/device';
 import { loadBranchAccess } from '../../core/auth/identity';
@@ -145,8 +146,6 @@ export async function signOutPos(deps: AuthDeps, token: string): Promise<void> {
     });
   });
 }
-
-export type DeviceAuthEventType = 'signed_in' | 'signed_out' | 'pin_locked';
 
 /** Something that happened on the register while it checked PINs by itself (often offline). */
 export interface DeviceAuthEvent {

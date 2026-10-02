@@ -90,6 +90,19 @@ Every request knows who is asking and for which shop. Owners and managers sign i
   - Device events (`signed_in`, `signed_out`, `pin_locked`) use the device's event id as the `audit_log` id, so a resend is recorded once.
   - A reported `pin_locked` also locks that user on that device on the server.
 - The reset email links to `<BACKOFFICE_URL>/set-password?token=…`. A new reset link retires older unused ones.
+- API (step 3):
+  - **Routes:** `modules/auth/routes.ts` is a Fastify plugin mounted under `/api`; `buildApp({ deps })` mounts it and `main.ts` builds the deps from `.env`. Without deps only `/health` runs, which the health test uses.
+  - **Request hooks:** `core/auth/request-auth.ts` (`requireShopUser(deps, surface)`, `requireStaff(deps, stages = ['active'])`, `requireDemoDevice(deps)`) put `shopIdentity`, `staffIdentity` or `device` on the request. Every later module's routes use them.
+  - **Tokens:**
+    - Back-office: cookie `bp_session`.
+    - Console: cookie `bp_staff_session`.
+    - Both cookies: httpOnly, SameSite=Strict, Path=/api, no Max-Age, Secure unless `APP_ENV=local`.
+    - POS: `Authorization: Bearer`, accepted only by POS routes.
+    - The demo device sends the `x-brewpoint-device` and `x-brewpoint-device-key` headers.
+  - **Errors:** every error body is `{ error: { code, message, details? } }` (`ApiError` in shared contracts). `core/errors.ts` has `parseInput` (the first Zod issue becomes a 400 with `details.field`), the error handler (unknown errors become a plain 500 without details) and the 404 handler.
+  - **Rate limit:** `@fastify/rate-limit` allows 20 a minute per IP per route on every route that takes a password, PIN, code, link or device events.
+  - **Staff `/me`:** `GET /api/console/auth/me` answers at any stage (with `stage`), so the console can resume a two-step sign-in after a reload. Other console routes require `active` and answer 403 `two_step_required`.
+  - **Dev proxy:** the shared Vite config proxies `/api` to the server (dev and preview), so cookies belong to each app's own origin.
 - Routing: React Router v7 (declarative mode) in the back-office and console. The POS has no URL routing.
 - Limits: passwords are at least 10 characters with no composition rules. 10 wrong passwords or two-step codes in a row lock the account for 15 minutes, and there's a per-IP limit of 20 auth requests a minute. Back-office and staff sessions expire after 12 hours of inactivity; an unfinished two-step step expires after 10 minutes. Reset links last 1 hour.
 
