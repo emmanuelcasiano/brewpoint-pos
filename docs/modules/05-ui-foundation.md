@@ -58,9 +58,44 @@ The shared React component library that every screen is built from, matching the
 ## Decisions already made
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (UI), IBM Plex Mono (receipts, codes).
 - From Module 01: Tailwind v4 with CSS-based configuration. Map the tokens with `@theme inline` over tokens.css; `inline` keeps theme and accent switching at runtime, including two themes side by side in the gallery. Shared Vite settings live in `packages/config/vite` and React lint rules in `packages/config/eslint` (`react`). Each app's placeholder `src/app/App.tsx` is replaced by real screens.
+- Built before Module 03, because the 03 sign-in screens use Button, Field, Numpad and PinPrompt.
+- Gallery: a dev-only Vite page inside packages/ui, run with `pnpm --filter @brewpoint/ui gallery`. It shows each component in Daylight and Night shift beside an iframe of its preview.html, with an accent input. Nothing from it ships in an app.
+- Styling: bundle.css is ported into packages/ui as CSS in Tailwind's `components` layer, using only token variables. Components set the bp- classes; screens use Tailwind utilities for layout. This is how "Tailwind for all styling" applies to bp- components (noted in context/coding-standards.md).
+- Visual check: compare by eye in the gallery (both themes, beside preview.html) while building, then lock the approved look with Playwright screenshot baselines of the gallery in CI.
+- Screenshot tests run on Linux Chromium only. Their baselines come from a manual `update-gallery-snapshots` CI job (no Docker is used locally), and Windows runs skip them.
+- Fonts are bundled from `@fontsource` packages in packages/ui's stylesheet, used by all three apps; no Google Fonts request.
+- Tailwind's default palette and spacing are switched off; only token values exist. Where a Tailwind setting has the same name as a token (`--radius-*`, `--shadow-*`, `--font-*`), the mapping uses `reference` so the variable is never redeclared as itself.
+- Chart is a React SVG component with the same geometry, classes and tooltip as bundle.js, not an HTML string.
+- SideNav and ConsoleNav take a `renderLink` prop; the router is chosen when each app's shell is built.
+- The theme is stored per device in localStorage under `brewpoint.theme`; Daylight is the default.
+- The Crema values in tokens.css are hand-tuned and differ slightly from `deriveAccent('#E2A13B')` (the port matches bundle.js exactly; a test runs bundle.js to check). So `applyTheme` applies an accent only for a shop color other than Crema; with no shop color or Crema, tokens.css applies unchanged.
+- tokens.css and components.css are verbatim copies (Prettier skips them) with tests that keep them in step with the design system. The type styles live in theme.css as Tailwind `text-*` values, also checked against tokens.json.
+- `compat.css` undoes the Tailwind preflight resets that bundle.css relies on, starting with icons (preflight makes every svg a block). It is the only place to add such fixes.
+- Fonts are declared by BrewPoint's own `@font-face` rules over the fontsource files (latin and latin-ext per weight, so ₱ is covered), because fontsource names the variable font "Bricolage Grotesque Variable".
+- Not built here: ProductTile, CartLine, Receipt, AccentPicker, PermissionMatrix, the notification panel and alert rows. Each is built with the module that uses it.
+- Field passes its id, `aria-invalid` and `aria-describedby` to the TextInput, Select or MoneyInput inside it through context, so a consumer writes `<Field label error><TextInput /></Field>`.
+- MoneyInput takes and returns integer centavos (null when empty). It parses the typed text without floats, accepts at most two decimals and ₱9,999,999.99, and formats on blur.
+- PinPrompt and Numpad are controlled: the caller holds the PIN (`pin`, `onPinChange`), checks it and counts the tries; a wrong PIN is shown by clearing `pin` and passing `error`. `applyNumpadKey` is the shared key rule for PINs and cash.
+- Numpad takes an optional full-width confirm key (`confirmLabel`) for entries whose length varies.
+- Modal renders through a portal over the page (`fixed`, `z-modal`), moves focus in, traps Tab, cancels on Escape and returns focus on close. `contained` renders it in place inside a `bp-stage` without moving or trapping focus; it is for the gallery and previews only.
+- Banner picks its role from its tone (danger is `alert`, the rest `status`) and a default icon per tone; Toast pauses its 8 seconds while hovered or focused.
+- Tabs use a roving tab stop: only the selected tab is in the Tab order, arrow keys, Home and End move focus, and Enter or Space selects (manual activation).
+- SideNav and ConsoleNav call `renderLink({ destination, className, 'aria-current', children })`; the app spreads everything but `destination` onto its router link. Both take `hidden` (destinations the user may not open are removed, and an emptied group loses its heading). Badge labels are plural-aware ("1 unread alert", "5 items need attention"; console: "4 open").
+- DataTable takes column definitions (`cell`, optional `sub` line, `numeric`, `className`). Numeric cells also get `bp-nowrap`, so numbers never wrap and the wrapper scrolls instead. Clickable rows (`onRowClick`) are focusable and open on Enter or Space; their focus ring is a 2px `focus` outline drawn inside the row (offset -2px, Tailwind utilities on the row) so the scrolling wrapper never clips it. The selected row has `is-selected` and `aria-current="true"`.
+- Bell's name keeps the real count ("Alerts, 120 unread") while the badge shows "99+"; with nothing unread it reads "Alerts, none unread" and shows no badge.
+- TopBar takes `register`, `license` (only when due), `sync` and `user` slots and renders them in the fixed order. Pager takes `hasPrevious`/`hasNext` and labels that default to Previous and Next (logs pass Newer and Older).
+- Inline styles, beyond `applyAccent`, only for runtime geometry no token can hold: the Meter fill width and the chart tooltip position (written to the element after layout, as bundle.js does). The legend and tooltip key also set bundle.css's `--key` to a token reference (`var(--chart-1)`), never a color value. Series colors are SVG presentation attributes (`fill="var(--chart-1)"`), not styles.
+- Chart's geometry is ported from bundle.js and a test runs bundle.js's `chart` and `sparkline` to check that the paths, axis labels and hit areas match. Chart renders its own table view (`labelHeading`, caption from `title`), so no chart can lack one. A period with no labels or only zeros shows `emptyText` in `bp-note`, with no axis and no table. hbar has no tooltip and prints its values, as in bundle.js.
+- The chart tooltip's top is the svg's offset inside the chart. bundle.js reads `svg.offsetTop`, which SVG elements do not have, so the preview's tooltip falls below the chart; ours sits at the plot's top as intended.
+- StatTile takes `delta: { direction, amount, comparison, tone? }` and writes "Up 7.0% vs last Monday" with the matching arrow; no `delta`, no delta line. Loading shows the placeholder blocks with `aria-busy` and no sparkline. Sparkline draws nothing with fewer than two points.
+- Meter takes `value` and `limit` (null for unlimited: "24 of unlimited", an empty track and no meter role; the preview's 8% fill is placeholder data). It turns `bp-meter--warning` at 90% of the limit by itself and caps the fill at a full track. The track is `role="meter"` with "2 of 3" as its value text.
+- Timeline takes `steps` with a state of done, now or upcoming. The current step has `aria-current="step"`; done and upcoming steps start with a screen-reader word ("Done:", "Not yet:"), since the dot shows the state by color alone.
+- Card's title is an h3 by default, as in the previews; `as="h2"` where the page needs it.
+- DataTable's wrapper has the 2px focus ring (Tailwind utilities), because browsers make a sideways-scrolling box a tab stop. Found by the gallery focus check.
+- Gallery checks live in `tests/e2e/gallery.spec.ts` (Playwright project `gallery`). `E2E_SUITE=gallery` runs only the gallery, without the server, as the snapshot job does. A section's screenshot is skipped, not failed, until its baseline is committed. The root tsconfig adds the DOM lib for `page.evaluate` callbacks.
 
 ## Open questions
-- Gallery tool: Storybook or a lightweight in-app route.
+- None. Gallery tool answered under "Decisions already made".
 
 ## How to work
 1. Read the files above. Ask about anything unclear before planning.

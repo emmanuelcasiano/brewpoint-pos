@@ -1,4 +1,7 @@
 {
   "extends": "@brewpoint/config/tsconfig/react.json",
-  "include": ["src"]
+  "compilerOptions": {
+    "types": ["node", "vite/client"]
+  },
+  "include": ["src", "gallery", "vitest.config.ts"]
 }

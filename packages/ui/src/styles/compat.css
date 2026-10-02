@@ -1,0 +1,12 @@
+/*
+ * The design-system previews render without Tailwind's preflight; the apps render with it.
+ * Each rule here undoes one preflight reset that bundle.css relies on, so components look the
+ * same as their preview.html. It sits before components.css, so bundle.css still wins.
+ */
+@layer components {
+  /* Preflight makes every svg a block; icons sit inline in text (StatTile delta, chips). */
+  .bp-icon {
+    display: inline;
+    vertical-align: baseline;
+  }
+}

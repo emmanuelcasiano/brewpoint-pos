@@ -60,6 +60,7 @@ A cashier opens a register with a float, records cash in and out, and closes wit
 
 ## Decisions already made
 - Denominations as listed above.
+- From Module 05: Numpad, AmountDisplay, QuickAmounts, MoneyInput (integer centavos in and out, null when empty) and the controlled PinPrompt are in `@brewpoint/ui`. Numpad takes `confirmLabel` for a full-width confirm key when the entry length varies.
 
 ## Open questions
 - Blind close (cashier does not see expected before counting): on or off by default. Recommendation: on.

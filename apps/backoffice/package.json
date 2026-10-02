@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@brewpoint/shared": "workspace:*",
+    "@brewpoint/ui": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

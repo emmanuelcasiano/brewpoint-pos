@@ -1,0 +1,12 @@
+/*
+ * @brewpoint/ui/styles.css: import once, right after `@import 'tailwindcss'`, in each app.
+ * Order matters: tokens define the variables, theme maps Tailwind to them, then the bp- rules.
+ */
+@import './fonts.css';
+@import './tokens.css';
+@import './theme.css';
+@import './compat.css';
+@import './components.css';
+
+/* Tailwind classes used inside packages/ui components are generated for the apps too. */
+@source '../';

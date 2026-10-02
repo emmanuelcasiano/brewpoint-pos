@@ -21,8 +21,9 @@ These apply to every module. When this file disagrees with CLAUDE.md, docs/archi
 ## Styling
 
 - Tailwind for all styling, with colors, spacing, radii, shadows and fonts mapped to the CSS variables in `tokens.css`
+- `bp-` components get their styles from packages/ui's `components.css`, a verbatim port of the design system's `bundle.css` in Tailwind's `components` layer; screens use Tailwind utilities for layout. Tailwind's default palette and spacing are off, so only token values exist
 - Never a hex value in a component; only tokens
-- No inline styles. The one exception: `applyAccent` sets the accent CSS variables at runtime
+- No inline styles. The exceptions: `applyAccent` sets the accent CSS variables at runtime, and packages/ui components set runtime geometry no token can hold (a meter's fill width, a chart tooltip's position) or a token reference such as `--key: var(--chart-1)`
 - The Tailwind version and where its configuration lives are decided in Module 01 and recorded in that brief
 
 ## File organization

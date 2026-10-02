@@ -13,4 +13,5 @@ brewpoint-handoff.zip
 *.tsbuildinfo
 playwright-report/
 test-results/
+.playwright-mcp/
 notes/

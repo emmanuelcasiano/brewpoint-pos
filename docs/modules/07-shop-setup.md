@@ -59,6 +59,7 @@ A new coffee shop owner signs up, sets up the shop and first branch, and pairs t
 ## Decisions already made
 - Trial: 14 days on Growth.
 - From Module 02: the app may insert a `tenants` row only inside `withTenant` set to that new tenant's ID (generate it with `uuidv7()` first); it can never see or create another tenant. Plans have fixed IDs (`PLAN_IDS` in `apps/server/src/db/seed/reference.ts`); the trial uses `PLAN_IDS.growth`.
+- From Module 05: AccentPicker is built here, on `isAccentHex`, `deriveAccent`, `applyAccent` and `ACCENT_HEX_ERROR` ("Enter a color like #1F8A8A") from `@brewpoint/ui`. With no shop color or Crema (`DEFAULT_ACCENT`), apply no accent: tokens.css holds hand-tuned Crema values. `useTheme(accent)` re-derives the accent when the theme changes. SideNav takes `renderLink` (the router's link gets everything but `destination`), `counts` and `hidden` (destinations the user may not open).
 
 ## Open questions
 - Email verification required before pairing a device, or only before the trial ends.

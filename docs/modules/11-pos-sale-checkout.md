@@ -66,6 +66,7 @@ A cashier rings up a sale on the iPad, takes payment, prints a receipt, and the 
 ## Decisions already made
 - Receipt number format ACK-<device>-<6 digits>. Payments are recorded, not processed through a gateway.
 - From Module 01: the POS starts as a web app. Bluetooth receipt printing needs the native shell (decided before Module 06), because a web app in Safari cannot reach Bluetooth printers.
+- From Module 05: ProductTile, CartLine and Receipt are built in this module (in packages/ui, keeping their bp- classes). TopBar takes `register`, `license` (only when due), `sync` and `user` slots in a fixed order. PinPrompt is controlled (the screen checks the PIN), and Numpad, QuickAmounts and MoneyInput work in integer centavos.
 
 ## Open questions
 - **BIR compliance.** Selling in the Philippines may require an accredited POS, a Permit to Use and official receipts or invoices, depending on registration. The current design prints an acknowledgment receipt. Check with an accountant before a shop relies on BrewPoint for official receipts.

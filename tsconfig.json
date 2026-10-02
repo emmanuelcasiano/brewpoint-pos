@@ -1,4 +1,8 @@
 {
   "extends": "@brewpoint/config/tsconfig/node.json",
+  // DOM, for the page.evaluate callbacks in tests/e2e.
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
   "include": ["tests", "playwright.config.ts"]
 }
