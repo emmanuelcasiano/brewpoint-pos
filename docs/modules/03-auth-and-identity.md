@@ -77,6 +77,19 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 - The local demo seed adds placeholder roles to `roles` (Module 04's table, agreed here): an Owner role (locked) and a Cashier role per shop, with no permissions. Carlo and Jake are Owners for all branches; Ana is a Cashier at Main branch. Module 04 adds the permissions and the real default roles.
 - Email lookup before the shop is known: a `SECURITY DEFINER` function `auth_find_user(email)`, owned by the migrator, returns only `(user_id, tenant_id)` for one exact email. A SELECT-only policy on `users` for `brewpoint_migrator`, active only while no tenant is set, lets it see the row, so inside a tenant transaction the migrator still sees one shop. `brewpoint_app` may only EXECUTE it. Hashes and status are read afterwards inside `withTenant`.
 - Migration (step 1): `0013-auth` adds `sessions`, `auth_tokens` and `pin_lockouts` (shop tables with row-level security) and `platform_sessions` (staff only). It also adds `failed_sign_in_count`, `locked_until` and a lower-case email check to `users` and `platform_users`. Tokens are stored as sha256 hex in `token_hash`; shop tokens start with the tenant id. The schema now has 74 tables and 190 foreign keys. `core/auth/password.ts` (Argon2id, 19 MiB, t=2, p=1, via `@node-rs/argon2`) was built in this step, because the seed and `pnpm staff:create` need it. The Superadmin staff role is reference data, seeded in every environment. Demo sign-in, local only: password `brewpoint-demo` for Carlo, Jake and `dev@brewpoint.test`; owner PINs 1111, Ana Cruz 1234.
+- Server logic (step 2):
+  - **core/auth:** `identity.ts` (`ShopIdentity`, `StaffIdentity`, `loadBranchAccess`), `sessions.ts` (create, resolve on each request, revoke, for shop and staff), `tokens.ts`, `totp.ts` (otpauth; AES-256-GCM `v1.<iv>.<tag>.<data>`), `lockout.ts` (the rules and messages) and `device.ts` (the demo-device check).
+  - **Other core:** `core/audit/audit.ts` and `platform-audit.ts`, `core/errors.ts` (`AppError` with a stable `code` and `details`), `core/mail/mailer.ts` (`LogMailer`).
+  - **modules/auth:** the service is split into `shop.service.ts`, `pos.service.ts` and `staff.service.ts`, each with its own test file. Beside them: `repository.ts`, `errors.ts` (every sign-in message in one place), `outcome.ts`, `deps.ts` (clock injected for tests) and the test-only `test-support.ts`.
+  - **Shared:** `formatTime` ("3:05 PM", Asia/Manila) is in `packages/shared/src/time/`, and the PIN, password and code limits are in `packages/shared/src/contracts/auth.ts`.
+- Sign-in transactions return their failure instead of throwing, so wrong-try counts and lock audits are kept, and the service throws after the commit.
+- An unknown email is checked against a throwaway hash, so it takes as long as a wrong password.
+- Staff: a correct password does not clear the wrong-try count until the sign-in is complete, so wrong two-step codes keep counting towards the same 10-try lock. The first sign-in without two-step may set it up straight away.
+- POS:
+  - A PIN sign-in updates `last_active_at` but leaves the password's wrong-try count alone.
+  - Device events (`signed_in`, `signed_out`, `pin_locked`) use the device's event id as the `audit_log` id, so a resend is recorded once.
+  - A reported `pin_locked` also locks that user on that device on the server.
+- The reset email links to `<BACKOFFICE_URL>/set-password?token=…`. A new reset link retires older unused ones.
 - Routing: React Router v7 (declarative mode) in the back-office and console. The POS has no URL routing.
 - Limits: passwords are at least 10 characters with no composition rules. 10 wrong passwords or two-step codes in a row lock the account for 15 minutes, and there's a per-IP limit of 20 auth requests a minute. Back-office and staff sessions expire after 12 hours of inactivity; an unfinished two-step step expires after 10 minutes. Reset links last 1 hour.
 

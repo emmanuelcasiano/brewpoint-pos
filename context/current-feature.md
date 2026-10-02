@@ -18,7 +18,7 @@ docs/modules/03-auth-and-identity.md
 ## Build steps
 
 - [x] Migration: `0013-auth`, platform login in `db:roles`, env and test setup, seed, schema.sql, regenerated types
-- [ ] Server logic and tests: `core/auth`, `core/audit`, `core/errors.ts`, `core/mail`, the auth service, DB tests
+- [x] Server logic and tests: `core/auth`, `core/audit`, `core/errors.ts`, `core/mail`, the auth service, DB tests
 - [ ] API: routes, schemas, cookie and bearer hooks, rate limit, shared contracts, route tests
 - [ ] Screens: back-office, POS (with the offline PIN cache), console, app test setup
 
@@ -76,7 +76,7 @@ Foreign keys to tenants, users, devices and platform_users, indexes on every FK,
 | `auth/tokens.ts` | new token, sha256 hash, parse the `<tenant>.<secret>` form |
 | `auth/totp.ts` | `otpauth` (SHA-1, 6 digits, 30 s, ±1 step), AES-256-GCM encrypt and decrypt of the secret |
 | `auth/sessions.ts` | create, look up (joins user status; refuses deactivated users and back-office sessions idle 12 h or more), touch last_seen_at at most once a minute, revoke |
-| `auth/context.ts` | `ShopIdentity` (userId, tenantId, branchIds expanded from null = all active branches, roles per branch, surface, deviceId) and `StaffIdentity` (staffId, roleId, roleName, stage) |
+| `auth/identity.ts` | `ShopIdentity` (userId, tenantId, branchIds expanded from null = all active branches, roles per branch, surface, deviceId) and `StaffIdentity` (staffId, roleId, roleName, stage) |
 | `auth/lockout.ts` | pure rules: 10 wrong passwords or codes → 15 min; 5 wrong PINs per device → 5 min; tries-left text |
 | `auth/device.ts` | temporary device check: `DEMO_DEVICE_KEY` and a seeded demo device id, refused unless APP_ENV=local (replaced in Module 06) |
 | `audit/audit.ts` | `writeAudit(trx, entry)` into audit_log |
