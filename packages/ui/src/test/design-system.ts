@@ -22,6 +22,8 @@ export interface ReferenceBundle {
   deriveAccent(hex: string, theme: TokenTheme): unknown;
   icon(name: string, size?: number): string;
   icons: string[];
+  chart(el: HTMLElement, spec: object): HTMLElement;
+  sparkline(values: number[], color?: string): string;
 }
 
 /** Test-only: runs the design system's bundle.js and returns its BrewPoint helpers. */

@@ -12,6 +12,7 @@ import {
   toolbarSection,
 } from './layout';
 import { consoleNavSection, sideNavSection, topBarSection } from './navigation';
+import { chartSection, meterSection, statTileSection, timelineSection } from './data';
 
 /** Every gallery row, in page order. Each component step adds its sections here. */
 export const SECTIONS: GallerySection[] = [
@@ -36,4 +37,8 @@ export const SECTIONS: GallerySection[] = [
   sideNavSection,
   consoleNavSection,
   topBarSection,
+  statTileSection,
+  chartSection,
+  meterSection,
+  timelineSection,
 ];

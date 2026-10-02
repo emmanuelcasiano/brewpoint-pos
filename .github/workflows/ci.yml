@@ -3,6 +3,8 @@ name: CI
 on:
   push:
   pull_request:
+  # Run by hand from the Actions tab to make the gallery screenshot baselines.
+  workflow_dispatch:
 
 env:
   TURBO_TELEMETRY_DISABLED: 1
@@ -51,6 +53,31 @@ jobs:
       - run: pnpm test:e2e
         env:
           DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+  # Makes the gallery's Linux Chromium screenshots and uploads them. Download the artifact,
+  # check the images, and commit them under tests/e2e/gallery.spec.ts-snapshots/.
+  update-gallery-snapshots:
+    name: Update gallery screenshot baselines
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      E2E_SUITE: gallery
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @brewpoint/ui build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test --update-snapshots=all -g screenshots
+      - uses: actions/upload-artifact@v7
+        with:
+          name: gallery-snapshots
+          path: tests/e2e/gallery.spec.ts-snapshots/
+          if-no-files-found: error
 
   secrets:
     name: Secret scan

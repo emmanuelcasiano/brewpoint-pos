@@ -24,7 +24,7 @@ docs/modules/05-ui-foundation.md
   - [x] 5a Foundation: styles, tokens, fonts, helpers, icons, theme, test setup, gallery shell, app wiring
   - [x] 5b Actions, forms and feedback: Button, IconButton, Field and inputs, StatusChip, Banner, Toast, Modal, Numpad, PinPrompt
   - [x] 5c Layout and navigation: Tabs, Segmented, Split, Drawer, Toolbar, Search, PageHead, Bell, SideNav, ConsoleNav, TopBar, DataTable, Pager
-  - [ ] 5d Data display and checks: Card, StatTile, Sparkline, Chart, Meter, Timeline; gallery Playwright checks and screenshot baselines
+  - [x] 5d Data display and checks: Card, StatTile, Sparkline, Chart, Meter, Timeline; gallery Playwright checks and screenshot baselines
 
 ## Plan
 

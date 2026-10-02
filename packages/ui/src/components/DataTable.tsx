@@ -32,6 +32,10 @@ export interface DataTableProps<Row> {
 const ROW_FOCUS =
   'focus-visible:outline-2 focus-visible:outline-focus focus-visible:-outline-offset-2';
 
+/** Browsers make a sideways-scrolling wrapper a tab stop; it gets the same ring as a control. */
+const WRAP_FOCUS =
+  'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2';
+
 /** The back-office table. Numbers right-aligned, status chip last, scrolls sideways when narrow. */
 export function DataTable<Row>({
   caption,
@@ -51,7 +55,7 @@ export function DataTable<Row>({
   }
 
   return (
-    <div className={cx('bp-tablewrap', className)}>
+    <div className={cx('bp-tablewrap', WRAP_FOCUS, className)}>
       <table className={cx('bp-table', compact && 'bp-table--compact')}>
         <caption className="bp-sr">{caption}</caption>
         <thead>

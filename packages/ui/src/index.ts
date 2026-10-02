@@ -69,3 +69,15 @@ export {
   type DataTableProps,
 } from './components/DataTable';
 export { Pager, type PagerProps } from './components/Pager';
+export { Card, type CardProps } from './components/Card';
+export { StatTile, type StatDelta, type StatTileProps } from './components/StatTile';
+export { Sparkline, type SparklineProps } from './components/Sparkline';
+export { Chart, type ChartProps } from './components/Chart';
+export type { ChartColor, ChartFormat, ChartSeries } from './components/chart-geometry';
+export { Meter, type MeterProps } from './components/Meter';
+export {
+  Timeline,
+  type TimelineProps,
+  type TimelineState,
+  type TimelineStep,
+} from './components/Timeline';
