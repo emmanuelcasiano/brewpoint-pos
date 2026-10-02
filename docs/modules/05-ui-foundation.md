@@ -73,6 +73,12 @@ The shared React component library that every screen is built from, matching the
 - `compat.css` undoes the Tailwind preflight resets that bundle.css relies on, starting with icons (preflight makes every svg a block). It is the only place to add such fixes.
 - Fonts are declared by BrewPoint's own `@font-face` rules over the fontsource files (latin and latin-ext per weight, so ₱ is covered), because fontsource names the variable font "Bricolage Grotesque Variable".
 - Not built here: ProductTile, CartLine, Receipt, AccentPicker, PermissionMatrix, the notification panel and alert rows. Each is built with the module that uses it.
+- Field passes its id, `aria-invalid` and `aria-describedby` to the TextInput, Select or MoneyInput inside it through context, so a consumer writes `<Field label error><TextInput /></Field>`.
+- MoneyInput takes and returns integer centavos (null when empty). It parses the typed text without floats, accepts at most two decimals and ₱9,999,999.99, and formats on blur.
+- PinPrompt and Numpad are controlled: the caller holds the PIN (`pin`, `onPinChange`), checks it and counts the tries; a wrong PIN is shown by clearing `pin` and passing `error`. `applyNumpadKey` is the shared key rule for PINs and cash.
+- Numpad takes an optional full-width confirm key (`confirmLabel`) for entries whose length varies.
+- Modal renders through a portal over the page (`fixed`, `z-modal`), moves focus in, traps Tab, cancels on Escape and returns focus on close. `contained` renders it in place inside a `bp-stage` without moving or trapping focus; it is for the gallery and previews only.
+- Banner picks its role from its tone (danger is `alert`, the rest `status`) and a default icon per tone; Toast pauses its 8 seconds while hovered or focused.
 
 ## Open questions
 - None. Gallery tool answered under "Decisions already made".
