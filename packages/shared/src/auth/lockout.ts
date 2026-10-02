@@ -1,4 +1,8 @@
-import { formatTime, PIN_LOCK_MINUTES, PIN_MAX_TRIES } from '@brewpoint/shared';
+import { PIN_LOCK_MINUTES, PIN_MAX_TRIES } from '../contracts/auth';
+import { formatTime } from '../time/format-time';
+
+// Wrong-try rules and their messages, shared so the server and the POS (checking PINs offline)
+// count and speak the same way.
 
 export interface LockRule {
   maxFailures: number;

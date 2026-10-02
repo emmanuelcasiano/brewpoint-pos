@@ -1,8 +1,14 @@
-import type { DeviceAuthEventType } from '@brewpoint/shared';
+import {
+  isLocked,
+  PIN_LOCK,
+  recordFailure,
+  UNLOCKED,
+  type DeviceAuthEventType,
+  type PosDeviceSummary,
+} from '@brewpoint/shared';
 import { writeAudit } from '../../core/audit/audit';
 import type { DeviceIdentity } from '../../core/auth/device';
 import { loadBranchAccess } from '../../core/auth/identity';
-import { isLocked, PIN_LOCK, recordFailure, UNLOCKED } from '../../core/auth/lockout';
 import { verifySecret } from '../../core/auth/password';
 import { createShopSession, resolveShopSession, revokeShopSession } from '../../core/auth/sessions';
 import { withTenant, type TenantTransaction } from '../../core/db/tenant-transaction';
@@ -23,6 +29,24 @@ const LOCK_SENTENCE = (device: string) =>
  */
 export function listPinUsers(deps: AuthDeps, device: DeviceIdentity): Promise<repo.PinUser[]> {
   return withTenant(deps.db, device.tenantId, (trx) => repo.listPinUsers(trx, device.branchId));
+}
+
+/** The register's name, branch and shop, which the POS keeps to show while offline. */
+export async function describeDevice(
+  deps: AuthDeps,
+  device: DeviceIdentity,
+): Promise<PosDeviceSummary> {
+  const summary = await withTenant(deps.db, device.tenantId, (trx) =>
+    repo.shopSummary(trx, device.tenantId, [device.branchId], device.deviceId),
+  );
+  return {
+    id: device.deviceId,
+    name: device.name,
+    branchId: device.branchId,
+    branchName: summary.branches[0]?.name ?? '',
+    shopName: summary.shop.name,
+    accentHex: summary.shop.accentHex,
+  };
 }
 
 /**

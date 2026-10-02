@@ -1,5 +1,5 @@
 import { sql, type Kysely, type Transaction } from 'kysely';
-import type { LockState } from '../../core/auth/lockout';
+import type { LockState } from '@brewpoint/shared';
 import type { Database } from '../../core/db/client';
 import type { TenantTransaction } from '../../core/db/tenant-transaction';
 import type { DB } from '../../db/types';
@@ -481,6 +481,27 @@ export async function updateStaffSession(
     })
     .where('id', '=', sessionId)
     .execute();
+}
+
+/**
+ * Stores this pending two-step secret unless the session already has one, in one statement so
+ * two requests at once agree, and returns the one stored.
+ */
+export async function keepPendingTotpSecret(
+  db: Kysely<DB>,
+  sessionId: string,
+  encrypted: string,
+): Promise<string> {
+  const row = await db
+    .updateTable('platform_sessions')
+    .set({
+      pending_totp_secret_enc: sql<string>`coalesce(pending_totp_secret_enc, ${encrypted})`,
+    })
+    .where('id', '=', sessionId)
+    .returning('pending_totp_secret_enc')
+    .executeTakeFirstOrThrow();
+  if (!row.pending_totp_secret_enc) throw new Error('The pending two-step secret was not stored.');
+  return row.pending_totp_secret_enc;
 }
 
 export async function pendingTotpSecret(db: Kysely<DB>, sessionId: string): Promise<string | null> {

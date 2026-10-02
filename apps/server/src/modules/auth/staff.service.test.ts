@@ -113,6 +113,26 @@ describe.skipIf(!testDatabaseUrls())('staff console sign-in', () => {
     expect((await errorOf(beginTwoStepSetup(deps, token))).code).toBe('two_step_not_pending');
   });
 
+  it('gives the same secret when setup starts again on the same sign-in, even at once', async () => {
+    const staff = await createTestStaff(deps);
+    const { token } = await signInStaff(staff.email);
+
+    const [first, second] = await Promise.all([
+      beginTwoStepSetup(deps, token),
+      beginTwoStepSetup(deps, token),
+    ]);
+    const third = await beginTwoStepSetup(deps, token);
+
+    expect(second.secret).toBe(first.secret);
+    expect(third.secret).toBe(first.secret);
+    await confirmTwoStepSetup(deps, {
+      token,
+      code: totpCode(first.secret, clock.now()),
+      ipAddress: IP,
+    });
+    expect(await stageOf(token)).toBe('active');
+  });
+
   it('asks for the code when two-step is on, and lets the session in only with it', async () => {
     const secret = newTotpSecret();
     const staff = await createTestStaff(deps, { totpSecret: secret });

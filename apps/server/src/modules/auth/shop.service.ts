@@ -1,7 +1,13 @@
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, type ShopMe } from '@brewpoint/shared';
+import {
+  ACCOUNT_LOCK,
+  isLocked,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  recordFailure,
+  type ShopMe,
+} from '@brewpoint/shared';
 import { writeAudit } from '../../core/audit/audit';
 import { loadBranchAccess, type ShopIdentity } from '../../core/auth/identity';
-import { ACCOUNT_LOCK, isLocked, recordFailure } from '../../core/auth/lockout';
 import { hashSecret, verifySecret } from '../../core/auth/password';
 import {
   createShopSession,

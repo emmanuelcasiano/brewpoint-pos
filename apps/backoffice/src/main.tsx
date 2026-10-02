@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
 import { applyTheme, readStoredTheme } from '@brewpoint/ui';
 import { App } from './app/App';
 import './app/index.css';
@@ -14,6 +15,8 @@ applyTheme(readStoredTheme());
 
 createRoot(root).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 );

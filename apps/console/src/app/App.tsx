@@ -1,13 +1,29 @@
-import { formatPeso } from '@brewpoint/shared';
+import { Navigate, Route, Routes } from 'react-router';
+import { HomePage } from './HomePage';
+import { RequireStaff } from './sign-in/RequireStaff';
+import { SignInPage } from './sign-in/SignInPage';
+import { StaffSessionProvider } from './sign-in/StaffSessionProvider';
+import { TwoStepPage } from './sign-in/TwoStepPage';
+import { TwoStepSetupPage } from './sign-in/TwoStepSetupPage';
 
+/** The staff console routes. main.tsx puts it inside a BrowserRouter; tests use a MemoryRouter. */
 export function App() {
   return (
-    <main className="grid min-h-screen place-content-center gap-2 bg-surface p-4 text-center font-sans text-body text-ink">
-      <h1 className="font-display text-display-lg">BrewPoint Staff console</h1>
-      <p>
-        Version {__APP_VERSION__} ({__APP_COMMIT__})
-      </p>
-      <p>Workspace check: {formatPeso(124500)}</p>
-    </main>
+    <StaffSessionProvider>
+      <Routes>
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/two-step" element={<TwoStepPage />} />
+        <Route path="/two-step/setup" element={<TwoStepSetupPage />} />
+        <Route
+          path="/"
+          element={
+            <RequireStaff>
+              <HomePage />
+            </RequireStaff>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </StaffSessionProvider>
   );
 }

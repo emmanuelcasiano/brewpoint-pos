@@ -103,7 +103,21 @@ Every request knows who is asking and for which shop. Owners and managers sign i
   - **Rate limit:** `@fastify/rate-limit` allows 20 a minute per IP per route on every route that takes a password, PIN, code, link or device events.
   - **Staff `/me`:** `GET /api/console/auth/me` answers at any stage (with `stage`), so the console can resume a two-step sign-in after a reload. Other console routes require `active` and answer 403 `two_step_required`.
   - **Dev proxy:** the shared Vite config proxies `/api` to the server (dev and preview), so cookies belong to each app's own origin.
-- Routing: React Router v7 (declarative mode) in the back-office and console. The POS has no URL routing.
+- Screens (step 4):
+  - **Router:** React Router v8 (the current major; the same declarative `BrowserRouter`/`Routes` API as v7) in the back-office and console.
+  - **API client:** each app has `lib/api-client.ts` built on `createApiRequest` in `packages/shared/src/api/client.ts`. It takes `fetch` as an argument, so shared needs no DOM types. It throws `ApiRequestError`; a network failure, or a 5xx not from BrewPoint, counts as offline. `formErrorOf` decides between "under the field" and "in a banner".
+  - **Shared lockout rules:** they moved from `core/auth/lockout.ts` to `packages/shared/src/auth/lockout.ts`, so the POS counts tries and words its messages exactly like the server.
+  - **Sign-in screens:** the back-office and console sign-in pages are a centred Card under the BrewPoint name (no preview exists), with the version line under it. Session state lives in a provider (`SessionProvider`, `StaffSessionProvider`) that checks `/me` on load. The console sends each stage to its page (`stagePath`), so a reload in the middle of two-step resumes it.
+  - **QR code:** drawn as SVG from `qrcode`'s `create()`, in `paper`/`paper-ink` so it scans in both themes. The server returns the same pending secret if setup starts twice on one sign-in (`keepPendingTotpSecret`, a single `coalesce` update).
+  - **POS PIN check:** it always checks the PIN on the device (`hash-wasm` verifies the server's Argon2id hashes), against IndexedDB stores in `offline/local-store.ts`: `pin_cache`, `pin_lockouts`, `auth_events` and `session`. Online, it also opens a server session; offline, the sign-in is queued. The staff list refreshes on start, every 5 minutes and on reconnect, and replaces the cache whole. "Offline" is decided from real request failures. A signed-in person dropped from the refreshed list is signed out with a notice.
+  - **POS device info:** the PIN list response now carries `device` (`PosDeviceSummary`: register, branch, shop, accent), so the POS can name them offline.
+  - **Demo device in the POS:** it reads `DEMO_DEVICE_KEY` (and an optional `DEMO_DEVICE_ID`) from the root `.env` through Vite's `envDir` and `envPrefix: 'DEMO_DEVICE_'`. Only variables with that prefix reach the browser.
+  - **Layout:** the POS sign-in fits a landscape iPad (1180×820) without scrolling; offline, the Sign in key still clears the bottom.
+  - **Page background:** `packages/ui` gives `html` the `surface` background and `ink` color (`styles/page.css`), so the whole window follows the theme, not just each screen's box.
+  - **POS user menu:** the design system has no menu style, so `apps/pos/src/app/UserMenu.tsx` builds one from tokens (`surface-raised`, `border`, `shadow-2`, `z-modal`). It floats under the user button without moving the page and follows the menu button pattern (focus on the first item, arrow keys, Home and End, Escape returns to the button, a press outside or Tab closes it). Its items are 56px tall, and the chosen item shows "Signing out…" while the server answers.
+  - **App tests:** Vitest with jsdom and Testing Library in all three apps, plus `fake-indexeddb` in the POS. The POS test timeout is 20 s because each PIN check is a real Argon2id verify.
+  - **Smoke test:** it now checks each app's sign-in screen instead of the old placeholder.
+- Routing: React Router v7 (declarative mode), later v8 (see Screens above) in the back-office and console. The POS has no URL routing.
 - Limits: passwords are at least 10 characters with no composition rules. 10 wrong passwords or two-step codes in a row lock the account for 15 minutes, and there's a per-IP limit of 20 auth requests a minute. Back-office and staff sessions expire after 12 hours of inactivity; an unfinished two-step step expires after 10 minutes. Reset links last 1 hour.
 
 ## Open questions

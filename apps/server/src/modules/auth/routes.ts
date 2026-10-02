@@ -25,7 +25,13 @@ import { resolveStaffSession } from '../../core/auth/sessions';
 import { parseInput } from '../../core/errors';
 import type { AuthDeps } from './deps';
 import { signInAgain } from './errors';
-import { listPinUsers, recordDeviceEvents, signInWithPin, signOutPos } from './pos.service';
+import {
+  describeDevice,
+  listPinUsers,
+  recordDeviceEvents,
+  signInWithPin,
+  signOutPos,
+} from './pos.service';
 import * as schemas from './schemas';
 import {
   checkLink,
@@ -121,8 +127,13 @@ function posRoutes(app: FastifyInstance, deps: AuthDeps): void {
   const signedIn = { preHandler: requireShopUser(deps, 'pos') };
 
   app.get('/pos/auth/users', fromDevice, async (request): Promise<PinUsersResponse> => {
-    const users = await listPinUsers(deps, deviceOf(request));
+    const device = deviceOf(request);
+    const [summary, users] = await Promise.all([
+      describeDevice(deps, device),
+      listPinUsers(deps, device),
+    ]);
     return {
+      device: summary,
       users: users.map(({ id, name, roleName, pinHash }) => ({ id, name, roleName, pinHash })),
       fetchedAt: deps.now().toISOString(),
     };

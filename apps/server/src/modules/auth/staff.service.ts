@@ -1,8 +1,7 @@
-import type { StaffMe } from '@brewpoint/shared';
+import { ACCOUNT_LOCK, isLocked, recordFailure, type StaffMe } from '@brewpoint/shared';
 import type { Transaction } from 'kysely';
 import { writePlatformAudit } from '../../core/audit/platform-audit';
 import type { StaffIdentity, StaffStage } from '../../core/auth/identity';
-import { ACCOUNT_LOCK, isLocked, recordFailure } from '../../core/auth/lockout';
 import { verifySecret } from '../../core/auth/password';
 import {
   createStaffSession,
@@ -120,9 +119,10 @@ function canSetUpTwoStep(identity: StaffIdentity): boolean {
 }
 
 /**
- * Starts two-step setup: a new secret, kept encrypted on the session until the first code
- * confirms it. Returns what the setup screen shows (a QR code of the address, and the secret
- * for typing in by hand).
+ * Starts two-step setup: a secret kept encrypted on the session until the first code confirms
+ * it. Starting again on the same sign-in (a reload, a second tab) gets the same secret, so
+ * the QR code already scanned keeps working. Returns what the setup screen shows (a QR code of
+ * the address, and the secret for typing in by hand).
  */
 export async function beginTwoStepSetup(
   deps: AuthDeps,
@@ -130,10 +130,12 @@ export async function beginTwoStepSetup(
 ): Promise<{ secret: string; otpauthUri: string }> {
   const now = deps.now();
   const identity = await pendingIdentity(deps, token, now, canSetUpTwoStep);
-  const secret = newTotpSecret();
-  await repo.updateStaffSession(deps.platformDb, identity.sessionId, {
-    pendingTotpSecretEnc: encryptTotpSecret(secret, deps.config.totpKey),
-  });
+  const stored = await repo.keepPendingTotpSecret(
+    deps.platformDb,
+    identity.sessionId,
+    encryptTotpSecret(newTotpSecret(), deps.config.totpKey),
+  );
+  const secret = decryptTotpSecret(stored, deps.config.totpKey);
   return { secret, otpauthUri: totpUri(secret, identity.email) };
 }
 

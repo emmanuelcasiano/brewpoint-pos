@@ -1,7 +1,11 @@
-import { accountLockedMessage, pinLockedMessage, wrongPinMessage } from '../../core/auth/lockout';
+import {
+  accountLockedMessage,
+  PASSWORD_MIN_LENGTH,
+  pinLockedMessage,
+  wrongPinMessage,
+} from '@brewpoint/shared';
 import { hashSecret } from '../../core/auth/password';
 import { AppError } from '../../core/errors';
-import { PASSWORD_MIN_LENGTH } from '@brewpoint/shared';
 
 // The sign-in errors, in one place so the three surfaces say the same thing.
 

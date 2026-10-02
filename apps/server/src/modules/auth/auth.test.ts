@@ -317,7 +317,15 @@ describe.skipIf(!testDatabaseUrls())('sign-in endpoints', () => {
         headers: DEVICE_HEADERS,
       });
       expect(list.statusCode).toBe(200);
-      const { users, fetchedAt } = list.json<PinUsersResponse>();
+      const { device, users, fetchedAt } = list.json<PinUsersResponse>();
+      expect(device).toEqual({
+        id: KAPE_DAVAO.device.id,
+        name: 'T1',
+        branchId: KAPE_DAVAO.branch.id,
+        branchName: 'Main branch',
+        shopName: 'Kape Davao',
+        accentHex: '#E2A13B',
+      });
       expect(users.map((u) => u.name)).toEqual(['Ana Cruz', 'Carlo Reyes']);
       expect(users.every((u) => u.pinHash.startsWith('$argon2id$'))).toBe(true);
       expect(fetchedAt).toBe(clock.now().toISOString());

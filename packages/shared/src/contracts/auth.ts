@@ -75,7 +75,18 @@ export interface PinUserEntry {
   pinHash: string;
 }
 
+/** The register and its shop, cached with the PIN list so the POS can name them offline. */
+export interface PosDeviceSummary {
+  id: string;
+  name: string;
+  branchId: string;
+  branchName: string;
+  shopName: string;
+  accentHex: string;
+}
+
 export interface PinUsersResponse {
+  device: PosDeviceSummary;
   users: PinUserEntry[];
   /** ISO time the list was made. */
   fetchedAt: string;
