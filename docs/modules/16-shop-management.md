@@ -56,6 +56,12 @@ Owners manage their team, devices and settings, and can see a permanent record o
 - Default roles from the PermissionMatrix preview.
 - From Module 05: PermissionMatrix is not in packages/ui yet; it is built in this module, keeping its bp- classes. Switch, Checkbox, Tabs and DataTable are ready.
 - From Module 02: brewpoint_app may DELETE only from role_permissions, user_assignments, product_modifier_groups, recipe_lines, modifier_recipe_lines, supplier_items, pairing_codes and purchase_order_lines; everything else is voided, cancelled or deactivated with a status column. A new DELETE needs a grant in a new migration.
+- From Module 03: the accepting side of an invite is built.
+  - An invite is an `auth_tokens` row with purpose `invite`. The token is `<tenant id>.<secret>` and is stored as sha256.
+  - The back-office page `/set-password?token=…` sets the password and changes the user from `invited` to `active`.
+  - To create and email invites, add a function to the auth service rather than calling `modules/auth/repository.ts`. Use `newShopToken` from `core/auth/tokens.ts` and the mailer in `core/mail`.
+- From Module 03: when a user is deactivated, call `revokeUserSessions(trx, userId, 'deactivated', now)`. Their sessions are also refused on the next request, and registers drop them at the next PIN-list refresh.
+- From Module 03: PINs and passwords are hashed with `hashSecret` (Argon2id, `core/auth/password.ts`). A changed PIN reaches registers at their next list refresh.
 
 ## Open questions
 - None.

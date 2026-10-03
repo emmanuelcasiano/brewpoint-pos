@@ -61,6 +61,16 @@ One way to check "may this user do this?" on the server, and one way to record s
 - Roles are per shop; permissions are a global list.
 - From Module 02: the 42 permission codes are already seeded from `packages/shared/src/permissions/codes.ts` (the PermissionMatrix preview plus `inventory.alerts.view` and `inventory.alerts.settings`). Build the default roles on them; no new permission seed is needed. No roles exist yet and the demo owners have no assignment.
 - From Module 02: `audit_log` is already append-only by grant: `brewpoint_app` has SELECT and INSERT only, so UPDATE and DELETE fail with "permission denied" (tested in `apps/server/src/db/rls.test.ts`).
+- From Module 03: the identity is on every request through the hooks in `core/auth/request-auth.ts`.
+  - `requireShopUser(deps, 'backoffice' | 'pos')` puts a `ShopIdentity` on `request.shopIdentity`: userId, tenantId, branchIds (a null-branch assignment expanded to every active branch), roles per branch, surface and deviceId.
+  - `requireStaff(deps, stages)` does the same for staff.
+  - Add the permission check as a hook that runs after these. The sign-in routes (`modules/auth/routes.ts`) declare who may call them but no permission code.
+- From Module 03: the local demo seed added placeholder roles with no permissions to `roles`: a locked Owner and a Cashier per shop. Carlo and Jake are Owners for all branches, and Ana Cruz is a Cashier at Main branch. Replace them with the real default roles.
+- From Module 03: the shared helpers are ready.
+  - `writeAudit(trx, entry)` (`core/audit/audit.ts`) and `writePlatformAudit` (`core/audit/platform-audit.ts`) write the audit rows. An entry with its own `id` is written once (ON CONFLICT DO NOTHING).
+  - Errors are `AppError(status, code, message, details?)` from `core/errors.ts`, sent as `{ error: { code, message, details? } }`, and `parseInput` validates with Zod.
+  - The sign-in lock rules (`PIN_LOCK`, `ACCOUNT_LOCK`, `recordFailure`, `isLocked`) are in `packages/shared/src/auth/lockout.ts`.
+  - The approval PIN's "locked until an online login" (PinPrompt README) is a different rule, still to build.
 
 ## Open questions
 - None.
