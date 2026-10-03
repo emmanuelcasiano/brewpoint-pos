@@ -201,6 +201,19 @@ describe('set password', () => {
     expect(mocked.passwordLink).not.toHaveBeenCalled();
   });
 
+  it('checks the link before showing the form', async () => {
+    let finish: (link: typeof INVITE) => void = () => {};
+    mocked.passwordLink.mockReturnValue(new Promise((resolve) => (finish = resolve)));
+    renderAt('/set-password?token=abc');
+
+    expect(await screen.findByText('Checking your link…')).toBeVisible();
+    expect(screen.queryByLabelText('New password')).not.toBeInTheDocument();
+    finish(INVITE);
+
+    expect(await screen.findByLabelText('New password')).toBeVisible();
+    expect(screen.queryByText('Checking your link…')).not.toBeInTheDocument();
+  });
+
   it('shows why an expired link cannot be used', async () => {
     mocked.passwordLink.mockRejectedValue(
       new ApiRequestError(400, 'link_invalid', 'This link has expired or was already used.'),

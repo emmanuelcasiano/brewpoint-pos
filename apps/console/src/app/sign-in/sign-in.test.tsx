@@ -191,6 +191,18 @@ describe('two-step setup', () => {
 });
 
 describe('sign in', () => {
+  it('checks the session first, then asks a signed-out person to sign in', async () => {
+    let finish: (error: unknown) => void = () => {};
+    mocked.me.mockReturnValue(new Promise((_, reject) => (finish = reject)));
+    renderAt('/');
+
+    expect(screen.getByRole('status')).toHaveTextContent('Checking your sign-in…');
+    finish(new ApiRequestError(401, 'signed_out', 'Sign in to continue.'));
+
+    expect(await screen.findByRole('heading', { name: 'Sign in' })).toBeVisible();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
   it('shows a locked account in a warning banner', async () => {
     mocked.signIn.mockRejectedValue(
       new ApiRequestError(

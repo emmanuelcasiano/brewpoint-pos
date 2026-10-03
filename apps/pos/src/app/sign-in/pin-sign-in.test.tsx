@@ -58,7 +58,18 @@ describe('offline PIN sign-in', () => {
 
     expect(await screen.findByText('You are offline.')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Kape Davao' })).toBeVisible();
+    const keypad = screen.getByRole('group', { name: 'PIN keypad' });
+    expect(within(keypad).getByRole('button', { name: '1' })).toBeDisabled();
     await choose(user, 'Ana Cruz');
+    expect(screen.getByRole('button', { name: /^Ana Cruz/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: /^Carlo Reyes/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(within(keypad).getByRole('button', { name: '1' })).toBeEnabled();
     await enterPin(user, '1234');
 
     expect(await screen.findByRole('heading', { name: 'Signed in as Ana Cruz' })).toBeVisible();

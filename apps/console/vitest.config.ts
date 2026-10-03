@@ -9,5 +9,8 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['src/test/setup.ts'],
+    // The screen tests type whole emails and passwords key by key; when every package tests at
+    // once (the server suite included) one can pass the default 5 seconds.
+    testTimeout: 15_000,
   },
 });
