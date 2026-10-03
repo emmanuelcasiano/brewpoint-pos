@@ -229,6 +229,20 @@ describe.skipIf(!testDatabaseUrls())('POS PIN sign-in', () => {
       },
     ]);
   });
+
+  it('locks for 5 minutes from now when the register clock runs ahead', async () => {
+    const nextWeek = new Date('2026-10-10T07:00:00Z');
+
+    await recordDeviceEvents(deps, shop.device, [
+      { id: uuidv7(), type: 'pin_locked', userId: shop.cashier.id, happenedAt: nextWeek },
+    ]);
+
+    expect(await errorOf(pinSignIn(shop.cashier.id, '1234'))).toMatchObject({
+      message: 'Wrong PIN 5 times. Ana Cruz is locked on this device until 3:05 PM.',
+    });
+    clock.advance(5 * 60_000);
+    expect((await pinSignIn(shop.cashier.id, '1234')).identity.userId).toBe(shop.cashier.id);
+  });
 });
 
 describe.skipIf(!testDatabaseUrls())('the demo device check (until Module 06)', () => {

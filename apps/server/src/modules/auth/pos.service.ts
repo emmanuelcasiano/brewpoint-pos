@@ -238,7 +238,9 @@ async function applyDeviceLock(
   now: Date,
 ): Promise<void> {
   const key = { tenantId: device.tenantId, userId: event.userId, deviceId: device.deviceId };
-  const lockedUntil = new Date(event.happenedAt.getTime() + PIN_LOCK.lockMinutes * 60_000);
+  // A register clock running ahead must not stretch the lock: it starts no later than now.
+  const lockedAt = Math.min(event.happenedAt.getTime(), now.getTime());
+  const lockedUntil = new Date(lockedAt + PIN_LOCK.lockMinutes * 60_000);
   const tries = await repo.lockPinTries(trx, key);
   if (lockedUntil <= now || (tries.lockedUntil && tries.lockedUntil >= lockedUntil)) return;
   await repo.savePinTries(trx, key, { failedCount: PIN_LOCK.maxFailures, lockedUntil }, now);
