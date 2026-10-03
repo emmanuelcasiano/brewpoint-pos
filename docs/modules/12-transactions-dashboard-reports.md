@@ -56,6 +56,7 @@ Owners see how the shop is doing: today's numbers on the Dashboard, every sale i
 ## Decisions already made
 - Chart library: port of BrewPoint.chart (bar, line, hbar) from Module 05.
 - From Module 05: `Chart` takes `type`, `title`, `labels`, `series` (`compare: true` for last period), `format` and `labelHeading`. It draws its own table view, and shows `emptyText` when there are no labels or every value is zero. Place it in a `Card` with the period first in `meta`. `StatTile` takes `delta: { direction, amount, comparison, tone? }`; leave `delta` out when there is nothing to compare with. `DataTable` and `Pager` are ready for the transactions list.
+- From Module 03: the back-office uses React Router v8 in declarative mode: `BrowserRouter` in `main.tsx`, with routes in `app/App.tsx`. After sign-in it shows a placeholder, `app/HomePage.tsx`, behind `RequireSignIn`; the dashboard replaces it. `useSession()` gives the signed-in `ShopMe` (user, shop, branches, roles), and the shop's accent is applied on sign-in.
 
 ## Open questions
 - PDF generation: server-side (for example a headless browser) or a PDF library.

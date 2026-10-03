@@ -37,6 +37,7 @@ BrewPoint is safe to trust with real shops: data is backed up and restorable, pr
 - From Module 01: development uses Neon (PostgreSQL 18, AWS US East 2). Production hosting is not chosen yet.
 - From Module 02: foreign keys ignore row-level security, so a row can reference another shop's row by ID. Consider composite `(tenant_id, id)` foreign keys. CI already runs the isolation test (`apps/server/src/db/rls.test.ts`) against a PostgreSQL 18 service.
 - From Module 02: production needs `pnpm db:roles` run once against its database, and the server must use the `brewpoint_app` URL, never the owner. From the Philippines each query to Neon US East 2 takes about 230 ms; consider the region when hosting is chosen.
+- From Module 03: the sign-in rate limit (20 a minute per IP) and the audit IPs use the connection's address, because Fastify `trustProxy` is off. Behind the host's proxy, set `trustProxy` for that proxy only, or every shop shares one limit. Forgot-password answers a little slower when the email has an account; send the mail without waiting once a real provider replaces the log mailer.
 
 ## Open questions
 - Hosting region and provider (deferred in Module 01; Singapore suggested for latency to the Philippines).

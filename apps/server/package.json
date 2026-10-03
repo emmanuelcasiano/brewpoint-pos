@@ -12,6 +12,7 @@
     "db:migrate": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts",
     "db:migrate:down": "tsx --env-file-if-exists=../../.env scripts/db-migrate.ts down",
     "db:seed": "tsx --env-file-if-exists=../../.env scripts/db-seed.ts",
+    "staff:create": "tsx --env-file-if-exists=../../.env scripts/staff-create.ts",
     "db:types": "kysely-codegen && prettier --write src/db/types.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -19,8 +20,12 @@
   },
   "dependencies": {
     "@brewpoint/shared": "workspace:*",
+    "@fastify/cookie": "^11.1.2",
+    "@fastify/rate-limit": "^11.2.0",
+    "@node-rs/argon2": "^2.2.1",
     "fastify": "^5.12.5",
     "kysely": "^0.29.6",
+    "otpauth": "^9.5.2",
     "pg": "^8.23.0",
     "zod": "^4.6.5"
   },

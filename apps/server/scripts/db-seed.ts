@@ -1,5 +1,5 @@
 import { createMigrationDb } from '../src/db/migrator';
-import { seedDemo } from '../src/db/seed/demo';
+import { DEMO_PASSWORD, DEMO_STAFF, seedDemo, seedDemoStaff } from '../src/db/seed/demo';
 import { seedReference } from '../src/db/seed/reference';
 
 const url = process.env.MIGRATION_DATABASE_URL;
@@ -17,10 +17,14 @@ const db = createMigrationDb(url);
 
 try {
   await seedReference(db);
-  console.log('Seeded the permission list and the three plans.');
+  console.log('Seeded the permission list, the three plans and the Superadmin staff role.');
   if (withDemo) {
     await seedDemo(db);
-    console.log('Seeded the demo shops Kape Davao and Brew Bros Cebu.');
+    await seedDemoStaff(db);
+    console.log('Seeded the demo shops Kape Davao and Brew Bros Cebu, and a dev staff account.');
+    console.log(
+      `Sign in with carlo@kapedavao.test, jake@brewbroscebu.test or ${DEMO_STAFF.email} (console), password ${DEMO_PASSWORD}. POS PINs: owners 1111, Ana Cruz 1234.`,
+    );
   } else {
     console.log(`Skipped the demo shops: APP_ENV is ${appEnv}. Pass --demo to add them anyway.`);
   }

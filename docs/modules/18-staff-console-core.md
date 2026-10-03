@@ -60,7 +60,12 @@ The BrewPoint team can see every shop's account, help a shop safely with owner-a
 
 ## Decisions already made
 - Console is a separate app with its own sign-in and navigation.
-- From Module 02: the `brewpoint_platform` role exists without a login. Give it one and a `PLATFORM_DATABASE_URL` here, the same way `pnpm db:roles` does for the app. Through `platform_all` policies it reads and writes these shop tables across shops: tenants, subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events, credit_notes, support_access_grants, tenant_events, data_requests, tenant_feature_overrides, device_error_reports, support_tickets, support_ticket_messages. It has no grant on shop business data: staff read it through `withTenant` on the app connection after the server checks an active grant. `platform_audit_log` and `tenant_events` are append-only by grant.
+- From Module 02, updated by Module 03: the `brewpoint_platform` role already has a login. `pnpm db:roles` prints `PLATFORM_DATABASE_URL`, and `createPlatformDb` (`core/db/client.ts`) connects with it. Through `platform_all` policies it reads and writes these shop tables across shops: tenants, subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events, credit_notes, support_access_grants, tenant_events, data_requests, tenant_feature_overrides, device_error_reports, support_tickets, support_ticket_messages. It has no grant on shop business data: staff read it through `withTenant` on the app connection after the server checks an active grant. `platform_audit_log` and `tenant_events` are append-only by grant.
+- From Module 03: staff sign-in with two-step is built. It lives in `modules/auth/` (`staff.service.ts`, with the routes under `/api/console/auth`), as file-structure.md lists.
+  - Sessions are in `platform_sessions`, and the console's cookie is `bp_staff_session`.
+  - `requireStaff(deps)` accepts only the `active` stage unless given others, and puts a `StaffIdentity` (staffId, roleId, roleName, stage) on the request.
+  - The console app has React Router v8, `StaffSessionProvider` and `useStaffSession`, `RequireStaff`, and a signed-in placeholder `app/HomePage.tsx`.
+  - The Superadmin platform role is reference data, and `pnpm staff:create` makes a Superadmin account.
 
 ## Open questions
 - Should owners be able to pre-approve support access (for example "always allow read-only for 30 minutes")? Recommendation: no, approve each time.

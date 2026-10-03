@@ -66,6 +66,17 @@ A paired iPad keeps working with no internet: it saves every change locally, sen
 - Device-generated UUID v7 ids; device_id, client_created_at, synced_at on device-written tables.
 - From Module 01: the POS is a web app for now. Decide the native shell (Capacitor recommended) before choosing the local store: SQLite needs the native shell, IndexedDB works in the browser.
 - From Module 02: `uuidv7()` is in `@brewpoint/shared` (monotonic within a millisecond, works in browsers and Node). The database defaults IDs to PostgreSQL 18's `uuidv7()` and accepts client-supplied IDs.
+- From Module 03: the POS already keeps local data in IndexedDB (`apps/pos/src/offline/local-store.ts`), tested with `fake-indexeddb`. Its stores are `pin_cache`, `pin_lockouts`, `auth_events` and `session`. Move them if the store changes to SQLite.
+- From Module 03: until this module, a POS proves which register it is with `DEMO_DEVICE_KEY`.
+  - It sends the headers `x-brewpoint-device` and `x-brewpoint-device-key`.
+  - The key is accepted only with `APP_ENV=local`, and only for the seeded demo registers (`core/auth/device.ts`, `requireDemoDevice`).
+  - Replace it with the paired-device credential. The hook and `request.device` (`DeviceIdentity`: deviceId, tenantId, branchId, name) can stay.
+  - Remove the seed import from `device.ts`, and the `DEMO_DEVICE_` variables from the POS Vite config and `.env.example`.
+- From Module 03: two sign-in calls can move into push and pull.
+  - The PIN list, `GET /api/pos/auth/users`, is fetched on start, every 5 minutes and on reconnect, and replaces the cache whole.
+  - Offline sign-ins and locks go up through `POST /api/pos/auth/events`. Each event's id becomes the `audit_log` id, so it is recorded once.
+  - A cashier who signs in offline has only a local session, so server calls on their behalf need the device credential.
+  - Online, the POS also holds a bearer token for a server session (`sessions.surface = 'pos'`).
 
 ## Open questions
 - Local store: SQLite (Capacitor plugin) or IndexedDB. Recommendation: SQLite if Capacitor was chosen in Module 01.

@@ -1,0 +1,10 @@
+/*
+ * The page behind the app takes the theme's surface, so the whole window is themed: past a
+ * screen's own box, while scrolling past the end, and before React's first paint.
+ */
+@layer base {
+  html {
+    background-color: var(--surface);
+    color: var(--ink);
+  }
+}

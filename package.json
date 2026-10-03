@@ -20,7 +20,8 @@
     "db:migrate": "pnpm --filter @brewpoint/server db:migrate",
     "db:migrate:down": "pnpm --filter @brewpoint/server db:migrate:down",
     "db:seed": "pnpm --filter @brewpoint/server db:seed",
-    "db:types": "pnpm --filter @brewpoint/server db:types"
+    "db:types": "pnpm --filter @brewpoint/server db:types",
+    "staff:create": "pnpm --filter @brewpoint/server staff:create"
   },
   "devDependencies": {
     "@brewpoint/config": "workspace:*",

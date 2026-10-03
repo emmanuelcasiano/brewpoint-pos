@@ -1,16 +1,26 @@
 import { createOwnerDb } from '../src/db/migrator';
 import {
   APP_ROLE,
-  appRoleCanLogin,
   bootstrapRoles,
+  type LoginRole,
   newRolePassword,
-  setAppRolePassword,
+  PLATFORM_ROLE,
+  roleCanLogin,
+  setRolePassword,
 } from '../src/db/roles';
 
 const args = process.argv.slice(2);
 const forTest = args.includes('--test');
 const sourceVar = forTest ? 'MIGRATION_TEST_DATABASE_URL' : 'MIGRATION_DATABASE_URL';
-const targetVar = forTest ? 'TEST_DATABASE_URL' : 'DATABASE_URL';
+
+// The server logs in as the app role for shops and as the platform role for the staff console.
+// Tests derive the platform login from TEST_DATABASE_URL, so --test sets only the app role.
+const LOGINS: readonly { role: LoginRole; targetVar: string }[] = forTest
+  ? [{ role: APP_ROLE, targetVar: 'TEST_DATABASE_URL' }]
+  : [
+      { role: APP_ROLE, targetVar: 'DATABASE_URL' },
+      { role: PLATFORM_ROLE, targetVar: 'PLATFORM_DATABASE_URL' },
+    ];
 
 const ownerUrl = process.env[sourceVar];
 if (!ownerUrl) {
@@ -26,17 +36,19 @@ try {
   await bootstrapRoles(db);
   console.log('Roles brewpoint_migrator, brewpoint_app and brewpoint_platform are ready.');
 
-  if (args.includes('--new-password') || !(await appRoleCanLogin(db))) {
-    const password = newRolePassword();
-    await setAppRolePassword(db, password);
-    console.log(
-      `\nReplace ${targetVar} in .env with this line. It holds a password: never commit it.\n`,
-    );
-    console.log(`${targetVar}=${appUrl(ownerUrl, password)}`);
-  } else {
-    console.log(
-      `${APP_ROLE} can already log in, so ${targetVar} in .env stays as it is. Run with --new-password for a new password.`,
-    );
+  for (const { role, targetVar } of LOGINS) {
+    if (args.includes('--new-password') || !(await roleCanLogin(db, role))) {
+      const password = newRolePassword();
+      await setRolePassword(db, role, password);
+      console.log(
+        `\nReplace ${targetVar} in .env with this line. It holds a password: never commit it.\n`,
+      );
+      console.log(`${targetVar}=${loginUrl(ownerUrl, role, password)}`);
+    } else {
+      console.log(
+        `${role} can already log in, so ${targetVar} in .env stays as it is. Run with --new-password for a new password.`,
+      );
+    }
   }
 } catch (error) {
   const reason = error instanceof Error ? error.message : String(error);
@@ -46,10 +58,10 @@ try {
   await db.destroy();
 }
 
-/** The app logs in as brewpoint_app through Neon's pooler (the host gets -pooler). */
-function appUrl(fromUrl: string, password: string): string {
+/** The server logs in through Neon's pooler (the host gets -pooler). */
+function loginUrl(fromUrl: string, role: LoginRole, password: string): string {
   const url = new URL(fromUrl);
-  url.username = APP_ROLE;
+  url.username = role;
   url.password = password;
   const [endpoint, ...rest] = url.hostname.split('.');
   if (endpoint?.startsWith('ep-') && !endpoint.endsWith('-pooler')) {

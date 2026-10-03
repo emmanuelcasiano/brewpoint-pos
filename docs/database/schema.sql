@@ -1,6 +1,7 @@
 -- BrewPoint database schema (PostgreSQL 18)
 -- The source of truth. The migrations in apps/server/src/db/migrations/ build exactly this, in order
--- (tables, then foreign keys, then rule indexes, then row-level security, then grants).
+-- (tables, then foreign keys, then rule indexes, then row-level security, then grants; later modules
+-- add their own migration, starting with 0013-auth).
 --
 -- Conventions
 --   * Every table that belongs to a shop has tenant_id, child tables included. Row-level security limits
@@ -51,7 +52,10 @@ CREATE TABLE users (
   pin_hash text,  -- POS PIN
   status text NOT NULL,  -- invited, active, deactivated
   last_active_at timestamptz,
-  created_at timestamptz NOT NULL DEFAULT now()
+  created_at timestamptz NOT NULL DEFAULT now(),
+  failed_sign_in_count int NOT NULL DEFAULT 0,  -- wrong passwords in a row; 10 lock for 15 minutes
+  locked_until timestamptz,
+  CONSTRAINT users_email_lower CHECK (email = lower(email))
 );
 CREATE INDEX ON users (tenant_id);
 
@@ -122,6 +126,52 @@ CREATE TABLE pairing_codes (
 CREATE INDEX ON pairing_codes (branch_id);
 CREATE INDEX ON pairing_codes (created_by);
 CREATE INDEX ON pairing_codes (tenant_id);
+
+-- A signed-in shop user on the back-office or a POS device. The token is stored only as a hash.
+-- Back-office sessions end after 12 hours without activity; POS sessions at sign-out or register close.
+CREATE TABLE sessions (
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  surface text NOT NULL,  -- backoffice, pos
+  device_id uuid,  -- POS only
+  token_hash text NOT NULL UNIQUE,  -- sha256 of the token, hex
+  ip_address inet NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  revoked_at timestamptz,
+  revoke_reason text  -- signed_out, password_reset, deactivated
+);
+CREATE INDEX ON sessions (tenant_id);
+CREATE INDEX ON sessions (user_id);
+CREATE INDEX ON sessions (device_id);
+
+-- One-time links sent by email: invites and password resets.
+CREATE TABLE auth_tokens (
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  tenant_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  purpose text NOT NULL,  -- invite, password_reset
+  token_hash text NOT NULL UNIQUE,  -- sha256 of the token, hex
+  expires_at timestamptz NOT NULL,
+  used_at timestamptz,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX ON auth_tokens (tenant_id);
+CREATE INDEX ON auth_tokens (user_id);
+
+-- Wrong PINs per user per device. Five in a row lock that user on that device for 5 minutes.
+CREATE TABLE pin_lockouts (
+  tenant_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  device_id uuid NOT NULL,
+  failed_count int NOT NULL DEFAULT 0,
+  locked_until timestamptz,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, device_id)
+);
+CREATE INDEX ON pin_lockouts (tenant_id);
+CREATE INDEX ON pin_lockouts (device_id);
 
 -- ======================================================================
 -- Billing
@@ -840,9 +890,28 @@ CREATE TABLE platform_users (
   role_id uuid NOT NULL,
   status text NOT NULL,  -- invited, active, deactivated
   last_active_at timestamptz,
-  created_at timestamptz NOT NULL DEFAULT now()
+  created_at timestamptz NOT NULL DEFAULT now(),
+  failed_sign_in_count int NOT NULL DEFAULT 0,  -- wrong passwords or two-step codes in a row; 10 lock for 15 minutes
+  locked_until timestamptz,
+  CONSTRAINT platform_users_email_lower CHECK (email = lower(email))
 );
 CREATE INDEX ON platform_users (role_id);
+
+-- A signed-in staff member on the console. Ends after 12 hours without activity; an unfinished
+-- two-step stage ends after 10 minutes.
+CREATE TABLE platform_sessions (
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
+  staff_id uuid NOT NULL,
+  stage text NOT NULL,  -- two_step, two_step_setup, active
+  pending_totp_secret_enc text,  -- during two-step setup, until the first code is confirmed
+  token_hash text NOT NULL UNIQUE,  -- sha256 of the token, hex
+  ip_address inet NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  revoked_at timestamptz,
+  revoke_reason text  -- signed_out, two_step_expired, deactivated
+);
+CREATE INDEX ON platform_sessions (staff_id);
 
 CREATE TABLE platform_roles (
   id uuid PRIMARY KEY DEFAULT uuidv7(),
@@ -1058,6 +1127,14 @@ ALTER TABLE devices ADD FOREIGN KEY (revoked_by) REFERENCES users;
 ALTER TABLE pairing_codes ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE pairing_codes ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE pairing_codes ADD FOREIGN KEY (created_by) REFERENCES users;
+ALTER TABLE sessions ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE sessions ADD FOREIGN KEY (user_id) REFERENCES users;
+ALTER TABLE sessions ADD FOREIGN KEY (device_id) REFERENCES devices;
+ALTER TABLE auth_tokens ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE auth_tokens ADD FOREIGN KEY (user_id) REFERENCES users;
+ALTER TABLE pin_lockouts ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
+ALTER TABLE pin_lockouts ADD FOREIGN KEY (user_id) REFERENCES users;
+ALTER TABLE pin_lockouts ADD FOREIGN KEY (device_id) REFERENCES devices;
 ALTER TABLE subscriptions ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
 ALTER TABLE subscriptions ADD FOREIGN KEY (plan_id) REFERENCES plans;
 ALTER TABLE subscriptions ADD FOREIGN KEY (plan_price_id) REFERENCES plan_prices;
@@ -1190,6 +1267,7 @@ ALTER TABLE audit_log ADD FOREIGN KEY (branch_id) REFERENCES branches;
 ALTER TABLE audit_log ADD FOREIGN KEY (user_id) REFERENCES users;
 ALTER TABLE audit_log ADD FOREIGN KEY (device_id) REFERENCES devices;
 ALTER TABLE platform_users ADD FOREIGN KEY (role_id) REFERENCES platform_roles;
+ALTER TABLE platform_sessions ADD FOREIGN KEY (staff_id) REFERENCES platform_users;
 ALTER TABLE platform_role_permissions ADD FOREIGN KEY (role_id) REFERENCES platform_roles;
 ALTER TABLE platform_role_permissions ADD FOREIGN KEY (permission_code) REFERENCES platform_permissions;
 ALTER TABLE support_access_grants ADD FOREIGN KEY (tenant_id) REFERENCES tenants;
@@ -1238,7 +1316,7 @@ CREATE INDEX batches_fefo ON batches (branch_id, item_id, expiry_date) WHERE qty
 -- ======================================================================
 -- brewpoint_migrator  NOLOGIN. Owns every table. Migrations and seeds connect as the owner login and SET ROLE to it.
 -- brewpoint_app       LOGIN. The server at runtime. NOBYPASSRLS and not an owner, so row-level security always applies.
--- brewpoint_platform  The staff console (login from Module 18). Platform tables, plus the tables BrewPoint runs for each shop.
+-- brewpoint_platform  LOGIN (from Module 03). The staff console. Platform tables, plus the tables BrewPoint runs for each shop.
 
 -- ======================================================================
 -- Row-level security
@@ -1255,7 +1333,7 @@ ALTER TABLE tenants FORCE ROW LEVEL SECURITY;
 CREATE POLICY tenant_isolation ON tenants
   USING (id = (SELECT app_current_tenant())) WITH CHECK (id = (SELECT app_current_tenant()));
 
--- The same three statements for each of the 58 tables with tenant_id:
+-- The same three statements for each of the 61 tables with tenant_id:
 --   branches, users, roles, role_permissions, user_assignments, devices, pairing_codes,
 --   subscriptions, invoices, invoice_lines, billing_customers, payment_methods, payment_events, credit_notes,
 --   register_sessions, cash_counts, cash_movements, sales, sale_lines, sale_line_modifiers, sale_discounts,
@@ -1265,7 +1343,8 @@ CREATE POLICY tenant_isolation ON tenants
 --   suppliers, supplier_items, purchase_orders, purchase_order_lines, goods_receipts, goods_receipt_lines,
 --   alerts, alert_reads, notification_settings, notification_deliveries, audit_log,
 --   support_access_grants, tenant_events, data_requests, tenant_feature_overrides, device_error_reports,
---   announcement_reads, support_tickets, support_ticket_messages
+--   announcement_reads, support_tickets, support_ticket_messages,
+--   sessions, auth_tokens, pin_lockouts
 -- payment_events.tenant_id may be empty (a webhook before the shop is known); those rows are platform-only.
 ALTER TABLE sales ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sales FORCE ROW LEVEL SECURITY;
@@ -1280,7 +1359,21 @@ CREATE POLICY platform_all ON invoices TO brewpoint_platform USING (true) WITH C
 
 -- No row-level security (global): plans, plan_prices, permissions, feature_flags, app_releases, announcements
 -- (shops read them) and platform_users, platform_roles, platform_permissions, platform_role_permissions,
--- platform_audit_log (staff only).
+-- platform_audit_log, platform_sessions (staff only).
+
+-- Sign-in knows only an email, so no tenant is set and row-level security hides every user. This
+-- returns the user and shop ids for one exact email, nothing else; the server then reads the hashes
+-- and status inside the tenant transaction. It runs as its owner, the migrator, which may read users
+-- across shops only while no tenant is set. The app role may only call it.
+CREATE POLICY auth_lookup ON users FOR SELECT TO brewpoint_migrator
+  USING ((SELECT app_current_tenant()) IS NULL);
+
+CREATE FUNCTION auth_find_user(lookup_email text)
+  RETURNS TABLE (user_id uuid, tenant_id uuid)
+  LANGUAGE sql STABLE SECURITY DEFINER
+  SET search_path = public, pg_temp
+  AS $$ SELECT u.id, u.tenant_id FROM users u WHERE u.email = lower(trim(lookup_email)) $$;
+REVOKE ALL ON FUNCTION auth_find_user(text) FROM PUBLIC;
 
 -- ======================================================================
 -- Grants
@@ -1291,7 +1384,9 @@ CREATE POLICY platform_all ON invoices TO brewpoint_platform USING (true) WITH C
 --   DELETE                  role_permissions, user_assignments, product_modifier_groups, recipe_lines,
 --                           modifier_recipe_lines, supplier_items, pairing_codes, purchase_order_lines
 --   SELECT                  payment_events, plans, plan_prices, permissions, feature_flags, app_releases, announcements
---   nothing                 platform_users, platform_roles, platform_permissions, platform_role_permissions, platform_audit_log
+--   EXECUTE                 auth_find_user(text)
+--   nothing                 platform_users, platform_roles, platform_permissions, platform_role_permissions, platform_audit_log,
+--                           platform_sessions
 -- brewpoint_platform
 --   SELECT, INSERT, UPDATE  the global and platform tables, and the cross-shop tables listed for platform_all
 --   SELECT, INSERT          platform_audit_log, tenant_events (append-only)

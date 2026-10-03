@@ -50,8 +50,10 @@ apps/server/src/
 │   ├── stock/
 │   │   └── record-movement.ts        the only way stock changes (FEFO inside)
 │   ├── money/                        VAT and discount maths on centavos
+│   ├── mail/                         the mailer interface (logs mail in local and tests)
 │   └── errors.ts                     plain-language error responses
 ├── modules/                      one folder per module brief
+│   ├── auth/                         03 sign-in endpoints: back-office, POS PIN, staff two-step
 │   ├── shops/                        07 shop setup, branches, settings
 │   ├── inventory/                    08 items and ledger, 13 counts, waste, expiry
 │   ├── catalog/                      09 categories, products, modifiers, recipes
@@ -91,7 +93,7 @@ apps/server/src/
 └── main.ts                       starts the server
 ```
 
-Outside `src/`, `apps/server/scripts/` holds developer scripts (`db-check.ts`, `db-roles.ts`, `db-migrate.ts`, `db-seed.ts`, run as `pnpm db:check`, `db:roles`, `db:migrate`, `db:seed`), `vitest.config.ts` sets up the database tests, `.kysely-codegenrc.json` configures `pnpm db:types`, and `tsup.config.ts` bundles the server for production.
+Outside `src/`, `apps/server/scripts/` holds developer scripts (`db-check.ts`, `db-roles.ts`, `db-migrate.ts`, `db-seed.ts`, `staff-create.ts`, run as `pnpm db:check`, `db:roles`, `db:migrate`, `db:seed`, `staff:create`), `vitest.config.ts` sets up the database tests, `.kysely-codegenrc.json` configures `pnpm db:types`, and `tsup.config.ts` bundles the server for production.
 
 Inside every module folder, the same five files:
 
@@ -132,35 +134,41 @@ apps/backoffice/src/
 
 ```
 apps/pos/src/
-├── app/                          shell, top bar, PIN sign-in, license lock
+├── app/                          shell, top bar, PIN sign-in (app/sign-in/), license lock
 ├── features/
 │   ├── selling/                  product grid, cart, modifiers, discounts
 │   ├── checkout/                 payment, change, receipt
 │   ├── register/                 open, cash in and out, close
 │   └── needs-attention/          changes the server rejected
 ├── offline/
-│   ├── local-store.ts            SQLite or IndexedDB
+│   ├── local-store.ts            IndexedDB: the register's own storage
+│   ├── pin-cache.ts              staff list with PIN hashes, wrong tries per person (Module 03)
+│   ├── pin-verifier.ts           Argon2id PIN check on the device (Module 03)
+│   ├── auth-events.ts            sign-ins and locks to send to the server (Module 03)
+│   ├── pos-session.ts            who is signed in, kept across reloads (Module 03)
 │   ├── outbox.ts                 unsent changes, in order
 │   └── sync-client.ts            push and pull
-└── printing/                     58 and 80 mm receipt printing
+├── printing/                     58 and 80 mm receipt printing
+└── lib/api-client.ts             typed calls to the server
 ```
 
 ```
 apps/console/src/
-├── app/                          console shell, staff sign-in with two-step
-└── features/
-    ├── overview/
-    ├── shops/
-    ├── support-access/
-    ├── tickets/
-    ├── billing/
-    ├── plans/
-    ├── flags/
-    ├── releases/
-    ├── announcements/
-    ├── data-requests/
-    ├── audit/
-    └── staff/
+├── app/                          console shell, staff sign-in with two-step (app/sign-in/)
+├── features/
+│   ├── overview/
+│   ├── shops/
+│   ├── support-access/
+│   ├── tickets/
+│   ├── billing/
+│   ├── plans/
+│   ├── flags/
+│   ├── releases/
+│   ├── announcements/
+│   ├── data-requests/
+│   ├── audit/
+│   └── staff/
+└── lib/api-client.ts             typed calls to the server
 ```
 
 Inside a feature folder:
@@ -181,6 +189,9 @@ packages/shared/src/
 ├── units/                        base and pack units, two-unit display
 ├── ids/uuid-v7.ts
 ├── contracts/                    request and response types per module, used by server and apps
+├── api/                          createApiRequest and ApiRequestError for the apps' api-client.ts
+├── auth/lockout.ts               wrong-try rules and messages, shared by the server and the POS
+├── time/format-time.ts           formatTime ("3:05 PM", Asia/Manila)
 └── permissions/codes.ts          the permission code list as constants
 
 packages/ui/src/
@@ -188,6 +199,7 @@ packages/ui/src/
 │   ├── fonts.css                     bundled fonts (works offline)
 │   ├── tokens.css                    verbatim copy of the design system's tokens.css
 │   ├── theme.css                     Tailwind @theme mapping to the token variables
+│   ├── page.css                      the page (html) takes the theme's surface and ink
 │   ├── compat.css                    undoes the preflight resets bundle.css relies on
 │   └── components.css                verbatim port of bundle.css (the bp- classes)
 ├── components/                   Button, Field, DataTable, Drawer, SideNav, Numpad, Chart…

@@ -9,6 +9,12 @@ export const PLAN_IDS = {
   multiBranch: '0199a000-0000-7000-8000-000000000003',
 } as const;
 
+/**
+ * The one staff role every environment needs, so the first staff account can be made
+ * (pnpm staff:create). Module 18 adds the other staff roles and their permissions.
+ */
+export const SUPERADMIN_ROLE_ID = '0199a000-0000-7000-8000-000000000901';
+
 const PRICE_IDS = {
   starterV1: '0199a000-0000-7000-8000-000000000101',
   growthV1: '0199a000-0000-7000-8000-000000000201',
@@ -101,7 +107,7 @@ const PLAN_PRICES = [
 ];
 
 /**
- * Data every environment needs: the permission list and the plans.
+ * Data every environment needs: the permission list, the plans and the Superadmin staff role.
  * Permission labels follow packages/shared; plans and prices are only ever added,
  * never rewritten, because shops keep paying the price version they signed up on.
  */
@@ -131,6 +137,16 @@ export async function seedReference(db: Kysely<DB>): Promise<void> {
   await db
     .insertInto('plan_prices')
     .values(PLAN_PRICES)
+    .onConflict((oc) => oc.column('id').doNothing())
+    .execute();
+
+  await db
+    .insertInto('platform_roles')
+    .values({
+      id: SUPERADMIN_ROLE_ID,
+      name: 'Superadmin',
+      summary: 'Everything, including managing staff and deleting shop data.',
+    })
     .onConflict((oc) => oc.column('id').doNothing())
     .execute();
 }

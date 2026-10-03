@@ -98,6 +98,17 @@ export interface AuditLog {
   user_id: string | null;
 }
 
+export interface AuthTokens {
+  created_at: Generated<Timestamp>;
+  expires_at: Timestamp;
+  id: Generated<string>;
+  purpose: string;
+  tenant_id: string;
+  token_hash: string;
+  used_at: Timestamp | null;
+  user_id: string;
+}
+
 export interface Batches {
   batch_code: string;
   branch_id: string;
@@ -411,6 +422,15 @@ export interface Permissions {
   label: string;
 }
 
+export interface PinLockouts {
+  device_id: string;
+  failed_count: Generated<number>;
+  locked_until: Timestamp | null;
+  tenant_id: string;
+  updated_at: Generated<Timestamp>;
+  user_id: string;
+}
+
 export interface PlanPrices {
   id: Generated<string>;
   plan_id: string;
@@ -466,11 +486,26 @@ export interface PlatformRoles {
   summary: string;
 }
 
+export interface PlatformSessions {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  ip_address: string;
+  last_seen_at: Generated<Timestamp>;
+  pending_totp_secret_enc: string | null;
+  revoke_reason: string | null;
+  revoked_at: Timestamp | null;
+  staff_id: string;
+  stage: string;
+  token_hash: string;
+}
+
 export interface PlatformUsers {
   created_at: Generated<Timestamp>;
   email: string;
+  failed_sign_in_count: Generated<number>;
   id: Generated<string>;
   last_active_at: Timestamp | null;
+  locked_until: Timestamp | null;
   name: string;
   password_hash: string;
   role_id: string;
@@ -634,6 +669,20 @@ export interface Sales {
   vat_amount: number;
   void_reason: string | null;
   voided_by: string | null;
+}
+
+export interface Sessions {
+  created_at: Generated<Timestamp>;
+  device_id: string | null;
+  id: Generated<string>;
+  ip_address: string;
+  last_seen_at: Generated<Timestamp>;
+  revoke_reason: string | null;
+  revoked_at: Timestamp | null;
+  surface: string;
+  tenant_id: string;
+  token_hash: string;
+  user_id: string;
 }
 
 export interface StockCountLines {
@@ -808,8 +857,10 @@ export interface UserAssignments {
 export interface Users {
   created_at: Generated<Timestamp>;
   email: string;
+  failed_sign_in_count: Generated<number>;
   id: Generated<string>;
   last_active_at: Timestamp | null;
+  locked_until: Timestamp | null;
   name: string;
   password_hash: string | null;
   pin_hash: string | null;
@@ -824,6 +875,7 @@ export interface DB {
   announcements: Announcements;
   app_releases: AppReleases;
   audit_log: AuditLog;
+  auth_tokens: AuthTokens;
   batches: Batches;
   billing_customers: BillingCustomers;
   branches: Branches;
@@ -852,12 +904,14 @@ export interface DB {
   payment_methods: PaymentMethods;
   payments: Payments;
   permissions: Permissions;
+  pin_lockouts: PinLockouts;
   plan_prices: PlanPrices;
   plans: Plans;
   platform_audit_log: PlatformAuditLog;
   platform_permissions: PlatformPermissions;
   platform_role_permissions: PlatformRolePermissions;
   platform_roles: PlatformRoles;
+  platform_sessions: PlatformSessions;
   platform_users: PlatformUsers;
   product_modifier_groups: ProductModifierGroups;
   products: Products;
@@ -873,6 +927,7 @@ export interface DB {
   sale_line_modifiers: SaleLineModifiers;
   sale_lines: SaleLines;
   sales: Sales;
+  sessions: Sessions;
   stock_count_lines: StockCountLines;
   stock_counts: StockCounts;
   stock_movements: StockMovements;
