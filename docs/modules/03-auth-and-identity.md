@@ -51,10 +51,10 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 - Console sign-in and two-step code entry.
 
 ## Acceptance criteria
-- [ ] A cashier signs in with PIN on a device with no internet.
-- [ ] A shop user's token cannot call a console endpoint, and a staff token cannot call a shop endpoint.
-- [ ] Five wrong PINs lock the user on that device for 5 minutes with the message above.
-- [ ] A deactivated user cannot sign in to the back-office immediately, or to the POS after sync.
+- [x] A cashier signs in with PIN on a device with no internet.
+- [x] A shop user's token cannot call a console endpoint, and a staff token cannot call a shop endpoint.
+- [x] Five wrong PINs lock the user on that device for 5 minutes with the message above.
+- [x] A deactivated user cannot sign in to the back-office immediately, or to the POS after sync.
 
 ## Test cases
 - Given user Ana with PIN 1234 cached on T1 offline, when she enters 1234, then she is signed in.
@@ -88,7 +88,7 @@ Every request knows who is asking and for which shop. Owners and managers sign i
 - POS:
   - A PIN sign-in updates `last_active_at` but leaves the password's wrong-try count alone.
   - Device events (`signed_in`, `signed_out`, `pin_locked`) use the device's event id as the `audit_log` id, so a resend is recorded once.
-  - A reported `pin_locked` also locks that user on that device on the server.
+  - A reported `pin_locked` also locks that user on that device on the server. The 5 minutes count from the reported time, or from when the server receives it if that is earlier, so a register clock running ahead cannot stretch the lock. The audit row keeps the reported time.
 - The reset email links to `<BACKOFFICE_URL>/set-password?token=…`. A new reset link retires older unused ones.
 - API (step 3):
   - **Routes:** `modules/auth/routes.ts` is a Fastify plugin mounted under `/api`; `buildApp({ deps })` mounts it and `main.ts` builds the deps from `.env`. Without deps only `/health` runs, which the health test uses.
@@ -115,9 +115,15 @@ Every request knows who is asking and for which shop. Owners and managers sign i
   - **Layout:** the POS sign-in fits a landscape iPad (1180×820) without scrolling; offline, the Sign in key still clears the bottom.
   - **Page background:** `packages/ui` gives `html` the `surface` background and `ink` color (`styles/page.css`), so the whole window follows the theme, not just each screen's box.
   - **POS user menu:** the design system has no menu style, so `apps/pos/src/app/UserMenu.tsx` builds one from tokens (`surface-raised`, `border`, `shadow-2`, `z-modal`). It floats under the user button without moving the page and follows the menu button pattern (focus on the first item, arrow keys, Home and End, Escape returns to the button, a press outside or Tab closes it). Its items are 56px tall, and the chosen item shows "Signing out…" while the server answers.
+  - **PIN pad:** PinPrompt is the manager-approval modal, so the POS sign-in is built from its parts, PinDots and Numpad, laid out as the layout guideline's "PIN login" row (people above, centred dots and keypad, confirm on the keypad).
+  - **Wording:** "Sign out" everywhere (back-office, console, POS menu), matching the audit sentences. The Navigation README's "Log out" is not used.
   - **App tests:** Vitest with jsdom and Testing Library in all three apps, plus `fake-indexeddb` in the POS. The POS test timeout is 20 s because each PIN check is a real Argon2id verify.
   - **Smoke test:** it now checks each app's sign-in screen instead of the old placeholder.
 - Routing: React Router v7 (declarative mode), later v8 (see Screens above) in the back-office and console. The POS has no URL routing.
+- Follow-ups from the review, for later modules:
+  - **Hosting:** the rate limit and audit IPs use the connection's address (Fastify `trustProxy` is off). When hosting is chosen, set `trustProxy` for that proxy, or every shop shares one limit.
+  - **Real mail provider:** forgot-password answers a little slower when the email has an account (it writes the link and sends the mail first). Send the mail without waiting once a real provider replaces the log mailer.
+  - **Module 06:** `core/auth/device.ts` reads the demo registers from the seed, so seed code is in the server bundle. It goes with the demo device check.
 - Limits: passwords are at least 10 characters with no composition rules. 10 wrong passwords or two-step codes in a row lock the account for 15 minutes, and there's a per-IP limit of 20 auth requests a minute. Back-office and staff sessions expire after 12 hours of inactivity; an unfinished two-step step expires after 10 minutes. Reset links last 1 hour.
 
 ## Open questions

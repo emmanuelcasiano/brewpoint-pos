@@ -199,6 +199,7 @@ packages/ui/src/
 │   ├── fonts.css                     bundled fonts (works offline)
 │   ├── tokens.css                    verbatim copy of the design system's tokens.css
 │   ├── theme.css                     Tailwind @theme mapping to the token variables
+│   ├── page.css                      the page (html) takes the theme's surface and ink
 │   ├── compat.css                    undoes the preflight resets bundle.css relies on
 │   └── components.css                verbatim port of bundle.css (the bp- classes)
 ├── components/                   Button, Field, DataTable, Drawer, SideNav, Numpad, Chart…
